@@ -22,7 +22,6 @@ This is the main template, which can parse raw binary data from a dataset in 010
 The 010 editor script to convert raw hex data to 0x00-shaped data.
 
 ## Wiki
-The place where the entire dataset is described and explored.
-
+The place where the entire dataset is described and explored. Check it out [here](../..//wiki).
 
 
