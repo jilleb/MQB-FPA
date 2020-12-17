@@ -21,14 +21,9 @@ This is the main template, which can parse raw binary data from a dataset in 010
 ### fpa_dataset_save.1sc
 The 010 editor script to convert raw hex data to 0x00-shaped data.
 
-<<<<<<< HEAD
-### Wiki
-The place where the entire dataset is described and explored.
 
-=======
 ## Wiki
 The place where the entire dataset is described and explored. Check it out [here](../..//wiki).
->>>>>>> f324c52a022107dafa626f8506f901f371ac224a
 
 ## Contributing
 
