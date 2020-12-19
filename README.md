@@ -31,9 +31,13 @@ The place where the entire dataset is described and explored. Check it out [here
 
 Everyone can contribute to this project in some way. You can make your own dataset changes and test them, and report back. See the discussion for all topics.  If you have any suggestions or chagnes to the template or script, feel free to make a pull request.
 
+## Disclaimer
 
+Most of the knowledge shared on this repository was gathered, analyzed and tested by myself and friends. Several 1000's of custom datasets were made and tested. It even lead to bricked gateways in some cases. Be careful when you edit "random stuff" inside the dataset. Most of it is pretty harmless, but if there's a warning somewhere you can definitely county on it that this warning came from experiencing some crazy situation with a (partially) bricked gateway, non-functional car, etc. So don't be a douche, be careful. And don't be a super-douche: don't sell this knowledge as your own property. Don't make people pay 250 euro if you've only changed a profile button to Off-road mode, and stuff like that. In short: Be careful, be safe, be nice. Thanks!
 
 <!-- LICENSE -->
 ## License
 
 Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
+
+
