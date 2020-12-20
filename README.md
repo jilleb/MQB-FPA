@@ -5,7 +5,7 @@ This repository is about driving profiles customization for MQB platform cars (a
 
 ## Requirements
 - A MQB platform vehicle
-- 3Q0907530 Gateway
+- 3Q0907530Q and higher Gateways
 - Hex-editing skills
 - [010 editor](https://www.sweetscape.com/010editor/)
 - A good pair of brains
@@ -38,6 +38,6 @@ Most of the knowledge shared on this repository was gathered, analyzed and teste
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU General Public License v3.0. See [LICENSE](https://github.com/jilleb/MQB-FPA/blob/main/LICENSE) for more information.
+Distributed under the GNU General Public License v3.0. See [LICENSE](https://github.com/jilleb/MQB-FPA/blob/main/LICENSE)	 for more information.
 
 
