@@ -6,7 +6,7 @@
 // Revision:    9999
 // Purpose:     VAG MQB FPA (fahrprofilauswahl / driving profile) dataset parsing
 // Comments:    red = unknown, yellow = possible, green = sure
-//              Currently only useful for 3Q0907530 FPA datasets.
+//              Currently only useful for FPA datasets for 3Q0907530Q and newer.
 //--------------------------------------
 
 
