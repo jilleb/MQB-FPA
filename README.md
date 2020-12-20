@@ -38,6 +38,6 @@ Most of the knowledge shared on this repository was gathered, analyzed and teste
 <!-- LICENSE -->
 ## License
 
-Distributed under the GNU General Public License v3.0. See `LICENSE` for more information.
+Distributed under the GNU General Public License v3.0. See [LICENSE](https://github.com/jilleb/MQB-FPA/blob/main/LICENSE) for more information.
 
 
