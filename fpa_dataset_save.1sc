@@ -1,0 +1,71 @@
+//--------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+// File:        fpa_dataset_save.1sc
+// Author:      Jille
+// Revision:    1
+// Purpose:     VAG MQB FPA (fahrprofilauswahl / driving profile) dataset checksum correcting and saving to "0x00," format
+//              Currently only useful for 3Q0907530AD FPA datasets.
+//--------------------------------------
+
+
+LittleEndian(); // go to littleendian mode because of checksum format
+
+local int calculated_checksum;
+calculated_checksum = Checksum(CHECKSUM_CRC32, 0,4348);
+FSeek(4348);
+WriteInt(4348,calculated_checksum);
+
+
+
+const int entire_always = 0;    // 1: do for entire file always, 0: if no selection
+const string title = "Hex To Ascii String";
+string s;
+string sout;
+int64 adr, siz, out;
+int actfile, newfile,  bits;
+char tmp;
+unsigned char rnibbles;
+if (FileCount() == 0) {
+  MessageBox(idOk, title, "No file is open.");
+  return -1;
+}
+
+if ((entire_always != 0) | (GetSelSize() <= 0)) {
+  adr = 0; siz = FileSize();
+}
+else {
+  adr = GetSelStart(); siz = GetSelSize();
+}
+
+if (siz == 0) {
+  MessageBox(idOk, title, "No bytes to process.");
+  return -1;
+}
+
+actfile = GetFileNum();
+newfile = FileNew();
+FileSelect(actfile);
+bits = 0; out = 0;
+int index = adr;
+
+while( index <= adr + siz-1)
+{
+    s = "";
+    FileSelect(actfile);
+    tmp = ReadByte(index);
+    FileSelect(newfile);
+    if (index == 0) {
+        SPrintf(s, "0x%.2X", tmp &0xFF);
+    } else {
+    SPrintf(s, ",0x%.2X", tmp &0xFF);
+    }
+
+    sout += s;
+    index++;
+}
+
+
+WriteString(0, sout);
+FileSelect(newfile);
+SetCursorPos(FileSize());  

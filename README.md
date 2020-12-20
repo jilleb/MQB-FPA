@@ -33,7 +33,7 @@ Everyone can contribute to this project in some way. You can make your own datas
 
 ## Disclaimer
 
-Most of the knowledge shared on this repository was gathered, analyzed and tested by myself and friends. Several 1000's of custom datasets were made and tested. It even lead to bricked gateways in some cases. Be careful when you edit "random stuff" inside the dataset. Most of it is pretty harmless, but if there's a warning somewhere you can definitely county on it that this warning came from experiencing some crazy situation with a (partially) bricked gateway, non-functional car, etc. So don't be a douche, be careful. And don't be a super-douche: don't sell this knowledge as your own property. Don't make people pay 250 euro if you've only changed a profile button to Off-road mode, and stuff like that. In short: Be careful, be safe, be nice. Thanks!
+Most of the knowledge shared on this repository was gathered, analyzed and tested by me and my friends. Several 1000's of custom datasets were made and tested. It even lead to bricked gateways in some cases. Be careful when you edit "random stuff" inside the dataset. Most of it is pretty harmless, but if there's a warning somewhere you can definitely county on it that this warning came from experiencing some crazy situation with a (partially) bricked gateway, non-functional car, etc. So don't be a douche, be careful. And don't be a super-douche: don't sell this knowledge as your own property. Don't make people pay 250 euro if you've only changed a profile button to Off-road mode, and stuff like that. In short: Be careful, be safe, be nice. Thanks!
 
 <!-- LICENSE -->
 ## License
