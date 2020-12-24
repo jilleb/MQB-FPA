@@ -30,7 +30,7 @@ byte is_active[30] <format=hex,bgcolor=cYellow>;
 // todo: test value 0B
 
 byte unknown_value_0 <bgcolor=cRed>;
-
+// todo: test changing this`
 
 // enabled profiles start here
 byte FPA_profile[12] <format=hex,bgcolor=cGreen,comment=getFPAName>; 
@@ -40,6 +40,7 @@ byte FPA_profile[12] <format=hex,bgcolor=cGreen,comment=getFPAName>;
 // Put "04" into profile_1, and it will display as Offroad.
 
 byte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen>;
+// This determines what profile position it returns to after restarting the car.
 
 ushort unknown_value_1 <bgcolor=cRed>;
 byte profile_0_nodata[30] <bgcolor=cBlack>;
@@ -66,7 +67,7 @@ struct{
 
 byte filler <hidden=true>; //just zeroes
 byte unknown_bytes_button_specifics[26] <bgcolor=cRed >;// thisappears to be the profiles you can cycle through with the button?
-long button_order[7] <bgcolor=cGreen >;
+long button_order[7] <bgcolor=cGreen >; // in what order are the profiles set
 
 FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
@@ -93,6 +94,11 @@ byte grouped_controls[30] <bgcolor=cDkGreen>; // 00 on GTE, non-zero on other
 
 
 long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=binary>;
+// works as follows:
+// 5 settings: 1F (Bit 0-4 set)
+// 6 settings: 3F (Bit 0-5 set)
+// 7 settings: 7F (Bit 0-6 set)
+
 byte function_assignments_with_coupling[30]<bgcolor=cYellow, comment=getControlName>;
 byte function_assignments_without_coupling[30]<bgcolor=cYellow, comment=getControlName>;
 byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes?
@@ -122,8 +128,193 @@ ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 
 
 
+// the following bytes are not known yet, but are different between datasets:
 
-// parse the settings to a readable view:
+//versions:
+// Octavia:     
+// Magotan:     
+// Passat:      
+// Leon:        
+// FR 2020:    LI00
+
+BigEndian();
+
+FSeek(10);
+long unknown_10 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 0132
+// Magotan: 010A
+// Passat:  0132
+// Leon:    0132
+
+
+FSeek(14);
+long unknown_14 <bgcolor=cRed>; 
+// Known values:
+// Octavia: F406
+// Magotan: F406
+// Passat:  F406
+// Leon:    F400
+
+
+FSeek(18);
+long unknown_18 <bgcolor=cRed>; 
+// Known values:
+// Octavia: F406
+// Magotan: F406
+// Passat:  F406
+// Leon:    F400
+// FR 2020: 0402 0000
+
+FSeek(38);
+short unknown_38 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 2222
+// Magotan: 2222
+// Passat:  0000
+// Leon:    0202
+
+FSeek(40);
+short unknown_40 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 3344
+// Magotan: 3344
+// Passat:  0000
+// Leon:    0304
+// FR 2020: 0355
+
+FSeek(42);
+short unknown_42 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 5500
+// Magotan: 5533
+// Passat:  0000
+// Leon:    5503
+// FR 2020: 0000
+
+FSeek(52);
+short unknown_52 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 0011
+// Magotan: 0011
+// Passat:  0000
+// Leon:    0000
+
+FSeek(54);
+short unknown_54 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 2233
+// Magotan: 0011
+// Passat:  0000
+// Leon:    0000
+
+FSeek(56);
+short unknown_56 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 0055
+// Magotan: 0055
+// Passat:  0000
+// Leon:    0000
+
+FSeek(58);
+short unknown_58 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 0000
+// Magotan: 0000
+// Passat:  0000
+// Leon:    0000
+
+FSeek(60);
+short unknown_60 <bgcolor=cRed>; 
+// Known values:
+// Octavia: 0055
+// Magotan: 0055
+// Passat:  0000
+// Leon:    0000
+
+FSeek(158);
+byte unknown_158[6] <bgcolor=cRed>; 
+// Known values:
+// Octavia: 2020 2020 5500
+// Magotan: b0b0 b020 5500
+// Passat:  0000 0000 0000
+// Leon:    1222 3324 5563
+// FR 2020: 1222 3355 0132
+
+FSeek(278);
+byte unknown_278[6] <bgcolor=cRed>;
+// FR 2020: 0B 0B 0B 05 00 00
+
+FSeek(515);
+short unknown_518[13] <bgcolor=cRed>; 
+// Known values:
+// Octavia: 2124 FFFF FFFF FFFF 0402
+// Magotan: FFFF FFFF FFFF FFFF 0000
+// Passat:  FFFF FFFF FFFF FFFF 0000
+// Leon:    01FF FFFF FFFF FFFF 0400
+// FR 2020: 01FF FFFF FFFF FFFF 0500
+
+FSeek(568);
+byte unknown_568[8] <bgcolor=cRed>; 
+// Known values:
+// Octavia: 401C 0000 2001 0000
+// Magotan: 0000 0000 0000 0000
+// Passat:  0000 0000 0000 0000
+// Leon:    4018 0000 0000 0000
+// FR 2020: 4018 0000 0000 0000
+// 0C:      4018 0080 2000 0000
+
+
+
+FSeek(662);
+short function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
+// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// and it's the same amount as "individual_configuration bytes" as well
+// Known values:
+// Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
+// Magotan: 0006 0006 0006 0007 0012 0017 0057 0006 0006 0007 00D7 (11x short)
+// Passat:  0006 0006 0006 7FFF 0012 0017 0057 0006 0006 0007 00D7 (11x short)
+// Leon:    001E 0010 001E 0037 0012 0006 0012 0007 001F (9x short)
+// FR 2020: 001E 0010 001E 0037 0412 0012 0006 0012 0007 001F (10 values)
+
+
+FSeek(722);
+short function_bytes_settings[30] <bgcolor=cDkYellow >; //source: Mike's screenshot
+// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// and seems to have a match with other settings as well.
+// Known values:
+// Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
+// Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
+// Passat:  0004 0004 000C FFFE 0024 002E 00AE 000C 000C 000E 01AE (11x short)
+// Leon:    0004 0001 0004 006E 0004 000C 0024 000E 003E (9x short)
+// FR2020:  0004 0001 0004 006E 0800 0004 000C 0024 000E 003E (10x)
+// interesting!!!
+// these values seem to be a *2 of the values at unknown_662!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Don't mess with anything below here, unless you know what you're doing.
+
+// parse the settings to a readable view.
+
+
 local int profile_number = 0;
 local int setting_number = 0;
 local string settingText;
@@ -233,7 +424,8 @@ if (dataset_checksum != calculated_checksum){
 Printf("#################################################\n");
 
 
-//lookup functions start here
+// Lookup functions start here. 
+// Messing with these will mess up the display in the variables section and in the output console.
 
 
 
@@ -547,171 +739,3 @@ return settingName;
 
 
 
-// the following bytes are not known yet, but are different between datasets:
-
-//versions:
-// Octavia:     
-// Magotan:     
-// Passat:      
-// Leon:        
-// FR 2020:    LI00
-
-BigEndian();
-
-FSeek(10);
-long unknown_10 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 0132
-// Magotan: 010A
-// Passat:  0132
-// Leon:    0132
-
-
-FSeek(14);
-long unknown_14 <bgcolor=cRed>; 
-// Known values:
-// Octavia: F406
-// Magotan: F406
-// Passat:  F406
-// Leon:    F400
-
-
-FSeek(18);
-long unknown_18 <bgcolor=cRed>; 
-// Known values:
-// Octavia: F406
-// Magotan: F406
-// Passat:  F406
-// Leon:    F400
-// FR 2020: 0402 0000
-
-FSeek(38);
-short unknown_38 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 2222
-// Magotan: 2222
-// Passat:  0000
-// Leon:    0202
-
-FSeek(40);
-short unknown_40 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 3344
-// Magotan: 3344
-// Passat:  0000
-// Leon:    0304
-// FR 2020: 0355
-
-FSeek(42);
-short unknown_42 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 5500
-// Magotan: 5533
-// Passat:  0000
-// Leon:    5503
-// FR 2020: 0000
-
-FSeek(52);
-short unknown_52 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 0011
-// Magotan: 0011
-// Passat:  0000
-// Leon:    0000
-
-FSeek(54);
-short unknown_54 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 2233
-// Magotan: 0011
-// Passat:  0000
-// Leon:    0000
-
-FSeek(56);
-short unknown_56 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 0055
-// Magotan: 0055
-// Passat:  0000
-// Leon:    0000
-
-FSeek(58);
-short unknown_58 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 0000
-// Magotan: 0000
-// Passat:  0000
-// Leon:    0000
-
-FSeek(60);
-short unknown_60 <bgcolor=cRed>; 
-// Known values:
-// Octavia: 0055
-// Magotan: 0055
-// Passat:  0000
-// Leon:    0000
-
-FSeek(158);
-byte unknown_158[6] <bgcolor=cRed>; 
-// Known values:
-// Octavia: 2020 2020 5500
-// Magotan: b0b0 b020 5500
-// Passat:  0000 0000 0000
-// Leon:    1222 3324 5563
-// FR 2020: 1222 3355 0132
-
-FSeek(278);
-byte unknown_278[6] <bgcolor=cRed>;
-// FR 2020: 0B 0B 0B 05 00 00
-
-FSeek(515);
-short unknown_518[13] <bgcolor=cRed>; 
-// Known values:
-// Octavia: 2124 FFFF FFFF FFFF 0402
-// Magotan: FFFF FFFF FFFF FFFF 0000
-// Passat:  FFFF FFFF FFFF FFFF 0000
-// Leon:    01FF FFFF FFFF FFFF 0400
-// FR 2020: 01FF FFFF FFFF FFFF 0500
-
-FSeek(568);
-byte unknown_568[8] <bgcolor=cRed>; 
-// Known values:
-// Octavia: 401C 0000 2001 0000
-// Magotan: 0000 0000 0000 0000
-// Passat:  0000 0000 0000 0000
-// Leon:    4018 0000 0000 0000
-// FR 2020: 4018 0000 0000 0000
-// 0C:      4018 0080 2000 0000
-
-
-
-FSeek(662);
-short function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
-// and it's the same amount as "individual_configuration bytes" as well
-// Known values:
-// Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
-// Magotan: 0006 0006 0006 0007 0012 0017 0057 0006 0006 0007 00D7 (11x short)
-// Passat:  0006 0006 0006 7FFF 0012 0017 0057 0006 0006 0007 00D7 (11x short)
-// Leon:    001E 0010 001E 0037 0012 0006 0012 0007 001F (9x short)
-// FR 2020: 001E 0010 001E 0037 0412 0012 0006 0012 0007 001F (10 values)
-
-
-FSeek(722);
-short function_bytes_settings[30] <bgcolor=cDkYellow >; //source: Mike's screenshot
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
-// and seems to have a match with other settings as well.
-// Known values:
-// Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
-// Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Passat:  0004 0004 000C FFFE 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Leon:    0004 0001 0004 006E 0004 000C 0024 000E 003E (9x short)
-// FR2020:  0004 0001 0004 006E 0800 0004 000C 0024 000E 003E (10x)
-// interesting!!!
-// these values seem to be a *2 of the values at unknown_662!
-
-
-
-// todo:
-// find out what profiles have mode button light on and find the bytes for that
-// 
