@@ -279,7 +279,7 @@ short function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //sou
 
 
 FSeek(722);
-short function_bytes_settings[30] <bgcolor=cDkYellow >; //source: Mike's screenshot
+short function_bytes_settings[30] <bgcolor=cDkYellow >;
 // this is an interesting one. it seems to match the amount of bytes in the next block, 
 // and seems to have a match with other settings as well.
 // Known values:
@@ -291,7 +291,9 @@ short function_bytes_settings[30] <bgcolor=cDkYellow >; //source: Mike's screens
 // interesting!!!
 // these values seem to be a *2 of the values at unknown_662!
 
-
+FSeek(2390);
+short unknown_0x956[75] <bgcolor=cRed >;
+// this possibly holds additional data needed for the DCC Slider
 
 
 
