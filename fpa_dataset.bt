@@ -424,7 +424,7 @@ Printf(" #################################################\n");
 Printf(" Research stuff\n");
 Printf(" #################################################\n");
 Printf(" Available controls\n");
-Printf(" Pos \t Control \t 0x30E \t 0x2D2\n");
+Printf(" Pos \t Control                        \t 0x30E \t 0x2D2\n");
 
 
 local int tmp_i = 0;
@@ -433,7 +433,7 @@ for( tmp_i = 0; tmp_i < 30; tmp_i++)
 {
 
     if (individual_configuration_byte[tmp_i] > 0){
-        Printf ("  %i: \t %s \t %i \t %i \n", tmp_i, getControlName(individual_configuration_byte[tmp_i]), is_active[tmp_i], function_bytes_settings[tmp_i]);
+        Printf ("  %i: \t %-30s \t %i \t %i \n", tmp_i, getControlName(individual_configuration_byte[tmp_i]), is_active[tmp_i], function_bytes_settings[tmp_i]);
    }
 }
 
