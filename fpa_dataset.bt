@@ -331,17 +331,36 @@ byte unknown_568[8] <bgcolor=cRed>;
 
 // parse the settings to a readable view.
 
-
+local int i = 0;
 local int profile_number = 0;
 local int setting_number = 0;
 local string settingText;
+
+
+Printf (" #################################################\n");
+Printf (" Profile buttons\n");
+Printf (" #################################################\n");
+
+Printf (" The following buttons are configured, displayed in this exact order:\n");
+while(i<9)
+    {
+    if (button_order[i] != 00) {
+        Printf (" [ %s] ", getFPAName(FPA_profile[button_order[i]-1]));
+        }
+    i = i+1;
+}
+
+Printf (" \n");
+Printf (" \n");
+
 while( profile_number < 12 )
     {
+
         
           
         if (FPA_profile[profile_number] != 00) {
         Printf (" #################################################\n");
-        Printf (" Profile number %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
+        Printf (" Profile position %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
         Printf (" #################################################\n");
         Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[profile_number]) );
         Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[profile_number]) );
