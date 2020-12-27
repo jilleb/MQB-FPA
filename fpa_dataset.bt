@@ -22,6 +22,32 @@ ushort data_start<format=decimal,bgcolor=cGreen>;
 
 FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
 
+FSeek(662);
+ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
+// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// and it's the same amount as "individual_configuration bytes" as well
+// Known values:
+// Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
+// Magotan: 0006 0006 0006 0007 0012 0017 0057 0006 0006 0007 00D7 (11x short)
+// Passat:  0006 0006 0006 7FFF 0012 0017 0057 0006006 0007 00D7 (11x short)
+// Leon:    001E 0010 001E 0037 0012 0006 0012 0007 001F (9x short)
+// FR 2020: 001E 0010 001E 0037 0412 0012 0006 0012 0007 001F (10 values)
+
+
+FSeek(722);
+short function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
+// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// and seems to have a match with other settings as well.
+// Known values:
+// Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
+// Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
+// Passat:  0004 0004 000C FFFE 0024 002E 00AE 000C 000C 000E 01AE (11x short)
+// Leon:    0004 0001 0004 006E 0004 000C 0024 000E 003E (9x short)
+// FR2020:  0004 0001 0004 006E 0800 0004 000C 0024 000E 003E (10x)
+// interesting!!!
+// these values seem to be a *2 of the values at unknown_662!
+
+
 FSeek(782);
 byte is_active[30] <format=hex,bgcolor=cYellow>; 
 // 00 = setting byte not active
@@ -78,24 +104,35 @@ byte button_filler_4;
 long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;//01 = there's no loop 03 = loop through all the modes over and over again
 
 byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;// thisappears to be the profiles you can cycle through with the button?
-long button_order[7] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
+long button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
 
 FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
-FSeek(2329);
-byte unknown_bytes_same_amount_as_setting_bytes[30]<bgcolor=cRed >;   // this data has the same shape as the profile setting bytes.
-byte unknown_divider_x<bgcolor=cRed >;
+byte reserved[12]<bgcolor=cGray>;
+byte unknown_setting[12]<bgcolor=cRed>;
 
-byte possible_individual_default_setting[30]<bgcolor=cRed >; // this data has the same shape as the individual bytes
+
+
+byte unknown_bytes_same_amount_as_setting_bytes[30]<bgcolor=cRed >;   // this data has the same shape as the profile setting bytes.
+
+byte unknown_settings_1[30]<bgcolor=cLtRed >; // this data has the same shape as the individual bytes
+
+byte unknown_settings_2[30]<bgcolor=cRed >;
+byte unknown_settings_3[30]<bgcolor=cLtRed >;
+byte unknown_settings_4[30]<bgcolor=cRed >;
+byte unknown_settings_5[30]<bgcolor=cLtRed >;
+byte unknown_settings_6[30]<bgcolor=cRed >;
 
 FSeek(2063);
 byte unknown_VW00_Skoda01; // this is 01 on skoda only.. strange.
 
 FSeek(2276);
-short mode_light_on[12]<bgcolor=cGreen>; // 00 = off, 01 = on, 02 = blink
+short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = off, 01 = on, 02 = blink
 //other known values:
 // 05 no idea what it does
 // 06 no idea what it does
+short some_other_switch[12]<bgcolor=cDkRed>;
+
 
 FSeek(2539);
 
@@ -151,7 +188,6 @@ ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 // Leon:        
 // FR 2020:    LI00
 
-BigEndian();
 
 FSeek(10);
 long unknown_10 <bgcolor=cRed>; 
@@ -280,41 +316,6 @@ byte unknown_568[8] <bgcolor=cRed>;
 
 
 
-FSeek(662);
-short function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
-// and it's the same amount as "individual_configuration bytes" as well
-// Known values:
-// Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
-// Magotan: 0006 0006 0006 0007 0012 0017 0057 0006 0006 0007 00D7 (11x short)
-// Passat:  0006 0006 0006 7FFF 0012 0017 0057 0006 0006 0007 00D7 (11x short)
-// Leon:    001E 0010 001E 0037 0012 0006 0012 0007 001F (9x short)
-// FR 2020: 001E 0010 001E 0037 0412 0012 0006 0012 0007 001F (10 values)
-
-
-FSeek(722);
-short function_bytes_settings[30] <bgcolor=cDkYellow >;
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
-// and seems to have a match with other settings as well.
-// Known values:
-// Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
-// Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Passat:  0004 0004 000C FFFE 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Leon:    0004 0001 0004 006E 0004 000C 0024 000E 003E (9x short)
-// FR2020:  0004 0001 0004 006E 0800 0004 000C 0024 000E 003E (10x)
-// interesting!!!
-// these values seem to be a *2 of the values at unknown_662!
-
-FSeek(2390);
-short unknown_0x956[75] <bgcolor=cRed >;
-// this possibly holds additional data needed for the DCC Slider
-
-
-
-
-
-
-
 
 
 
@@ -334,7 +335,6 @@ short unknown_0x956[75] <bgcolor=cRed >;
 local int profile_number = 0;
 local int setting_number = 0;
 local string settingText;
-local string blinkstate;
 while( profile_number < 12 )
     {
         
@@ -345,27 +345,14 @@ while( profile_number < 12 )
         Printf (" #################################################\n");
         Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[profile_number]) );
         Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[profile_number]) );
-       
-         switch (mode_light_on[profile_number])
-    {
-        case 0x0: blinkstate = "Off";  break;
-        case 0x1: blinkstate = "On"; break;
-        case 0x2: blinkstate = "Blinking"; break;        
-        case 0x3: blinkstate = "unknown"; break;      
-        case 0x4: blinkstate = "unknown"; break; 
-        case 0x5: blinkstate = "unknown Skoda value"; break; 
-        case 0x6: blinkstate = "Blinking"; break;
-
-        
-}
-        Printf ("  Mode button LED: %s \n", blinkstate);   
+        Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[profile_number]));   
         Printf ("  Default settings: \n");   
 
           for( setting_number = 0; setting_number < 30; setting_number++)
         {
             settingText = getSettingName(profile[profile_number].setting_byte[setting_number]);
             if (settingText!="not set"){
-                Printf ("   %s: %s \n", getControlName(HMI_control_at_byte[setting_number]),getSettingName(profile[profile_number].setting_byte[setting_number]));
+                Printf ("   %-30s: %s \n", getControlName(HMI_control_at_byte[setting_number]),getSettingName(profile[profile_number].setting_byte[setting_number]));
             }
         }
  }
@@ -387,7 +374,7 @@ while( indiv_profile_number < 12 )
               for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
                 if (HMI_control_at_byte[indiv_setting_number] > 0){
-                    Printf ("  %s: %s(%x) \n", getControlName(HMI_control_at_byte[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
+                    Printf ("  %-30s: %s(%x) \n", getControlName(HMI_control_at_byte[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
@@ -420,11 +407,16 @@ indivgroup_setting_number += 1;
 
 }
 
+
+Printf(" \n");
 Printf(" #################################################\n");
 Printf(" Research stuff\n");
 Printf(" #################################################\n");
-Printf(" Available controls\n");
-Printf(" Pos \t Control                        \t 0x30E \t 0x2D2 \t Meaning\n");
+
+
+Printf(" Function Byte settings\n");
+
+Printf(" Pos \t Control                         \t 0x2D2 \t Meaning\n");
 
 
 local int tmp_i = 0;
@@ -433,7 +425,23 @@ for( tmp_i = 0; tmp_i < 30; tmp_i++)
 {
 
     if (individual_configuration_byte[tmp_i] > 0){
-        Printf ("  %i: \t %-30s \t %i \t %i \t %s \n", tmp_i, getControlName(individual_configuration_byte[tmp_i]), is_active[tmp_i], function_bytes_settings[tmp_i],getByteSettingName(function_bytes_settings[tmp_i]));
+        Printf ("  %i: \t %-30s \t  %i \t %s \n", tmp_i, getControlName(individual_configuration_byte[tmp_i]), function_bytes_settings[tmp_i],getFunctionByteSettingName(function_bytes_settings[tmp_i]));
+   }
+}
+
+Printf(" \n");
+Printf(" Byte_active settings\n");
+
+Printf(" Pos \t Control                        \t 0x30E  \t Meaning\n");
+
+
+local int tmp_i2 = 0;
+
+for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
+{
+
+    if (individual_configuration_byte[tmp_i2] > 0){
+        Printf ("  %i: \t %-30s \t %i \n", tmp_i2, getControlName(individual_configuration_byte[tmp_i2]), is_active[tmp_i2]);
    }
 }
 
@@ -490,15 +498,36 @@ string getSettingName (int settingNumber)
     }
 return settingName;
 }
+
+
+// helper function to get light mode name
+string getModeButtonLightState (int lightMode)
+{
+    local string modeButtonLightState ="";
+    switch (lightMode)
+    {
+        case 0x0: modeButtonLightState = "Off";  break;
+        case 0x1: modeButtonLightState = "On"; break;
+        case 0x2: modeButtonLightState = "Blinking"; break;        
+        case 0x3: modeButtonLightState = "unknown"; break;      
+        case 0x4: modeButtonLightState = "unknown"; break; 
+        case 0x5: modeButtonLightState = "unknown Skoda value"; break; 
+        case 0x6: modeButtonLightState = "Blinking"; break;     
+    }
+return modeButtonLightState;
+}
+
+
         
 // helper function to get the setting name.
-string getByteSettingName (int byteSettingNumber)
+string getFunctionByteSettingName (int byteSettingNumber)
 {
     local string byteSettingName = "";
     switch (byteSettingNumber)
     {
-        case -2: byteSettingName = "Remember after reset"; break;   
+        case -257: byteSettingName = "Remember after reset"; break;   
         default: byteSettingName = "Unknown"; break;
+        //todo: research to get more known values here
     }
 return byteSettingName;
 }
@@ -570,7 +599,6 @@ string getControlName( int controlNumber )
         case 0x39: 
         case 0x40:
         case 0x41: ControlName= "Nothing displays, just Engine"; break;
-
         default: ControlName = "Unknown"; break;
     }
 return ControlName;
@@ -701,8 +729,7 @@ settingName = "A slider is being used.";
     if (settingResult >= 0){
     settingName = "On " + settingName;
     settingNumber = (settingNumber - 1);
-    }
-    
+    }   
 }
 
 return settingName;
@@ -757,29 +784,29 @@ string getAIDBanner (int settingNumber)
         case 0x03: settingName = "Sport";  break;
         case 0x04: settingName = "Offroad"; break;
         case 0x05: settingName = "Eco"; break;
-        case 0x06: settingName = "VW: Individual"; break;
-        case 0x07: settingName = "VW: Race"; break;
-        case 0x08: settingName = "VW: Eco"; break;
-        case 0x09: settingName = "VW: Eco: driving and performance restricted"; break;
-        case 0x0a: settingName = "VW: E-mode"; break;
-        case 0x0b: settingName = "VW: Hybrid auto"; break;
-        case 0x0c: settingName = "VW: Battery hold"; break;
-        case 0x0d: settingName = "VW: Battery charge"; break;
-        case 0x0e: settingName = "VW: E-mode currently not available"; break;
-        case 0x0f: settingName = "VW: Eco+"; break;
-        case 0x10: settingName = "VW: Snow"; break;
-        case 0x11: settingName = "VW: Normal"; break;
-        case 0x12: settingName = "VW: Offroad individual, check individual settings"; break;
-        case 0x13: settingName = "VW: Auto"; break;
-        case 0x14: settingName = "VW: Driving mode unable to switch"; break;
-        case 0x15: settingName = "VW: Hybrid mode, unable to switch"; break;
-        case 0x16: settingName = "VW: Driving mode eco not available"; break;
-        case 0x17: settingName = "VW: Driving mode normal is not available"; break;
-        case 0x18: settingName = "VW: Mode Battery hold not available"; break;
-        case 0x19: settingName = "VW: Driving mode normal is not available"; break;
-        case 0x1A: settingName = "VW: Mode Battery charge not available"; break;
-        case 0x1B: settingName = "VW: GTE off"; break;        
-        case 0x1C: settingName = "VW: GTE logo"; break;
+        case 0x06: settingName = "Individual"; break;
+        case 0x07: settingName = "Race / Cupra"; break;
+        case 0x08: settingName = "Eco"; break;
+        case 0x09: settingName = "Eco: driving and performance restricted"; break;
+        case 0x0a: settingName = "E-mode"; break;
+        case 0x0b: settingName = "Hybrid auto"; break;
+        case 0x0c: settingName = "Battery hold"; break;
+        case 0x0d: settingName = "Battery charge"; break;
+        case 0x0e: settingName = "E-mode currently not available"; break;
+        case 0x0f: settingName = "Eco+"; break;
+        case 0x10: settingName = "Snow"; break;
+        case 0x11: settingName = "Normal"; break;
+        case 0x12: settingName = "Offroad individual, check individual settings"; break;
+        case 0x13: settingName = "Auto"; break;
+        case 0x14: settingName = "Driving mode unable to switch"; break;
+        case 0x15: settingName = "Hybrid mode, unable to switch"; break;
+        case 0x16: settingName = "Driving mode eco not available"; break;
+        case 0x17: settingName = "Driving mode normal is not available"; break;
+        case 0x18: settingName = "Mode Battery hold not available"; break;
+        case 0x19: settingName = "Driving mode normal is not available"; break;
+        case 0x1A: settingName = "Mode Battery charge not available"; break;
+        case 0x1B: settingName = "GTE off"; break;        
+        case 0x1C: settingName = "GTE logo"; break;
         default: settingName = "Unknown"; break;
     }
 return settingName;
