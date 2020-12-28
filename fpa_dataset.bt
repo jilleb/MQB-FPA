@@ -38,6 +38,8 @@ FSeek(722);
 short function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
 // this is an interesting one. it seems to match the amount of bytes in the next block, 
 // and seems to have a match with other settings as well.
+// if DSG has value FFFE here, it will no longer go back to D at start.
+
 // Known values:
 // Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
 // Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
@@ -341,11 +343,12 @@ Printf (" #################################################\n");
 Printf (" Profile buttons\n");
 Printf (" #################################################\n");
 
-Printf (" The following buttons are configured, displayed in this exact order:\n");
+Printf (" The following buttons are configured, displayed in this exact order:\n\n");
 while(i<9)
     {
     if (button_order[i] != 00) {
-        Printf (" [ %s] ", getFPAName(FPA_profile[button_order[i]-1]));
+        Printf (" ║ %s ║   ", getFPAName(FPA_profile[button_order[i]-1]));
+
         }
     i = i+1;
 }
@@ -354,7 +357,7 @@ Printf (" \n");
 Printf (" \n");
 
 while( profile_number < 12 )
-    {
+
 
         
           
