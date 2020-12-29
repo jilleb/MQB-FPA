@@ -35,7 +35,7 @@ ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //so
 
 
 FSeek(722);
-short function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
+ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
 // this is an interesting one. it seems to match the amount of bytes in the next block, 
 // and seems to have a match with other settings as well.
 // if DSG has value FFFE here, it will no longer go back to D at start.
@@ -536,19 +536,16 @@ return modeButtonLightState;
 }
 
 
-        
+
 // helper function to get the setting name.
-string getFunctionByteSettingName (int byteSettingNumber)
-{
-    local string byteSettingName = "";
-    switch (byteSettingNumber)
-    {
-        case -257: byteSettingName = "Remember after reset"; break;   
-        default: byteSettingName = "Unknown"; break;
-        //todo: research to get more known values here
+string getFunctionByteSettingName(int byteSettingNumber) {
+    switch (byteSettingNumber) {
+        //TODO: research to get more known values here
+        case 65279: return "Remember after reset";
+        default:    return "Unknown";
     }
-return byteSettingName;
 }
+
 
 
 string getControlName( int controlNumber )
