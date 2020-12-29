@@ -413,20 +413,16 @@ Printf(" #################################################\n");
 Printf(" Setting Groups\n");
 Printf(" #################################################\n");
 
-while( indivgroup_setting_number < 30 )
-    {
+while (indivgroup_setting_number < 30) {
     group_number = 1;
-    while ( group_number < 10 )
-    {
-    if (grouped_controls[indivgroup_setting_number]==group_number)
-{
-    Printf ("    Group %i (%s): %s \n", group_number, getControlName(HMI_control_at_byte[group_number-1]), getControlName(individual_configuration_byte[indivgroup_setting_number]));
-}
-    
-    group_number += 1;
-    }
-indivgroup_setting_number += 1;
 
+    while (group_number < 30) {
+        if (grouped_controls[indivgroup_setting_number] == group_number) {
+            Printf("    Group %i (%s): %s \n", group_number, getControlName(HMI_control_at_byte[group_number - 1]), getControlName(individual_configuration_byte[indivgroup_setting_number]));
+        }
+        group_number++;
+    }
+    indivgroup_setting_number++;
 }
 
 
