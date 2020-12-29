@@ -114,6 +114,16 @@ long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = lo
 
 byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;// thisappears to be the profiles you can cycle through with the button?
 long button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
+short unknown_value<bgcolor=cRed >;
+short unknown_FFFFFF00<bgcolor=cDkRed >;
+short  unknown_value2<bgcolor=cRed >;
+short unknown_value3<bgcolor=cDkRed >;
+long unknown_value4<bgcolor=cRed >;//zeroes
+long unknown_value5<bgcolor=cDkRed >;
+
+byte unknown_profiles_related[12]<bgcolor=cLtRed >;
+//todo: test this
+
 
 FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
@@ -393,7 +403,7 @@ local int indiv_profile_number = 0;
 local int indiv_setting_number = 0;
 
 Printf(" #################################################\n");
-Printf(" HMI - \n");
+Printf(" HMI \n");
 Printf(" #################################################\n");
 Printf(" The following items are shown in the HMI.\n Items that have no settings are hidden.\n\n");
 while( indiv_profile_number < 12 )
@@ -508,7 +518,7 @@ string getSettingName(int settingNumber) {
         case 0x3: return "Sport";
         case 0x4: return "Offroad";
         case 0x5: return "Eco";
-        case 0x6: return "Race";
+        case 0x6: return "Race/Cupra";
         case 0x7: return "Individual";
         case 0x8: return "Config 8";
         case 0x9: return "Config 9";
@@ -632,7 +642,7 @@ string getIndividualSettingName(int settingNumber) {
     if (settingNumber & (1 << 11)) { settingName += "Sport "; }
     if (settingNumber & (1 << 12)) { settingName += "Offroad "; }
     if (settingNumber & (1 << 13)) { settingName += "Eco "; }
-    if (settingNumber & (1 << 14)) { settingName += "Race "; }
+    if (settingNumber & (1 << 14)) { settingName += "Race/Cupra "; }
     if (settingNumber & (1 << 15)) { settingName += "Eco+ "; }
 
     return settingName;
@@ -647,7 +657,7 @@ string getFPAName(int settingNumber) {
         case 0x03: return "Dynamic/Sport";
         case 0x04: return "Offroad";
         case 0x05: return "Eco/Economy";
-        case 0x06: return "Race";
+        case 0x06: return "Race/Cupra";
         case 0x07: return "Individual";
         case 0x08: return "Range/PHEV 1/Clubsport";
         case 0x09: return "Lift/PHEV 2";
@@ -683,7 +693,7 @@ string getAIDBanner(int settingNumber) {
         case 0x04: return "Offroad";
         case 0x05: return "Eco";
         case 0x06: return "Individual";
-        case 0x07: return "Race / Cupra";
+        case 0x07: return "Race/Cupra";
         case 0x08: return "Eco";
         case 0x09: return "Eco: driving and performance restricted";
         case 0x0A: return "E-Mode";
