@@ -24,7 +24,7 @@ FSeek(data_start-1); // this is pointing to the start of the datablock, is curre
 
 FSeek(662);
 ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// this is an interesting one. it seems to match the amount of bytes in the next block,
 // and it's the same amount as "individual_configuration bytes" as well
 // Known values:
 // Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
@@ -36,7 +36,7 @@ ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //so
 
 FSeek(722);
 ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
-// this is an interesting one. it seems to match the amount of bytes in the next block, 
+// this is an interesting one. it seems to match the amount of bytes in the next block,
 // and seems to have a match with other settings as well.
 // if DSG has value FFFE here, it will no longer go back to D at start.
 
@@ -51,7 +51,7 @@ ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSe
 
 
 FSeek(782);
-byte is_active[30] <format=hex,bgcolor=cYellow>; 
+byte is_active[30] <format=hex,bgcolor=cYellow>;
 // 00 = setting byte not active
 // 02 = active
 // it seems 0B is also a possibility, I wonder what it does! Maybe this is  about hiding or showing a setting
@@ -61,10 +61,10 @@ byte unknown_value_0 <bgcolor=cRed>;
 // todo: test changing this`
 
 // enabled profiles start here
-byte FPA_profile[12] <format=hex,bgcolor=cGreen,name=getFPAName>; 
+byte FPA_profile[12] <format=hex,bgcolor=cGreen,name=getFPAName>;
 // changing this will changes what button is shown in the FPA selection screen.
 // these bytes determine what profile button is used in what position
-// for instance: 
+// for instance:
 // Put "04" into profile_1, and it will display as Offroad.
 
 byte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen>;
@@ -74,12 +74,12 @@ ushort unknown_value_1 <bgcolor=cRed>;
 // Always seems to be BF00 ?
 
 byte profile_0_nodata[30] <bgcolor=cBlack>;
-				
+
 struct
 {
-    // refer to FPA_controls for the meaning of each byte number  
+    // refer to FPA_controls for the meaning of each byte number
     byte setting_byte[30] <bgcolor=cDkGreen, comment=getSettingName, open=true>;
-}profile[12];   
+}profile[12];
 
 
 
@@ -139,8 +139,8 @@ short some_other_switch[12]<bgcolor=cDkRed>;
 FSeek(2539);
 
 
-byte individual_configuration_byte[30]<bgcolor=cGreen, comment=getControlName >; 
-// This determines what FPA-control is controled by the bytes at "available_choices_at_individual_profile" 
+byte individual_configuration_byte[30]<bgcolor=cGreen, comment=getControlName >;
+// This determines what FPA-control is controled by the bytes at "available_choices_at_individual_profile"
 // usage: set each byte to whatever FPA-control you would like to be handles by the "available_choices_at_individual_profile". This should be in line with FPA_controls
 
 byte grouped_controls[30] <bgcolor=cDkGreen>; // 00 on GTE, non-zero on other
@@ -184,15 +184,15 @@ ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 // the following bytes are not known yet, but are different between datasets:
 
 //versions:
-// Octavia:     
-// Magotan:     
-// Passat:      
-// Leon:        
+// Octavia:
+// Magotan:
+// Passat:
+// Leon:
 // FR 2020:    LI00
 
 
 FSeek(10);
-long unknown_10 <bgcolor=cRed>; 
+long unknown_10 <bgcolor=cRed>;
 // Known values:
 // Octavia: 0132
 // Magotan: 010A
@@ -201,7 +201,7 @@ long unknown_10 <bgcolor=cRed>;
 
 
 FSeek(14);
-long unknown_14 <bgcolor=cRed>; 
+long unknown_14 <bgcolor=cRed>;
 // Known values:
 // Octavia: F406
 // Magotan: F406
@@ -210,7 +210,7 @@ long unknown_14 <bgcolor=cRed>;
 
 
 FSeek(18);
-long unknown_18 <bgcolor=cRed>; 
+long unknown_18 <bgcolor=cRed>;
 // Known values:
 // Octavia: F406
 // Magotan: F406
@@ -219,7 +219,7 @@ long unknown_18 <bgcolor=cRed>;
 // FR 2020: 0402 0000
 
 FSeek(38);
-short unknown_38 <bgcolor=cRed>; 
+short unknown_38 <bgcolor=cRed>;
 // Known values:
 // Octavia: 2222
 // Magotan: 2222
@@ -227,7 +227,7 @@ short unknown_38 <bgcolor=cRed>;
 // Leon:    0202
 
 FSeek(40);
-short unknown_40 <bgcolor=cRed>; 
+short unknown_40 <bgcolor=cRed>;
 // Known values:
 // Octavia: 3344
 // Magotan: 3344
@@ -236,7 +236,7 @@ short unknown_40 <bgcolor=cRed>;
 // FR 2020: 0355
 
 FSeek(42);
-short unknown_42 <bgcolor=cRed>; 
+short unknown_42 <bgcolor=cRed>;
 // Known values:
 // Octavia: 5500
 // Magotan: 5533
@@ -245,7 +245,7 @@ short unknown_42 <bgcolor=cRed>;
 // FR 2020: 0000
 
 FSeek(52);
-short unknown_52 <bgcolor=cRed>; 
+short unknown_52 <bgcolor=cRed>;
 // Known values:
 // Octavia: 0011
 // Magotan: 0011
@@ -253,7 +253,7 @@ short unknown_52 <bgcolor=cRed>;
 // Leon:    0000
 
 FSeek(54);
-short unknown_54 <bgcolor=cRed>; 
+short unknown_54 <bgcolor=cRed>;
 // Known values:
 // Octavia: 2233
 // Magotan: 0011
@@ -261,7 +261,7 @@ short unknown_54 <bgcolor=cRed>;
 // Leon:    0000
 
 FSeek(56);
-short unknown_56 <bgcolor=cRed>; 
+short unknown_56 <bgcolor=cRed>;
 // Known values:
 // Octavia: 0055
 // Magotan: 0055
@@ -269,7 +269,7 @@ short unknown_56 <bgcolor=cRed>;
 // Leon:    0000
 
 FSeek(58);
-short unknown_58 <bgcolor=cRed>; 
+short unknown_58 <bgcolor=cRed>;
 // Known values:
 // Octavia: 0000
 // Magotan: 0000
@@ -277,7 +277,7 @@ short unknown_58 <bgcolor=cRed>;
 // Leon:    0000
 
 FSeek(60);
-short unknown_60 <bgcolor=cRed>; 
+short unknown_60 <bgcolor=cRed>;
 // Known values:
 // Octavia: 0055
 // Magotan: 0055
@@ -285,7 +285,7 @@ short unknown_60 <bgcolor=cRed>;
 // Leon:    0000
 
 FSeek(158);
-byte unknown_158[6] <bgcolor=cRed>; 
+byte unknown_158[6] <bgcolor=cRed>;
 // Known values:
 // Octavia: 2020 2020 5500
 // Magotan: b0b0 b020 5500
@@ -298,7 +298,7 @@ byte unknown_278[6] <bgcolor=cRed>;
 // FR 2020: 0B 0B 0B 05 00 00
 
 FSeek(515);
-short unknown_518[13] <bgcolor=cRed>; 
+short unknown_518[13] <bgcolor=cRed>;
 // Known values:
 // Octavia: 2124 FFFF FFFF FFFF 0402
 // Magotan: FFFF FFFF FFFF FFFF 0000
@@ -307,7 +307,7 @@ short unknown_518[13] <bgcolor=cRed>;
 // FR 2020: 01FF FFFF FFFF FFFF 0500
 
 FSeek(568);
-byte unknown_568[8] <bgcolor=cRed>; 
+byte unknown_568[8] <bgcolor=cRed>;
 // Known values:
 // Octavia: 401C 0000 2001 0000
 // Magotan: 0000 0000 0000 0000
@@ -359,16 +359,16 @@ Printf (" \n");
 while( profile_number < 12 )
 
 {
-        
-          
+
+
         if (FPA_profile[profile_number] != 00) {
         Printf (" #################################################\n");
         Printf (" Profile position %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
         Printf (" #################################################\n");
         Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[profile_number]) );
         Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[profile_number]) );
-        Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[profile_number]));   
-        Printf ("  Default settings: \n");   
+        Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[profile_number]));
+        Printf ("  Default settings: \n");
 
           for( setting_number = 0; setting_number < 30; setting_number++)
         {
@@ -463,7 +463,7 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
    }
 }
 
-    
+
 
 
 
@@ -488,53 +488,42 @@ if (dataset_checksum != calculated_checksum){
 Printf("#################################################\n");
 
 
-// Lookup functions start here. 
+// Lookup functions start here.
 // Messing with these will mess up the display in the variables section and in the output console.
 
 
 // helper function to get the setting name.
-string getSettingName (int settingNumber)
-{
-    local string settingName = "";
-    switch (settingNumber)
-    {
-        case 0x0: settingName = "not set";  break;
-        case 0x1: settingName = "Comfort"; break;
-        case 0x2: settingName = "Normal"; break;
-        case 0x3: settingName = "Sport"; break;
-        case 0x4: settingName = "Off-road"; break;
-        case 0x5: settingName = "Eco"; break;
-        case 0x6: settingName = "Race"; break;
-        case 0x7: settingName = "Individual"; break;
-        case 0x8: settingName = "Config 8"; break;
-        case 0x9: settingName = "Config 9"; break;
-        case 0xa: settingName = "Config 10"; break;
-        case 0xb: settingName = "Config 11"; break;
-        case 0xc: settingName = "Config 12"; break;
-
-        default: settingName = "Unknown"; break;
+string getSettingName(int settingNumber) {
+    switch (settingNumber) {
+        case 0x0: return "not set";
+        case 0x1: return "Comfort";
+        case 0x2: return "Normal";
+        case 0x3: return "Sport";
+        case 0x4: return "Offroad";
+        case 0x5: return "Eco";
+        case 0x6: return "Race";
+        case 0x7: return "Individual";
+        case 0x8: return "Config 8";
+        case 0x9: return "Config 9";
+        case 0xA: return "Config 10";
+        case 0xB: return "Config 11";
+        case 0xC: return "Config 12";
+        default:  return "Unknown";
     }
-return settingName;
 }
 
 
 // helper function to get light mode name
-string getModeButtonLightState (int lightMode)
-{
-    local string modeButtonLightState ="";
-    switch (lightMode)
-    {
-        case 0x0: modeButtonLightState = "Off";  break;
-        case 0x1: modeButtonLightState = "On"; break;
-        case 0x2: modeButtonLightState = "Blinking"; break;        
-        case 0x3: modeButtonLightState = "unknown"; break;      
-        case 0x4: modeButtonLightState = "unknown"; break; 
-        case 0x5: modeButtonLightState = "unknown Skoda value"; break; 
-        case 0x6: modeButtonLightState = "Blinking"; break;     
+string getModeButtonLightState(int lightMode) {
+    switch (lightMode) {
+        case 0x0: return "Off";
+        case 0x1: return "On";
+        case 0x2: return "Blinking";
+        case 0x5: return "Unknown Skoda value";
+        case 0x6: return "Blinking";
+        default:  return "Unknown";
     }
-return modeButtonLightState;
 }
-
 
 
 // helper function to get the setting name.
@@ -547,284 +536,170 @@ string getFunctionByteSettingName(int byteSettingNumber) {
 }
 
 
-
-string getControlName( int controlNumber )
-    {
-    local string ControlName = "";
-    switch (controlNumber)
-    {
-        case 0: ControlName = "not set"; break;
-        case 0x01: ControlName= "Engine"; break;
-        case 0x02: ControlName= "Start-stop system"; break;
-        case 0x03: ControlName= "Gearbox"; break;
-        case 0x04: ControlName= "Rear differential Lock"; break;
-        case 0x05: ControlName= "Steering"; break;
-        case 0x06: ControlName= "Progressive Steering"; break;
-        case 0x07: ControlName= "DCC"; break;
-        case 0x08: ControlName= "Airco"; break;
-        case 0x09: ControlName= "ACC"; break;
-        case 0x0A: ControlName= "Interior Engine Sound"; break;
-        case 0x0B: ControlName= "Motorway Light"; break;
-        case 0x0C: ControlName= "Background Lighting"; break;
-        case 0x0D: ControlName= "Air suspension"; break;
-        case 0x0E: ControlName= "Automatic Belt pre-tensioning"; break;
-        case 0x0F: ControlName= "Seat Bolster Setting"; break;
-        case 0x10: ControlName= "Route Option"; break;
-        case 0x11: ControlName= "Navigation"; break;
-        case 0x12: ControlName= "DSG Coasting"; break;
-        case 0x13: ControlName= "Eco tips"; break;
-        case 0x14: ControlName= "Exterior engine sound"; break;
-        case 0x15: ControlName= "Front differential lock"; break;
-        case 0x16: ControlName= "Center differential lock"; break;
-        case 0x17: ControlName= "Four-wheel drive"; break;
-        case 0x18: ControlName= "Electronic torque vectoring(Audi-Text)"; break;
-        case 0x19: ControlName= "Anti-slip regulation"; break;
-        case 0x1A: ControlName= "Headlight control"; break;
-        case 0x1B: ControlName= "Rear spoiler"; break;
-        case 0x1C: ControlName= "ESC System"; break;
-        case 0x1D: ControlName= "Rear Axle Steering"; break;
-        case 0x1E: ControlName= "Adaptive body roll compens"; break;
-        case 0x1F: ControlName= "Road recognitiion"; break;
-        case 0x20: ControlName= "Hybrid drive"; break;
-        case 0x21: ControlName= "Drive"; break;
-        case 0x22: ControlName= "Chassis"; break;
-        case 0x23: ControlName= "Exhaust valves"; break;
-        case 0x24: ControlName= "Engine Sound"; break;
-        case 0x25: ControlName= "Passenger Compartment"; break;
-        case 0x26: ControlName= "Driver's seat"; break;
-        case 0x27: ControlName= "Tyre pressure monitoring syst."; break;
-        case 0x28: ControlName= "Lane Assist"; break;
-        case 0x29: ControlName= "Aggregatelagerung(Audi-Text)"; break;
-        case 0x2A: ControlName= "Magnetic ride (Audi-Text)"; break;
-        case 0x2B: ControlName= "Sport Select chassis"; break;
-        case 0x2C: ControlName= "Hill Descent Assist"; break;
-        case 0x2D: ControlName= "Hill Hold Assist"; break;
-        case 0x2E: ControlName= "Parking assist"; break;
-        case 0x2F: ControlName= "Instrument cluster"; break;
-        case 0x30: ControlName= "Infotainment system"; break;
-        case 0x31: ControlName= "Eco driving tips"; break;
-        case 0x32: ControlName= "Speed adjustment"; break;
-        case 0x33: ControlName= "Electronic engine sound"; break;
-        case 0x34: ControlName= "Nothing displays, just Engine"; break;
-        case 0x35: ControlName= "Nothing displays, just Engine"; break;
-        case 0x36: ControlName= "ESC System"; break;
-        case 0x37: ControlName= "Nothing displays"; break;
-        case 0x4c: ControlName= "Freilauf_DefaultON"; break ;
-        case 0x38: 
-        case 0x39: 
-        case 0x40:
-        case 0x41: ControlName= "Nothing displays, just Engine"; break;
-        default: ControlName = "Unknown"; break;
+string getControlName(int controlNumber) {
+    switch (controlNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Engine";
+        case 0x02: return "Start/Stop System";
+        case 0x03: return "Gearbox";
+        case 0x04: return "Rear Differential Lock";
+        case 0x05: return "Steering";
+        case 0x06: return "Progressive Steering";
+        case 0x07: return "DCC";
+        case 0x08: return "HVAC (Air Conditioning)";
+        case 0x0A: return "Interior Engine Sound";
+        case 0x09: return "ACC";
+        case 0x0B: return "Motorway Light";
+        case 0x0C: return "Background Lighting";
+        case 0x0D: return "Air Suspension";
+        case 0x0E: return "Automatic Belt Pre-Tensioning";
+        case 0x0F: return "Seat Bolster Setting";
+        case 0x10: return "Route Option";
+        case 0x11: return "Navigation";
+        case 0x12: return "DSG Coasting";
+        case 0x13: return "Eco Tips";
+        case 0x14: return "Exterior Engine Sound";
+        case 0x15: return "Front Differential Lock";
+        case 0x16: return "Center Differential Lock";
+        case 0x17: return "Four-Wheel Drive (AWD)";
+        case 0x18: return "Electronic Torque Vectoring (Audi-Text)";
+        case 0x19: return "Anti-Slip regulation";
+        case 0x1A: return "Headlight Control";
+        case 0x1B: return "Rear spoiler";
+        case 0x1C: return "ESC System";
+        case 0x1D: return "Rear Axle Steering";
+        case 0x1E: return "Adaptive Body Roll Compensation";
+        case 0x1F: return "Road Recognitiion";
+        case 0x20: return "Hybrid Drive";
+        case 0x21: return "Drive";
+        case 0x22: return "Chassis";
+        case 0x23: return "Exhaust Valves";
+        case 0x24: return "Engine Sound";
+        case 0x25: return "Passenger Compartment";
+        case 0x26: return "Driver's Seat";
+        case 0x27: return "Tyre Pressure Monitoring System (TPMS)";
+        case 0x28: return "Lane Assist";
+        case 0x29: return "Aggregatelagerung (Audi-Text)";
+        case 0x2A: return "Magnetic Ride (Audi-Text)";
+        case 0x2B: return "Sport Select Chassis";
+        case 0x2C: return "Hill Descent Assist";
+        case 0x2D: return "Hill Hold Assist";
+        case 0x2E: return "Parking Assist";
+        case 0x2F: return "Instrument Cluster";
+        case 0x30: return "Infotainment System";
+        case 0x31: return "Eco Driving Tips";
+        case 0x32: return "Speed Adjustment";
+        case 0x33: return "Electronic Engine Sound";
+        case 0x34: return "Nothing displays, just Engine";
+        case 0x35: return "Nothing displays, just Engine";
+        case 0x36: return "ESC System";
+        case 0x37: return "Nothing displays";
+        case 0x41: return "Nothing displays, just Engine";
+        case 0x4C: return "Freilauf_DefaultON";
+        default:   return "Unknown";
     }
-return ControlName;
 }
 
 
-string getIndividualSettingName (int settingNumber)
-{
+string getIndividualSettingName(int settingNumber) {
+    if (settingNumber == 0) {
+        return "not set ";
+    }
+
+    if (settingNumber == 65279) {
+        return "A slider is displayed ";
+    }
+
     local string settingName = "";
-    local int settingResult = 0;
+    if (settingNumber & (1 << 0))  { settingName += "On "; }
+    if (settingNumber & (1 << 1))  { settingName += "Off "; }
+    if (settingNumber & (1 << 2))  { settingName += "Snow "; }
+    if (settingNumber & (1 << 3))  { settingName += "Unknown 1 "; }
+    if (settingNumber & (1 << 4))  { settingName += "Unknown 2 "; }
+    if (settingNumber & (1 << 5))  { settingName += "Sand "; }
+    if (settingNumber & (1 << 6))  { settingName += "Unknown 3 "; }
+    if (settingNumber & (1 << 7))  { settingName += "Unknown 4 "; }
+    if (settingNumber & (1 << 8))  { settingName += "Unknown 5 "; }
+    if (settingNumber & (1 << 9))  { settingName += "Comfort "; }
+    if (settingNumber & (1 << 10)) { settingName += "Normal "; }
+    if (settingNumber & (1 << 11)) { settingName += "Sport "; }
+    if (settingNumber & (1 << 12)) { settingName += "Offroad "; }
+    if (settingNumber & (1 << 13)) { settingName += "Eco "; }
+    if (settingNumber & (1 << 14)) { settingName += "Race "; }
+    if (settingNumber & (1 << 15)) { settingName += "Eco+ "; }
 
-//todo: make this better
-// this will go along all bytes of the settingNumber to determine what flags are set
-    //NOT_SET = 0,
-    //ON = 1,
-    //OFF = 2,
-    //SNOW = 4,
-    //UNKNOWN = 8,
-    //UNKNOWN2 = 16,
-    //SAND = 32,
-    //UNKNOWN3 = 64,
-    //UNKNOWN4 = 128,
-    //UNKNOWN5 = 256,
-    //COMFORT = 512,
-    //NORMAL = 1024,
-    //SPORT = 2048,
-    //OFFROAD = 4096,
-    //ECO = 8192,
-    //RACE = 16384,
-    //ECOPLUS = 32768
-
-if (settingNumber == 0){
-settingName = "Not set";
-} else if (settingNumber == 65279) { 
-settingName = "A slider is being used.";
-} else {
-    settingResult = settingNumber - 32768;
-    if (settingResult >= 0){
-    settingName = "Eco+ ";
-    settingNumber = (settingNumber - 32768);
-    }
-    
-    settingResult = settingNumber - 16384;
-    if ((settingResult) >= 0){
-    settingName = "Race " +  settingName;
-    settingNumber = (settingNumber - 16384);
-    }
-
-    settingResult = settingNumber - 8192;
-    if (settingResult >= 0){
-    settingName = "Eco " + settingName;
-    settingNumber = (settingNumber - 8192);
-    }
-
-    settingResult = settingNumber - 4096;
-    if (settingResult >= 0){
-    settingName = "Off-road " + settingName;
-    settingNumber = (settingNumber - 4096);
-    }
-
-    settingResult = settingNumber - 2048;
-    if ((settingResult) >= 0){
-    settingName = "Sport " + settingName;
-    settingNumber = (settingNumber - 2048);
-    }
-
-    settingResult = settingNumber - 1024;
-    if (settingResult >= 0){
-    settingName = "Normal " + settingName;
-    settingNumber = (settingNumber - 1024);
-    }
-
-    settingResult = settingNumber - 512;
-    if (settingResult >= 0){
-    settingName = "Comfort " + settingName;
-    settingNumber = (settingNumber - 512);
-    }
-
-    settingResult = settingNumber - 256;
-    if (settingResult >= 0){
-    settingName = "Unknown 5 (needs research) " + settingName;
-    settingNumber = (settingNumber - 256);
-    }
-
-    settingResult = settingNumber - 128;
-    if (settingResult >= 0){
-    settingName = "Unknown 4 (needs research) " +  settingName ;
-    settingNumber = (settingNumber - 128);
-    }
-
-    settingResult = settingNumber - 64;
-    if (settingResult >= 0){
-    settingName = "Unknown 3 (needs research) " + settingName;
-    settingNumber = (settingNumber - 64);
-    }
-
-    settingResult = settingNumber - 32;
-    if (settingResult >= 0){
-    settingName = "Sand/" + settingName;
-    settingNumber = (settingNumber - 32);
-    }
-
-    settingResult = settingNumber - 16;
-    if (settingResult >= 0){
-    settingName = "Unknown 2 (needs research) " + settingName;
-    settingNumber = (settingNumber - 16);
-    }
-
-    settingResult = settingNumber - 8;
-    if (settingResult >= 0){
-    settingName = "Unknown " + settingName;
-    settingNumber = (settingNumber - 8);
-    }
-
-    settingResult = settingNumber - 4;
-    if (settingResult >= 0){
-    settingName = "Snow " + settingName;
-    settingNumber = (settingNumber - 4);
-    }
-
-    settingResult = settingNumber - 2;
-    if (settingResult >= 0){
-    settingName = "Off " + settingName;
-    settingNumber = (settingNumber - 2);
-    }
-
-    settingResult = settingNumber - 1;
-    if (settingResult >= 0){
-    settingName = "On " + settingName;
-    settingNumber = (settingNumber - 1);
-    }   
+    return settingName;
 }
 
-return settingName;
+
+string getFPAName(int settingNumber) {
+    switch (settingNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Comfort";
+        case 0x02: return "Auto/Normal";
+        case 0x03: return "Dynamic/Sport";
+        case 0x04: return "Offroad";
+        case 0x05: return "Eco/Economy";
+        case 0x06: return "Race";
+        case 0x07: return "Individual";
+        case 0x08: return "Range/PHEV 1/Clubsport";
+        case 0x09: return "Lift/PHEV 2";
+        case 0x0A: return "Offroad Snow/PHEV 3/EV On";
+        case 0x0B: return "Offroad Individual/PHEV 4/Hybrid Auto";
+        case 0x0C: return "Offroad 4/Hybrid Hold";
+        case 0x0D: return "Offroad 5/Hybrid Charge";
+        case 0x0E: return "Offroad 6/Hybrid Area";
+        case 0x0F: return "EV Off";
+        case 0x10: return "Second Hold/Torque Vectoring";
+        case 0x11: return "Racetrack/Hybrid Charge Off";
+        case 0x12: return "Offroad Level 2/Adaptive";
+        case 0x13: return "Offroad Level 3/Traction";
+        case 0x14: return "Offroad Level 4";
+        case 0x15: return "Hybrid Sport";
+        case 0x16: return "Second Auto";
+        case 0x17: return "Unknown Profile";
+        case 0x28: return "GTE Off";
+        case 0x29: return "GTE Off 2";
+        case 0x2A: return "Unknown Profile 2";
+        case 0xFF: return "none";
+        default:   return "Unknown";
+    }
 }
 
-string getFPAName (int settingNumber)
-{
-    local string settingName = "";
-    switch (settingNumber)
-    {
-        case 0x00: settingName = "not set";  break;
-        case 0x01: settingName = "Comfort";  break;
-        case 0x02: settingName = "Auto/Normal";  break;
-        case 0x03: settingName = "Dynamic/Sport";  break;
-        case 0x04: settingName = "Offroad"; break;
-        case 0x05: settingName = "Eco/Economy"; break;
-        case 0x06: settingName = "Race"; break;
-        case 0x07: settingName = "Individual"; break;
-        case 0x08: settingName = "Range/PHEV 1/Clubsport"; break;
-        case 0x09: settingName = "Lift/PHEV 2"; break;
-        case 0x0a: settingName = "Offroad Snow/PHEV 3/EV On"; break;
-        case 0x0b: settingName = "Offroad individual/PHEV 4/Hybrid auto"; break;
-        case 0x0c: settingName = "Offroad 4/Hybrid hold"; break;
-        case 0x0d: settingName = "Offroad 5/Hybrid charge"; break;
-        case 0x0e: settingName = "Offroad 6/Hybrid area"; break;
-        case 0x0f: settingName = "EV Off"; break;
-        case 0x10: settingName = "Second hold/Torque Vectoring"; break;
-        case 0x11: settingName = "Racetrack/Hybrid Charge Off"; break;
-        case 0x12: settingName = "Offroad level 2 / Adaptive"; break;
-        case 0x13: settingName = "Offroad level 3 / Traction"; break;
-        case 0x14: settingName = "Offroad level 4"; break;
-        case 0x15: settingName = "Hybrid sport"; break;
-        case 0x16: settingName = "Second auto"; break;
-        case 0x17: settingName = "Unknown profile"; break;
-        case 0x28: settingName = "GTE off"; break;
-        case 0x29: settingName = "GTE off 2"; break;
-        case 0x2a: settingName = "Unknown profile 2"; break;
-        case 0xFF: settingName = "none"; break;
-        default: settingName = "Unknown"; break;
-    }
-return settingName;
-}
 
-string getAIDBanner (int settingNumber)
-{
-    local string settingName = "";
-    switch (settingNumber)
-    {
-        case 0x00: settingName = "not set";  break;
-        case 0x01: settingName = "Comfort";  break;
-        case 0x02: settingName = "Normal";  break;
-        case 0x03: settingName = "Sport";  break;
-        case 0x04: settingName = "Offroad"; break;
-        case 0x05: settingName = "Eco"; break;
-        case 0x06: settingName = "Individual"; break;
-        case 0x07: settingName = "Race / Cupra"; break;
-        case 0x08: settingName = "Eco"; break;
-        case 0x09: settingName = "Eco: driving and performance restricted"; break;
-        case 0x0a: settingName = "E-mode"; break;
-        case 0x0b: settingName = "Hybrid auto"; break;
-        case 0x0c: settingName = "Battery hold"; break;
-        case 0x0d: settingName = "Battery charge"; break;
-        case 0x0e: settingName = "E-mode currently not available"; break;
-        case 0x0f: settingName = "Eco+"; break;
-        case 0x10: settingName = "Snow"; break;
-        case 0x11: settingName = "Normal"; break;
-        case 0x12: settingName = "Offroad individual, check individual settings"; break;
-        case 0x13: settingName = "Auto"; break;
-        case 0x14: settingName = "Driving mode unable to switch"; break;
-        case 0x15: settingName = "Hybrid mode, unable to switch"; break;
-        case 0x16: settingName = "Driving mode eco not available"; break;
-        case 0x17: settingName = "Driving mode normal is not available"; break;
-        case 0x18: settingName = "Mode Battery hold not available"; break;
-        case 0x19: settingName = "Driving mode normal is not available"; break;
-        case 0x1A: settingName = "Mode Battery charge not available"; break;
-        case 0x1B: settingName = "GTE off"; break;        
-        case 0x1C: settingName = "GTE logo"; break;
-        default: settingName = "Unknown"; break;
+string getAIDBanner(int settingNumber) {
+    switch (settingNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Comfort";
+        case 0x02: return "Normal";
+        case 0x03: return "Sport";
+        case 0x04: return "Offroad";
+        case 0x05: return "Eco";
+        case 0x06: return "Individual";
+        case 0x07: return "Race / Cupra";
+        case 0x08: return "Eco";
+        case 0x09: return "Eco: driving and performance restricted";
+        case 0x0A: return "E-Mode";
+        case 0x0B: return "Hybrid Auto";
+        case 0x0C: return "Battery Hold";
+        case 0x0D: return "Battery Charge";
+        case 0x0E: return "E-Mode currently not available";
+        case 0x0F: return "Eco+";
+        case 0x10: return "Snow";
+        case 0x11: return "Normal";
+        case 0x12: return "Offroad individual, check individual settings";
+        case 0x13: return "Auto";
+        case 0x14: return "Driving Mode unable to switch";
+        case 0x15: return "Hybrid Mode, unable to switch";
+        case 0x16: return "Driving Mode Eco not available";
+        case 0x17: return "Driving Mode Normal is not available";
+        case 0x18: return "Mode Battery Hold not available";
+        case 0x19: return "Driving Mode Normal is not available";
+        case 0x1A: return "Mode Battery Charge not available";
+        case 0x1B: return "GTE Off";
+        case 0x1C: return "GTE Logo";
+        default:   return "Unknown";
     }
-return settingName;
 }
 
 
