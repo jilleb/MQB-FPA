@@ -51,7 +51,7 @@ ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSe
 
 
 FSeek(782);
-byte is_active[30] <format=hex,bgcolor=cYellow>;
+byte is_active[30] <format=hex, bgcolor=cYellow, comment=getSettingByteActive>;
 // 00 = setting byte not active
 // 02 = active
 // it seems 0B is also a possibility, I wonder what it does! Maybe this is  about hiding or showing a setting
@@ -702,6 +702,15 @@ string getAIDBanner(int settingNumber) {
     }
 }
 
+
+string getSettingByteActive(int state) {
+    switch (state) {
+        case 0x0: return "Inactive";
+        case 0x2: return "Active";
+        case 0xB: return "Unknown (needs testing)";
+        default:  return "Unknown";
+    }
+}
 
 
 
