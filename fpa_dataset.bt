@@ -770,7 +770,7 @@ string getFPAName (int settingNumber)
         case 0x05: settingName = "Eco/Economy"; break;
         case 0x06: settingName = "Race"; break;
         case 0x07: settingName = "Individual"; break;
-        case 0x08: settingName = "Range/PHEV 1"; break;
+        case 0x08: settingName = "Range/PHEV 1/Clubsport"; break;
         case 0x09: settingName = "Lift/PHEV 2"; break;
         case 0x0a: settingName = "Offroad Snow/PHEV 3/EV On"; break;
         case 0x0b: settingName = "Offroad individual/PHEV 4/Hybrid auto"; break;
