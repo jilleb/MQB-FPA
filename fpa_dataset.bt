@@ -358,7 +358,7 @@ Printf (" \n");
 
 while( profile_number < 12 )
 
-
+{
         
           
         if (FPA_profile[profile_number] != 00) {
