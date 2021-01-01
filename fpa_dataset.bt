@@ -123,16 +123,19 @@ long unknown_value5<bgcolor=cDkRed >;
 
 byte unknown_profiles_related[12]<bgcolor=cLtRed >;
 //todo: test this
+long unknown_value6<bgcolor=cDkRed >;
+// todo: test this
 
 
 FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
 byte reserved[12]<bgcolor=cGray>;
-byte unknown_setting[12]<bgcolor=cRed>;
+byte unknown_setting[9]<bgcolor=cRed>;
 
 
+short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = off, 01 = on, 02 = blink
 
-byte unknown_bytes_same_amount_as_setting_bytes[30]<bgcolor=cRed >;   // this data has the same shape as the profile setting bytes.
+byte unknown_settings_0[30]<bgcolor=cRed >;   // this data has the same shape as the profile setting bytes.
 
 byte unknown_settings_1[30]<bgcolor=cLtRed >; // this data has the same shape as the individual bytes
 
@@ -141,17 +144,11 @@ byte unknown_settings_3[30]<bgcolor=cLtRed >;
 byte unknown_settings_4[30]<bgcolor=cRed >;
 byte unknown_settings_5[30]<bgcolor=cLtRed >;
 byte unknown_settings_6[30]<bgcolor=cRed >;
+byte unknown_settings_7[30]<bgcolor=cLtRed >;
+
 
 FSeek(2063);
 byte unknown_VW00_Skoda01; // this is 01 on skoda only.. strange.
-
-FSeek(2276);
-short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = off, 01 = on, 02 = blink
-//other known values:
-// 05 no idea what it does
-// 06 no idea what it does
-short some_other_switch[12]<bgcolor=cDkRed>;
-
 
 FSeek(2539);
 
@@ -481,6 +478,26 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 }
 
 
+Printf(" \n");
+Printf(" Unknown settings at 8FB range\n");
+
+Printf(" Pos \t Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
+
+
+
+local int tmp_i3 = 0;
+
+for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
+{
+
+    if (HMI_control_at_byte[tmp_i3] > 0){
+        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(HMI_control_at_byte[tmp_i3]), unknown_settings_0[tmp_i3], unknown_settings_1[tmp_i3], unknown_settings_2[tmp_i3],unknown_settings_3[tmp_i3],unknown_settings_4[tmp_i3],unknown_settings_5[tmp_i3],unknown_settings_6[tmp_i3],unknown_settings_7[tmp_i3]);
+   }
+}
+
+
+
+
 
 
 
@@ -533,11 +550,11 @@ string getSettingName(int settingNumber) {
 // helper function to get light mode name
 string getModeButtonLightState(int lightMode) {
     switch (lightMode) {
-        case 0x0: return "Off";
-        case 0x1: return "On";
-        case 0x2: return "Blinking";
-        case 0x5: return "Unknown Skoda value";
-        case 0x6: return "Blinking";
+        case 0x000: return "Off";
+        case 0x100: return "On";
+        case 0x200: return "Blinking";
+        case 0x500: return "Unknown Skoda value";
+        case 0x600: return "Blinking";
         default:  return "Unknown";
     }
 }
