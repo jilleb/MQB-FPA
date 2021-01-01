@@ -17,6 +17,7 @@ FSeek(4348);
 WriteInt(4348,calculated_checksum);
 
 
+SetSelection(0,0x1100);
 
 const int entire_always = 0;    // 1: do for entire file always, 0: if no selection
 const string title = "Hex To Ascii String";
