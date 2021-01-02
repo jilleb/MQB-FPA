@@ -8,11 +8,7 @@
 // Comments:    red = unknown, yellow = possible, green = sure
 //              Currently only useful for FPA datasets for 3Q0907530Q and newer.
 //--------------------------------------
-
-
 BitfieldDisablePadding();
-
-
 
 char dataset_version[4]        <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 char dataset_version2[4]       <format=hex,bgcolor=cYellow,comment="sub-version?">;
@@ -88,6 +84,7 @@ byte HMI_control_at_byte[30]<format=hex,bgcolor=cGreen, comment=getControlName>;
 //the value of this determines what value is used in the profiles for instance, 
 // if there's a value 01 on the first position, that means the first value in the 
 // profile sets this specific setting.
+// NEVER PUT FF HERE
 //
 // todo: test value 4B (seen at TCR)
 
@@ -112,7 +109,7 @@ long possible_button_setting_3 <bgcolor=cRed >;
 byte button_filler_4;
 long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;//01 = there's no loop 03 = loop through all the modes over and over again
 
-byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;// thisappears to be the profiles you can cycle through with the button?
+byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;
 long button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
 short unknown_value<bgcolor=cRed >;
 short unknown_FFFFFF00<bgcolor=cDkRed >;
@@ -135,20 +132,25 @@ byte unknown_setting[9]<bgcolor=cRed>;
 
 short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = off, 01 = on, 02 = blink
 
-byte unknown_settings_0[30]<bgcolor=cRed >;   // this data has the same shape as the profile setting bytes.
+// the following 8 groups of data map perfectly to the controls.
+// it appears to be some kind of value range that is used when communicating to the control module.
+// for instance: DCC with DCC slider has a range of: 
+// 16	50	84	118	-104	-70	-36	-2
+// that's almost a perfect line
 
-byte unknown_settings_1[30]<bgcolor=cLtRed >; // this data has the same shape as the individual bytes
-
-byte unknown_settings_2[30]<bgcolor=cRed >;
-byte unknown_settings_3[30]<bgcolor=cLtRed >;
-byte unknown_settings_4[30]<bgcolor=cRed >;
-byte unknown_settings_5[30]<bgcolor=cLtRed >;
-byte unknown_settings_6[30]<bgcolor=cRed >;
-byte unknown_settings_7[30]<bgcolor=cLtRed >;
+ubyte unknown_settings_0[30]<bgcolor=cRed >;   
+ubyte unknown_settings_1[30]<bgcolor=cLtRed >; 
+ubyte unknown_settings_2[30]<bgcolor=cRed >;
+ubyte unknown_settings_3[30]<bgcolor=cLtRed >;
+ubyte unknown_settings_4[30]<bgcolor=cRed >;
+ubyte unknown_settings_5[30]<bgcolor=cLtRed >;
+ubyte unknown_settings_6[30]<bgcolor=cRed >;
+ubyte unknown_settings_7[30]<bgcolor=cLtRed >;
 
 
 FSeek(2063);
 byte unknown_VW00_Skoda01; // this is 01 on skoda only.. strange.
+//todo: test
 
 FSeek(2539);
 
@@ -312,7 +314,7 @@ byte unknown_278[6] <bgcolor=cRed>;
 // FR 2020: 0B 0B 0B 05 00 00
 
 FSeek(515);
-short unknown_518[13] <bgcolor=cRed>;
+short unknown_515[13] <bgcolor=cRed>;
 // Known values:
 // Octavia: 2124 FFFF FFFF FFFF 0402
 // Magotan: FFFF FFFF FFFF FFFF 0000
@@ -373,8 +375,6 @@ Printf (" \n");
 while( profile_number < 12 )
 
 {
-
-
         if (FPA_profile[profile_number] != 00) {
         Printf (" #################################################\n");
         Printf (" Profile position %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
@@ -525,7 +525,6 @@ Printf("#################################################\n");
 // Lookup functions start here.
 // Messing with these will mess up the display in the variables section and in the output console.
 
-
 // helper function to get the setting name.
 string getSettingName(int settingNumber) {
     switch (settingNumber) {
@@ -546,7 +545,6 @@ string getSettingName(int settingNumber) {
     }
 }
 
-
 // helper function to get light mode name
 string getModeButtonLightState(int lightMode) {
     switch (lightMode) {
@@ -559,7 +557,6 @@ string getModeButtonLightState(int lightMode) {
     }
 }
 
-
 // helper function to get the setting name.
 string getFunctionByteSettingName(int byteSettingNumber) {
     switch (byteSettingNumber) {
@@ -569,7 +566,7 @@ string getFunctionByteSettingName(int byteSettingNumber) {
     }
 }
 
-
+// helper function to get the control name.
 string getControlName(int controlNumber) {
     switch (controlNumber) {
         case 0x00: return "not set";
