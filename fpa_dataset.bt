@@ -362,10 +362,13 @@ Printf (" #################################################\n");
 Printf (" The following buttons are configured, displayed in this exact order:\n\n");
 while(i<9)
     {
-    if (button_order[i] != 00) {
+  
+    if (button_order[i] != 00){
+        { if (button_order[i] < 100) {
         Printf (" ║ %s ║   ", getFPAName(FPA_profile[button_order[i]-1]));
-
+             }
         }
+    }
     i = i+1;
 }
 
