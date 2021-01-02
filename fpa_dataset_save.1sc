@@ -20,7 +20,7 @@ string preDataAddress;
 saveFormat = InputRadioButtonBox("Output Format", "Choose output format", 0, "VCP", "ODIS");
 saveAdress = InputRadioButtonBox("Address", "Choose address", 0, "0x0B80", "0x2388");
 
-saveFolder = InputDirectory("Save dataset to", "c:\temp\datasets");
+saveFolder = InputDirectory("Save dataset to", "%UserProfile%\\Desktop\\");
 saveName = InputString("Dataset name", "Dataset name", "Dataset");
 
 if (saveAdress == 0) {
@@ -46,7 +46,6 @@ WriteInt(4348, calculated_checksum);
 
 SetSelection(0, 0x1100);
 
-const int entire_always = 0; // 1: do for entire file always, 0: if no selection
 const string title = "Hex To Ascii String";
 string s;
 string sDataset;
@@ -59,13 +58,9 @@ if (FileCount() == 0) {
   return -1;
 }
 
-if ((entire_always != 0) | (GetSelSize() <= 0)) {
-  adr = 0;
-  siz = FileSize();
-} else {
-  adr = GetSelStart();
-  siz = GetSelSize();
-}
+adr = 0;
+siz = FileSize();
+
 
 if (siz == 0) {
   MessageBox(idOk, title, "No bytes to process.");
@@ -101,6 +96,6 @@ WriteString(0, sDataset);
 FileSelect(newfile);
 SetCursorPos(FileSize());
 
-string filename = saveFolder + "\\" + saveName + ".xml";
+string filename = saveFolder + saveName + ".xml";
 
 FileSave(filename);
