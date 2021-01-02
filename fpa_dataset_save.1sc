@@ -96,6 +96,6 @@ WriteString(0, sDataset);
 FileSelect(newfile);
 SetCursorPos(FileSize());
 
-string filename = saveFolder + saveName + ".xml";
+string filename = saveFolder + saveName + "_" + GetCurrentDateTime("MMddyyyy_hhmmss") + ".xml";
 
 FileSave(filename);
