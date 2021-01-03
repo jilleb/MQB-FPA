@@ -97,17 +97,17 @@ byte filler <bgcolor=cYellow>;
 //appears to be just zeroes, at all time
 
 byte button_filler_1;
-long enable_fpa_button_part_1 <bgcolor=cYellow comment="01 = enabled, 0 = disabled">;
+long enable_fpa_button_part_1 <bgcolor=cYellow, comment="01 = enabled, 0 = disabled">;
 // 1 = enabled
 // 0 = disabled
 
 byte button_filler_2;
-long enable_fpa_button_part_2 <bgcolor=cYellow comment="01 = enabled, 0 = disabled">;
+long enable_fpa_button_part_2 <bgcolor=cYellow, comment="01 = enabled, 0 = disabled">;
 // 1 = enabled
 // 0 = disabled
  
 byte button_filler_3;
-long button_behavior <bgcolor=cYellow comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+long button_behavior <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
 // TODO: test other values like 2, 4, 5, 6.
 
 
