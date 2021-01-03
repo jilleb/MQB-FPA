@@ -172,8 +172,8 @@ long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=bin
 // 6 grouped settings: 3F (Bit 0-5 set)
 // 7 grouped settings: 7F (Bit 0-6 set)
 
-byte function_assignments_with_coupling[30]<bgcolor=cYellow, comment=getControlName>;
-byte function_assignments_without_coupling[30]<bgcolor=cYellow, comment=getControlName>;
+byte function_assignments_with_coupling[30]<bgcolor=cYellow>; // needs additional research
+byte function_assignments_without_coupling[30]<bgcolor=cYellow>;
 byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes?
 
 // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
@@ -505,10 +505,20 @@ for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 }
 
 
+Printf(" \n");
+Printf(" Individual controls research\n");
+Printf(" Pos \t Control                        \t ConfByte\t 0xA2B  \t 0xA49 \t Meaning\n");
 
 
+local int tmp_i4 = 0;
 
+for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
+{
 
+    if (individual_configuration_byte[tmp_i4] > 0){
+        Printf (" \t %-30s \t %i \t %i \t %i\n", getControlName(individual_configuration_byte[tmp_i4]), individual_configuration_byte[tmp_i4], function_assignments_with_coupling[tmp_i4], function_assignments_without_coupling[tmp_i4]);
+   }
+}
 
 
 
@@ -524,10 +534,7 @@ if (dataset_checksum != calculated_checksum){
     Printf("    ! Checksums are not identical \n    ! Copy calculated value into checksum at Variables screen \n");
 } else {
     Printf("    Checksums are identical, no updates needed\n");
-    SetSelection(0,0x1100);
-
-    Printf("    Bytes selected, now copy them to clipboard as hex bytes and paste them to any text editor you like\n");
-};
+  };
 Printf("#################################################\n");
 
 
