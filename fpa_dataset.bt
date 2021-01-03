@@ -48,11 +48,12 @@ ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSe
 
 FSeek(782);
 byte is_active[30] <format=hex, bgcolor=cYellow, comment=getSettingByteActive>;
-// 00 = setting byte not active
+// 00 = setting byte not active, although setting value 0 doesn't seem to have any impact?
 // 02 = active
-// todo: test value 0B
-// todo: test value 08 (happens at DCC slider datasets)
-// todo: test value 11 (used at Freilauf_DefaultON)
+// other known settings are:
+// 0B; tested, no noticeable change.
+// 11; tested, no noticeable change.
+// TODO: more testing needed.
 
 byte unknown_value_0 <bgcolor=cYellow>;
 // tested different values, doesn't seem to do anything
@@ -85,8 +86,6 @@ byte HMI_control_at_byte[30]<format=hex,bgcolor=cGreen, comment=getControlName>;
 // if there's a value 01 on the first position, that means the first value in the 
 // profile sets this specific setting.
 // NEVER PUT FF HERE
-//
-// todo: test value 4B (seen at TCR)
 
 struct{
     // this block consists of 30 bytes, after that the same pattern can be found, once for each enabled profile.
@@ -98,16 +97,22 @@ byte filler <bgcolor=cYellow>;
 //appears to be just zeroes, at all time
 
 byte button_filler_1;
-long possible_button_setting_1 <bgcolor=cRed >;
-// todo: test 
+long enable_fpa_button_part_1 <bgcolor=cYellow comment="01 = enabled, 0 = disabled">;
+// 1 = enabled
+// 0 = disabled
+
 byte button_filler_2;
-long possible_button_setting_2 <bgcolor=cRed >;
-// todo: test 
+long enable_fpa_button_part_2 <bgcolor=cYellow comment="01 = enabled, 0 = disabled">;
+// 1 = enabled
+// 0 = disabled
+ 
 byte button_filler_3;
-long possible_button_setting_3 <bgcolor=cRed >;
-// todo: test 
+long button_behavior <bgcolor=cYellow comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+// TODO: test other values like 2, 4, 5, 6.
+
+
 byte button_filler_4;
-long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;//01 = there's no loop 03 = loop through all the modes over and over again
+long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
 
 byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;
 long button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
@@ -119,7 +124,12 @@ long unknown_value4<bgcolor=cRed >;//zeroes
 long unknown_value5<bgcolor=cDkRed >;
 
 byte unknown_profiles_related[12]<bgcolor=cLtRed >;
-//todo: test this
+// todo: test this some more
+// tested the following:
+// 00 03 05 02 00 01 changed to
+// 00 05 03 01 00 02
+// result: after selecting comfort profile, the FPA screen dissappears.
+
 long unknown_value6<bgcolor=cDkRed >;
 // todo: test this
 
@@ -128,16 +138,13 @@ FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
 byte reserved[12]<bgcolor=cGray>;
 byte unknown_setting[9]<bgcolor=cRed>;
+// after setting to 123456789, the default settings on individual profile were reset.
 
 
 short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = off, 01 = on, 02 = blink
 
 // the following 8 groups of data map perfectly to the controls.
-// it appears to be some kind of value range that is used when communicating to the control module.
-// for instance: DCC with DCC slider has a range of: 
-// 16	50	84	118	-104	-70	-36	-2
-// that's almost a perfect line
-
+// it is the value range that is used when communicating to the control module.
 ubyte unknown_settings_0[30]<bgcolor=cRed >;   
 ubyte unknown_settings_1[30]<bgcolor=cLtRed >; 
 ubyte unknown_settings_2[30]<bgcolor=cRed >;
@@ -149,24 +156,21 @@ ubyte unknown_settings_7[30]<bgcolor=cLtRed >;
 
 
 FSeek(2063);
-byte unknown_VW00_Skoda01; // this is 01 on skoda only.. strange.
-//todo: test
+byte unknown_VW00_Skoda01; // this is 01 on skoda only.. no visible output when changing this to 0, 1 or 2.
 
 FSeek(2539);
-
-
 byte individual_configuration_byte[30]<bgcolor=cGreen, comment=getControlName >;
 // This determines what FPA-control is controled by the bytes at "available_choices_at_individual_profile"
 // usage: set each byte to whatever FPA-control you would like to be handles by the "available_choices_at_individual_profile". This should be in line with FPA_controls
 
-byte grouped_controls[30] <bgcolor=cDkGreen>; // 00 on GTE, non-zero on other
-
+byte grouped_controls[30] <bgcolor=cDkGreen>;
+// this byte range determines to which group a control belongs.
 
 long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=binary>;
 // works as follows:
-// 5 settings: 1F (Bit 0-4 set)
-// 6 settings: 3F (Bit 0-5 set)
-// 7 settings: 7F (Bit 0-6 set)
+// 5 grouped settings: 1F (Bit 0-4 set)
+// 6 grouped settings: 3F (Bit 0-5 set)
+// 7 grouped settings: 7F (Bit 0-6 set)
 
 byte function_assignments_with_coupling[30]<bgcolor=cYellow, comment=getControlName>;
 byte function_assignments_without_coupling[30]<bgcolor=cYellow, comment=getControlName>;
@@ -177,6 +181,7 @@ byte PHEV_data[1659]<format=decimal,bgcolor=cBlue>;
 FSeek(3340);
 byte hybrid_modes[12]<format=decimal,bgcolor=cYellow>; //not sure, needs testing
 byte hybrid_modes_active[12]<bgcolor=cRed >; //not sure, needs testing
+
 struct{
        byte hybrid_mode_setting[16];
 }
@@ -312,6 +317,7 @@ byte unknown_158[6] <bgcolor=cRed>;
 FSeek(278);
 byte unknown_278[6] <bgcolor=cRed>;
 // FR 2020: 0B 0B 0B 05 00 00
+// after flashing with 0B 0B 0B 05 00 00, the dashboard and MIB showed offroad-icon for a short moment and that's it.
 
 FSeek(515);
 short unknown_515[13] <bgcolor=cRed>;
@@ -628,7 +634,8 @@ string getControlName(int controlNumber) {
         case 0x35: return "Nothing displays, just Engine";
         case 0x36: return "ESC System";
         case 0x37: return "Nothing displays";
-        case 0x41: return "Nothing displays, just Engine";
+        case 0x41: return "Engine";
+        case 0x4B: return "Engine";        //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
         default:   return "Unknown";
     }

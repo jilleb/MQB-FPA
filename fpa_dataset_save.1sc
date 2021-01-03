@@ -14,14 +14,13 @@ string saveFolder;
 string saveName, preData, postData, preDataAddress, footer;
 
 saveFormat = 0;     // 0 = VCP      1 = ODIS
-saveAddress = 0;    // 0 = 0x0B80   1=0x2388
+saveAddress = 0;    // 0 = 0x0B80   1 = 0x2388
 
 //Uncomment the following to ask what output format to use, each time you run the script:
 //saveFormat = InputRadioButtonBox("Output Format", "Choose output format", 0, "VCP", "ODIS");
 
 //Uncomment the following to ask which address to use, each time you run the script: 
 //saveAddress = InputRadioButtonBox("Address", "Choose address", 0, "0x0B80", "0x2388");
-
 
 saveFolder = InputDirectory("Save dataset to", "%UserProfile%\\Desktop\\");
 saveName = InputString("Dataset name", "Dataset name", "Dataset");
