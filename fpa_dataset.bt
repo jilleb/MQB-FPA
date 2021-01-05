@@ -10,16 +10,17 @@
 //--------------------------------------
 BitfieldDisablePadding();
 
-char dataset_version[4]        <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
-char dataset_version2[4]       <format=hex,bgcolor=cYellow,comment="sub-version?">;
+char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
+// Anything older than version IA seems to be a different format.
 
+char unknown[4]       <format=hex,bgcolor=cYellow,comment="sub-version?">;
 FSeek(18);
 ushort data_start<format=decimal,bgcolor=cGreen>;
 
 FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
 
 FSeek(662);
-ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;   //source: Mike's screenshot
+ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;
 // this is an interesting one. it seems to match the amount of bytes in the next block,
 // and it's the same amount as "individual_configuration bytes" as well
 // Known values:
@@ -53,7 +54,9 @@ byte is_active[30] <format=hex, bgcolor=cYellow, comment=getSettingByteActive>;
 // other known settings are:
 // 0B; tested, no noticeable change.
 // 11; tested, no noticeable change.
+// 01; 
 // TODO: more testing needed.
+
 
 byte unknown_value_0 <bgcolor=cYellow>;
 // tested different values, doesn't seem to do anything
@@ -70,6 +73,8 @@ byte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen>;
 
 ushort unknown_value_1 <bgcolor=cRed>;
 // Always seems to be BF00 ?
+// LK:  00CB
+
 
 byte profile_0_nodata[30] <bgcolor=cBlack>;
 // tested with different values here, doesn't seem to do anything
@@ -168,6 +173,9 @@ byte grouped_controls[30] <bgcolor=cDkGreen>;
 
 long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=binary>;
 // works as follows:
+// 2 grouped settings: 03 (Bit 0-1 set)
+// 3 grouped settings: 07 (Bit 0-2 set)
+// 4 grouped settings: 0F (Bit 0-3 set)
 // 5 grouped settings: 1F (Bit 0-4 set)
 // 6 grouped settings: 3F (Bit 0-5 set)
 // 7 grouped settings: 7F (Bit 0-6 set)
@@ -192,14 +200,12 @@ FSeek(3741);
 byte AID_mode_banner[12]<bgcolor=cGreen, comment=getAIDBanner>;
 
 
-
 FSeek(4348);
 LittleEndian(); // go to littleendian mode because of checksum format
 
 local int calculated_checksum;
 calculated_checksum = Checksum(CHECKSUM_CRC32, 0,4348);
 ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
-
 
 
 // the following bytes are not known yet, but are different between datasets:
@@ -455,21 +461,6 @@ Printf(" Research stuff\n");
 Printf(" #################################################\n");
 
 
-Printf(" Function Byte settings\n");
-
-Printf(" Pos \t Control                         \t 0x2D2 \t Meaning\n");
-
-
-local int tmp_i = 0;
-
-for( tmp_i = 0; tmp_i < 30; tmp_i++)
-{
-
-    if (individual_configuration_byte[tmp_i] > 0){
-        Printf ("  %i: \t %-30s \t  %i \t %s \n", tmp_i, getControlName(individual_configuration_byte[tmp_i]), function_bytes_settings[tmp_i],getFunctionByteSettingName(function_bytes_settings[tmp_i]));
-   }
-}
-
 Printf(" \n");
 Printf(" Byte_active settings\n");
 
@@ -488,7 +479,7 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 
 
 Printf(" \n");
-Printf(" Unknown settings at 8FB range\n");
+Printf(" Mode values at 8FB range\n");
 
 Printf(" Pos \t Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
 
@@ -507,7 +498,7 @@ for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 
 Printf(" \n");
 Printf(" Individual controls research\n");
-Printf(" Pos \t Control                        \t ConfByte\t 0xA2B  \t 0xA49 \t Meaning\n");
+Printf(" Control                        \t ConfByte\t 0x296\t 0x2D2 \t 0xA2B  \t 0xA49 \tMeaning\n");
 
 
 local int tmp_i4 = 0;
@@ -516,7 +507,7 @@ for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
 {
 
     if (individual_configuration_byte[tmp_i4] > 0){
-        Printf (" \t %-30s \t %i \t %i \t %i\n", getControlName(individual_configuration_byte[tmp_i4]), individual_configuration_byte[tmp_i4], function_assignments_with_coupling[tmp_i4], function_assignments_without_coupling[tmp_i4]);
+        Printf ("  %-30s \t %02x \t %04x  \t %04x  \t %02x \t %02x \t %s\n", getControlName(individual_configuration_byte[tmp_i4]), individual_configuration_byte[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], function_assignments_with_coupling[tmp_i4], function_assignments_without_coupling[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
    }
 }
 
