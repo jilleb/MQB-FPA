@@ -73,7 +73,11 @@ byte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen>;
 
 ushort unknown_value_1 <bgcolor=cRed>;
 // Always seems to be BF00 ?
-// LK:  00CB
+// OC:  00BF    10111111
+// LK:  00CB    11001011
+// ON:  00AF    10101111
+// maybe has to do with which profiles are enabled?
+// TODO: more testing
 
 
 byte profile_0_nodata[30] <bgcolor=cBlack>;
@@ -86,10 +90,12 @@ struct
 }profile[12]; 
 // the driving profiles  
 
-byte HMI_control_at_byte[30]<format=hex,bgcolor=cGreen, comment=getControlName>; 
+byte list_of_grouped_controls[30]<format=hex,bgcolor=cGreen, comment=getControlName>; 
 //the value of this determines what value is used in the profiles for instance, 
 // if there's a value 01 on the first position, that means the first value in the 
 // profile sets this specific setting.
+// This list is what's actually shown in the User Interface, and it can represent a group of controls.
+// See list_of_controls for all the ungrouped controls
 // NEVER PUT FF HERE
 
 struct{
@@ -102,12 +108,12 @@ byte filler <bgcolor=cYellow>;
 //appears to be just zeroes, at all time
 
 byte button_filler_1;
-long enable_fpa_button_part_1 <bgcolor=cYellow, comment="01 = enabled, 0 = disabled">;
+long enable_fpa_button_part_1 <bgcolor=cYellow, comment=getBoolean>;
 // 1 = enabled
 // 0 = disabled
 
 byte button_filler_2;
-long enable_fpa_button_part_2 <bgcolor=cYellow, comment="01 = enabled, 0 = disabled">;
+long enable_fpa_button_part_2 <bgcolor=cYellow, comment=getBoolean>;
 // 1 = enabled
 // 0 = disabled
  
@@ -164,9 +170,10 @@ FSeek(2063);
 byte unknown_VW00_Skoda01; // this is 01 on skoda only.. no visible output when changing this to 0, 1 or 2.
 
 FSeek(2539);
-byte individual_configuration_byte[30]<bgcolor=cGreen, comment=getControlName >;
+byte list_of_controls[30]<bgcolor=cGreen, comment=getControlName >;
 // This determines what FPA-control is controled by the bytes at "available_choices_at_individual_profile"
 // usage: set each byte to whatever FPA-control you would like to be handles by the "available_choices_at_individual_profile". This should be in line with FPA_controls
+// NEVER PUT FF HERE
 
 byte grouped_controls[30] <bgcolor=cDkGreen>;
 // this byte range determines to which group a control belongs.
@@ -180,8 +187,12 @@ long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=bin
 // 6 grouped settings: 3F (Bit 0-5 set)
 // 7 grouped settings: 7F (Bit 0-6 set)
 
-byte function_assignments_with_coupling[30]<bgcolor=cYellow>; // needs additional research
-byte function_assignments_without_coupling[30]<bgcolor=cYellow>;
+byte gw_longcoding_controls_with_links[30]<bgcolor=cGreen, name=getLongCodingByteName>; //
+// Byte 9, Bit 0 = 0x19 = EDS and so forth
+// Byte 9, Bit 1 = 0x1A = HHC
+
+
+byte gw_longcoding_controls_without_links[30]<bgcolor=cDkGreen, name=getLongCodingByteName>;
 byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes?
 
 // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
@@ -403,7 +414,7 @@ while( profile_number < 12 )
         {
             settingText = getSettingName(profile[profile_number].setting_byte[setting_number]);
             if (settingText!="not set"){
-                Printf ("   %-30s: %s \n", getControlName(HMI_control_at_byte[setting_number]),getSettingName(profile[profile_number].setting_byte[setting_number]));
+                Printf ("   %-30s: %s \n", getControlName(list_of_grouped_controls[setting_number]),getSettingName(profile[profile_number].setting_byte[setting_number]));
             }
         }
  }
@@ -424,8 +435,8 @@ while( indiv_profile_number < 12 )
              Printf (" %s HMI shows the following settings: \n", getSettingName(indiv_profile_number+1) );
               for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
-                if (HMI_control_at_byte[indiv_setting_number] > 0){
-                    Printf ("  %-30s: %s(%x) \n", getControlName(HMI_control_at_byte[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
+                if (list_of_grouped_controls[indiv_setting_number] > 0){
+                    Printf ("  %-30s: %s(%x) \n", getControlName(list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
@@ -439,6 +450,30 @@ local int group_number = 0;
 
 
 Printf(" #################################################\n");
+Printf(" Controls \n");
+Printf(" #################################################\n");
+
+
+
+Printf(" Pos \tDisplayed Name                  \tControl \t Gateway Long Coding Byte \n");
+
+local int ctrlPosition = 0;
+
+for( ctrlPosition = 0; ctrlPosition < 30; ctrlPosition++)
+{
+
+    if (list_of_controls[ctrlPosition] > 0){
+        if (gw_longcoding_controls_without_links[ctrlPosition] == gw_longcoding_controls_with_links[ctrlPosition]){
+            Printf ("  %i \t%-30s\t%02x \t %s (%02x)\n", ctrlPosition, getControlName(list_of_controls[ctrlPosition]), list_of_controls[ctrlPosition], getLongCodingByteName(gw_longcoding_controls_with_links[ctrlPosition]),gw_longcoding_controls_with_links[ctrlPosition]);
+        } else { 
+            Printf ("  %i \t%-30s\t%02x \t %s (%02x) linked to %s (%02x)\n", ctrlPosition, getControlName(list_of_controls[ctrlPosition]), list_of_controls[ctrlPosition], getLongCodingByteName(gw_longcoding_controls_with_links[ctrlPosition]),gw_longcoding_controls_with_links[ctrlPosition],getLongCodingByteName(gw_longcoding_controls_without_links[ctrlPosition]),gw_longcoding_controls_without_links[ctrlPosition]);
+        }
+ }
+}
+
+
+
+Printf(" #################################################\n");
 Printf(" Setting Groups\n");
 Printf(" #################################################\n");
 
@@ -447,7 +482,7 @@ while (indivgroup_setting_number < 30) {
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
-            Printf("    Group %i (%s): %s \n", group_number, getControlName(HMI_control_at_byte[group_number - 1]), getControlName(individual_configuration_byte[indivgroup_setting_number]));
+            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number - 1]), getControlName(list_of_controls[indivgroup_setting_number]));
         }
         group_number++;
     }
@@ -472,8 +507,8 @@ local int tmp_i2 = 0;
 for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 {
 
-    if (individual_configuration_byte[tmp_i2] > 0){
-        Printf ("  %i: \t %-30s \t %i \n", tmp_i2, getControlName(individual_configuration_byte[tmp_i2]), is_active[tmp_i2]);
+    if (list_of_controls[tmp_i2] > 0){
+        Printf ("  %i: \t %-30s \t %i \n", tmp_i2, getControlName(list_of_controls[tmp_i2]), is_active[tmp_i2]);
    }
 }
 
@@ -490,15 +525,15 @@ local int tmp_i3 = 0;
 for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
 
-    if (HMI_control_at_byte[tmp_i3] > 0){
-        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(HMI_control_at_byte[tmp_i3]), unknown_settings_0[tmp_i3], unknown_settings_1[tmp_i3], unknown_settings_2[tmp_i3],unknown_settings_3[tmp_i3],unknown_settings_4[tmp_i3],unknown_settings_5[tmp_i3],unknown_settings_6[tmp_i3],unknown_settings_7[tmp_i3]);
+    if (list_of_grouped_controls[tmp_i3] > 0){
+        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), unknown_settings_0[tmp_i3], unknown_settings_1[tmp_i3], unknown_settings_2[tmp_i3],unknown_settings_3[tmp_i3],unknown_settings_4[tmp_i3],unknown_settings_5[tmp_i3],unknown_settings_6[tmp_i3],unknown_settings_7[tmp_i3]);
    }
 }
 
 
 Printf(" \n");
 Printf(" Individual controls research\n");
-Printf(" Control                        \t ConfByte\t 0x296\t 0x2D2 \t 0xA2B  \t 0xA49 \tMeaning\n");
+Printf(" Control                        \t ConfByte\t 0x296\t 0x2D2 \t Meaning\n");
 
 
 local int tmp_i4 = 0;
@@ -506,8 +541,8 @@ local int tmp_i4 = 0;
 for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
 {
 
-    if (individual_configuration_byte[tmp_i4] > 0){
-        Printf ("  %-30s \t %02x \t %04x  \t %04x  \t %02x \t %02x \t %s\n", getControlName(individual_configuration_byte[tmp_i4]), individual_configuration_byte[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], function_assignments_with_coupling[tmp_i4], function_assignments_without_coupling[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
+    if (list_of_controls[tmp_i4] > 0){
+        Printf ("  %-30s \t %02x \t %04x  \t %04x \t %s\n", getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
    }
 }
 
@@ -561,15 +596,6 @@ string getModeButtonLightState(int lightMode) {
         case 0x500: return "Unknown Skoda value";
         case 0x600: return "Blinking";
         default:  return "Unknown";
-    }
-}
-
-// helper function to get the setting name.
-string getFunctionByteSettingName(int byteSettingNumber) {
-    switch (byteSettingNumber) {
-        //TODO: research to get more known values here
-        case 65279: return "Remember after reset";
-        default:    return "Unknown";
     }
 }
 
@@ -635,6 +661,54 @@ string getControlName(int controlNumber) {
         case 0x41: return "Engine";
         case 0x4B: return "Engine";        //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
+        default:   return "Unknown";
+    }
+}
+
+string getFunctionByteSettingName(int byteSettingNumber) {
+    switch (byteSettingNumber) {
+        //TODO: research to get more known values here
+        case 65279: return "Remember after reset";
+        default:    return "Unknown";
+    }
+}
+
+// helper function to get the control name.
+string getLongCodingByteName(int controlNumber) {
+    switch (controlNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Byte 12, bit 0 - AGA (External Exhaust sound)";
+        case 0x02: return "Byte 12, bit 1 - ESP (Stability Program)";
+        case 0x03: return "Byte 12, bit 2 - Freilauf (Sailing)";
+        case 0x04: return "Byte 12, bit 3 - MO (Engine Management)";
+        case 0x05: return "Byte 12, bit 4 - GE (Tranmission Management)";
+        case 0x06: return "Byte 12, bit 5 - ALR (All Wheel Drive)";
+        case 0x07: return "Byte 12, bit 6 - MO_BZS(Engine.......)";
+        case 0x08: return "Byte 12, bit 7 - DR (Damper Control / DCC)";
+        case 0x09: return "Byte 11, bit 0 - VAQ (Front differential lock)";
+        case 0x0A: return "Byte 11, bit 1 - AFS (Advanced Frond Lighting)";
+        case 0x0B: return "Byte 11, bit 2 - RGS (Reversible Belt Tensioner)";
+        case 0x0C: return "Byte 11, bit 3 - EPS (Electrical Power Steering)";
+        case 0x0D: return "Byte 11, bit 4 - ACC (Adaptive Cruise Control)";
+        case 0x0E: return "Byte 11, bit 5 - SAK (Interior Sound Control)";
+        case 0x0F: return "Byte 11, bit 6 - MO_StSt (Start/Stop system)";
+        case 0x10: return "Byte 11, bit 7 - AMB (Ambient Lights)";
+        case 0x11: return "Byte 10, bit 0 - IVB (??)";
+        case 0x12: return "Byte 10, bit 1 - KL (Climate control)";
+        case 0x13: return "Byte 10, bit 2 - HSP (Rear Spoiler)";
+        case 0x14: return "Byte 10, bit 3 - AV (??)";
+        case 0x15: return "Byte 10, bit 4 - RWB (Range calculation)";
+        case 0x16: return "Byte 10, bit 5 - HDC (Downhill Assistant)";
+        case 0x17: return "Byte 10, bit 6 - eBKV (Electric Brake Power Amplifier)";
+        case 0x18: return "Byte 10, bit 7 - AGK (Exhaust valves)";
+        case 0x19: return "Byte 09, bit 0 - EDS";
+        case 0x1A: return "Byte 09, bit 1 - HHC (Hill Hold Control)";
+        case 0x1B: return "Byte 09, bit 2 - PDC (Park Distance Control)";
+        case 0x1C: return "Byte 09, bit 3 - FMA (Freewheeling, engine off)";
+        case 0x1D: return "Byte 09, bit 4 - Freewheeling, Default ON";
+        case 0x1E: return "Byte 09, bit 5 - mFDR (??)";
+        case 0x1F: return "Byte 09, bit 6 - SchaltDR (??);
+        case 0x20: return "Byte 09, bit 7 - Stages DCC (??)";
         default:   return "Unknown";
     }
 }
@@ -752,5 +826,12 @@ string getSettingByteActive(int state) {
 }
 
 
+string getBoolean(int state) {
+    switch (state) {
+        case 0x0: return "Disabled";
+        case 0x1: return "Enabled";
+        default:  return "Unknown";
+    }
+}
 
 
