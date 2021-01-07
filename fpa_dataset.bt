@@ -156,14 +156,14 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = o
 
 // the following 8 groups of data map perfectly to the controls.
 // it is the value range that is used when communicating to the control module.
-ubyte unknown_settings_0[30]<bgcolor=cRed >;   
-ubyte unknown_settings_1[30]<bgcolor=cLtRed >; 
-ubyte unknown_settings_2[30]<bgcolor=cRed >;
-ubyte unknown_settings_3[30]<bgcolor=cLtRed >;
-ubyte unknown_settings_4[30]<bgcolor=cRed >;
-ubyte unknown_settings_5[30]<bgcolor=cLtRed >;
-ubyte unknown_settings_6[30]<bgcolor=cRed >;
-ubyte unknown_settings_7[30]<bgcolor=cLtRed >;
+ubyte control_module_signal_0[30]<bgcolor=cRed >;   
+ubyte control_module_signal_1[30]<bgcolor=cLtRed >; 
+ubyte control_module_signal_2[30]<bgcolor=cRed >;
+ubyte control_module_signal_3[30]<bgcolor=cLtRed >;
+ubyte control_module_signal_4[30]<bgcolor=cRed >;
+ubyte control_module_signal_5[30]<bgcolor=cLtRed >;
+ubyte control_module_signal_6[30]<bgcolor=cRed >;
+ubyte control_module_signal_7[30]<bgcolor=cLtRed >;
 
 
 FSeek(2063);
@@ -514,7 +514,7 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 
 
 Printf(" \n");
-Printf(" Mode values at 8FB range\n");
+Printf(" Signals sent to control modules (8FB range)\n");
 
 Printf(" Pos \t Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
 
@@ -526,7 +526,7 @@ for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
 
     if (list_of_grouped_controls[tmp_i3] > 0){
-        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), unknown_settings_0[tmp_i3], unknown_settings_1[tmp_i3], unknown_settings_2[tmp_i3],unknown_settings_3[tmp_i3],unknown_settings_4[tmp_i3],unknown_settings_5[tmp_i3],unknown_settings_6[tmp_i3],unknown_settings_7[tmp_i3]);
+        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_module_signal_0[tmp_i3], control_module_signal_1[tmp_i3], control_module_signal_2[tmp_i3],control_module_signal_3[tmp_i3],control_module_signal_4[tmp_i3],control_module_signal_5[tmp_i3],control_module_signal_6[tmp_i3],control_module_signal_7[tmp_i3]);
    }
 }
 
@@ -707,7 +707,7 @@ string getLongCodingByteName(int controlNumber) {
         case 0x1C: return "Byte 09, bit 3 - FMA (Freewheeling, engine off)";
         case 0x1D: return "Byte 09, bit 4 - Freewheeling, Default ON";
         case 0x1E: return "Byte 09, bit 5 - mFDR (??)";
-        case 0x1F: return "Byte 09, bit 6 - SchaltDR (??);
+        case 0x1F: return "Byte 09, bit 6 - SchaltDR (??)";
         case 0x20: return "Byte 09, bit 7 - Stages DCC (??)";
         default:   return "Unknown";
     }
