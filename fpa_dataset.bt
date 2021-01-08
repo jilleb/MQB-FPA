@@ -156,14 +156,24 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = o
 
 // the following 8 groups of data map perfectly to the controls.
 // it is the value range that is used when communicating to the control module.
-ubyte control_module_signal_0[30]<bgcolor=cRed >;   
-ubyte control_module_signal_1[30]<bgcolor=cLtRed >; 
-ubyte control_module_signal_2[30]<bgcolor=cRed >;
-ubyte control_module_signal_3[30]<bgcolor=cLtRed >;
-ubyte control_module_signal_4[30]<bgcolor=cRed >;
-ubyte control_module_signal_5[30]<bgcolor=cLtRed >;
-ubyte control_module_signal_6[30]<bgcolor=cRed >;
-ubyte control_module_signal_7[30]<bgcolor=cLtRed >;
+ubyte control_request_value_0[30]<bgcolor=cRed >;   
+ubyte control_request_value_1[30]<bgcolor=cLtRed >; 
+ubyte control_request_value_2[30]<bgcolor=cRed >;
+ubyte control_request_value_3[30]<bgcolor=cLtRed >;
+ubyte control_request_value_4[30]<bgcolor=cRed >;
+ubyte control_request_value_5[30]<bgcolor=cLtRed >;
+ubyte control_request_value_6[30]<bgcolor=cRed >;
+ubyte control_request_value_7[30]<bgcolor=cLtRed >;
+// range from 0 to 254 (decimal).
+// it appears that:
+// 0 = not set
+// 16 = sport
+// 50 = normal
+// 84 = eco
+// 118 = sport
+// the values correspond with the request value that can be found in
+// measurements values, driving profile selection, requested value.
+
 
 
 FSeek(2063);
@@ -514,7 +524,7 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 
 
 Printf(" \n");
-Printf(" Signals sent to control modules (8FB range)\n");
+Printf(" Control-module request values (8FB range)\n");
 
 Printf(" Pos \t Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
 
@@ -526,7 +536,7 @@ for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
 
     if (list_of_grouped_controls[tmp_i3] > 0){
-        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_module_signal_0[tmp_i3], control_module_signal_1[tmp_i3], control_module_signal_2[tmp_i3],control_module_signal_3[tmp_i3],control_module_signal_4[tmp_i3],control_module_signal_5[tmp_i3],control_module_signal_6[tmp_i3],control_module_signal_7[tmp_i3]);
+        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3], control_request_value_1[tmp_i3], control_request_value_2[tmp_i3],control_request_value_3[tmp_i3],control_request_value_4[tmp_i3],control_request_value_5[tmp_i3],control_request_value_6[tmp_i3],control_request_value_7[tmp_i3]);
    }
 }
 
