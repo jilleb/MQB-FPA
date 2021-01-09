@@ -156,14 +156,14 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; // 00 = o
 
 // the following 8 groups of data map perfectly to the controls.
 // it is the value range that is used when communicating to the control module.
-ubyte control_request_value_0[30]<bgcolor=cRed >;   
-ubyte control_request_value_1[30]<bgcolor=cLtRed >; 
-ubyte control_request_value_2[30]<bgcolor=cRed >;
-ubyte control_request_value_3[30]<bgcolor=cLtRed >;
-ubyte control_request_value_4[30]<bgcolor=cRed >;
-ubyte control_request_value_5[30]<bgcolor=cLtRed >;
-ubyte control_request_value_6[30]<bgcolor=cRed >;
-ubyte control_request_value_7[30]<bgcolor=cLtRed >;
+ubyte control_request_value_0[30]<bgcolor=cYellow>;   
+ubyte control_request_value_1[30]<bgcolor=cLtYellow >; 
+ubyte control_request_value_2[30]<bgcolor=cYellow >;
+ubyte control_request_value_3[30]<bgcolor=cLtYellow >;
+ubyte control_request_value_4[30]<bgcolor=cYellow >;
+ubyte control_request_value_5[30]<bgcolor=cLtYellow >;
+ubyte control_request_value_6[30]<bgcolor=cYellow >;
+ubyte control_request_value_7[30]<bgcolor=cLtYellow >;
 // range from 0 to 254 (decimal).
 // it appears that:
 // 0 = not set
