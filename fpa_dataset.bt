@@ -365,17 +365,18 @@ byte unknown_568[8] <bgcolor=cRed>;
 
 // Don't mess with anything below here, unless you know what you're doing.
 
-// parse the settings to a readable view.
+printTitle("Dataset specifics");
+
+Printf(" Version: %s", dataset_version);
+Printf(" \n"); 
+ 
+
 
 local int i = 0;
 local int profile_number = 0;
 local int setting_number = 0;
 local string settingText;
-
-
-Printf (" #################################################\n");
-Printf (" Profile buttons\n");
-Printf (" #################################################\n");
+printTitle("Profile buttons");
 
 Printf (" The following buttons are configured, displayed in this exact order:\n\n");
 while(i<9)
@@ -383,7 +384,7 @@ while(i<9)
   
     if (button_order[i] != 00){
         { if (button_order[i] < 100) {
-        Printf (" ║ %s ║   ", getFPAName(FPA_profile[button_order[i]-1]));
+        Printf (" ║ %10s ║   ", getFPAName(FPA_profile[button_order[i]-1]));
              }
         }
     }
@@ -397,9 +398,7 @@ while( profile_number < 12 )
 
 {
         if (FPA_profile[profile_number] != 00) {
-        Printf (" #################################################\n");
         Printf (" Profile position %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
-        Printf (" #################################################\n");
         Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[profile_number]) );
         Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[profile_number]) );
         Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[profile_number]));
@@ -420,18 +419,18 @@ while( profile_number < 12 )
 local int indiv_profile_number = 0;
 local int indiv_setting_number = 0;
 
-Printf(" #################################################\n");
-Printf(" HMI \n");
-Printf(" #################################################\n");
-Printf(" The following items are shown in the HMI.\n Items that have no settings are hidden.\n\n");
+printTitle("HMI");
+Printf(" The following settings are shown in the HMI.\n Items that have no settings are hidden.\n\n");
 while( indiv_profile_number < 12 )
     {
         {
              Printf (" %s HMI shows the following settings: \n", getSettingName(indiv_profile_number+1) );
+             Printf (" Position  Control                         setting: \n");
+
               for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
                 if (list_of_grouped_controls[indiv_setting_number] > 0){
-                    Printf ("  %-30s: %s(%x) \n", getControlName(list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
+                    Printf ("  %i \t %-30s: %s(%x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
@@ -444,12 +443,7 @@ local int indivgroup_setting_number = 0;
 local int group_number = 0;
 
 
-Printf(" #################################################\n");
-Printf(" Controls \n");
-Printf(" #################################################\n");
-
-
-
+printTitle("Controls");
 Printf(" Pos \tDisplayed Name                  \tControl \t Gateway Long Coding Byte \n");
 
 local int ctrlPosition = 0;
@@ -467,74 +461,72 @@ for( ctrlPosition = 0; ctrlPosition < 30; ctrlPosition++)
 }
 
 
-
-Printf(" #################################################\n");
-Printf(" Setting Groups\n");
-Printf(" #################################################\n");
-
+printTitle("Setting Groups");
+local int num_of_groups = 0;
 while (indivgroup_setting_number < 30) {
     group_number = 1;
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
             Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number - 1]), getControlName(list_of_controls[indivgroup_setting_number]));
+                        num_of_groups++;
+
         }
         group_number++;
     }
     indivgroup_setting_number++;
 }
+if (num_of_groups == 0) {
+Printf(" No groups configured. %i \n", num_of_groups);
+}
 
-Printf(" \n");
-Printf(" #################################################\n");
-Printf(" Research stuff\n");
-Printf(" #################################################\n");
-Printf(" \n");
+
+
+
+printTitle("Research stuff");
+
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf(" Byte_active settings\n");
-Printf(" Pos \t Control                        \t 0x30E  \t Meaning\n");
+Printf(" Position Control                        \t 0x30E  \t Meaning\n");
 local int tmp_i2 = 0;
 for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 {
     if (list_of_controls[tmp_i2] > 0){
-        Printf ("  %i: \t %-30s \t %i \n", tmp_i2, getControlName(list_of_controls[tmp_i2]), is_active[tmp_i2]);
+        Printf ("  %i:\t %-30s \t %i \n", tmp_i2, getControlName(list_of_controls[tmp_i2]), is_active[tmp_i2]);
    }
 }
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
-Printf(" Pos \t Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
+Printf(" Position Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
 local int tmp_i3 = 0;
 for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
     if (list_of_grouped_controls[tmp_i3] > 0){
-        Printf ("  %i: \t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3], control_request_value_1[tmp_i3], control_request_value_2[tmp_i3],control_request_value_3[tmp_i3],control_request_value_4[tmp_i3],control_request_value_5[tmp_i3],control_request_value_6[tmp_i3],control_request_value_7[tmp_i3]);
+        Printf ("  %i:\t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3], control_request_value_1[tmp_i3], control_request_value_2[tmp_i3],control_request_value_3[tmp_i3],control_request_value_4[tmp_i3],control_request_value_5[tmp_i3],control_request_value_6[tmp_i3],control_request_value_7[tmp_i3]);
    }
 }
 //----
-Printf(" \n");
-Printf(" Individual controls research\n");
-Printf(" Control                        \t ConfByte\t 0x296\t 0x2D2 \t Meaning\n");
+Printf("\n Individual controls research\n");
+Printf(" Position Control                        \t ConfByte\t 0x296\t 0x2D2 \t Meaning\n");
 local int tmp_i4 = 0;
 for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
 {
 
     if (list_of_controls[tmp_i4] > 0){
-        Printf ("  %-30s \t %02x \t %04x  \t %04x \t %s\n", getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
+        Printf ("  %i: \t%-30s \t %02x \t %04x  \t %04x \t %s\n", tmp_i4, getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
    }
 }
 
-//printing stuff to console
-Printf("\n #################################################\n");
-Printf(" Checksum\n");
-Printf(" #################################################\n");
-Printf("    Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
-Printf("    Calculated checksum : %06lx \n\n",((unsigned long)calculated_checksum & 0xFFFFFFFFUL));
+printTitle("Checksum");
+Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
+Printf(" Calculated checksum : %06lx \n\n",((unsigned long)calculated_checksum & 0xFFFFFFFFUL));
 if (dataset_checksum != calculated_checksum){
     Printf("    ! Checksums are not identical \n    ! Copy calculated value into checksum at Variables screen \n");
 } else {
     Printf("    Checksums are identical, no updates needed\n");
   };
-Printf("#################################################\n");
+Printf(" #################################################\n");
 
 
 // Lookup functions start here.
@@ -802,3 +794,12 @@ string getBoolean(int state) {
         default:  return "Unknown";
     }
 }
+
+// helper function to print nice titles without needing to type them manually each time
+void printTitle( string title )
+    {
+    Printf(" \n");
+    Printf(" #################################################\n");
+    Printf(" %s\n", title);
+    Printf(" #################################################\n");
+    }
