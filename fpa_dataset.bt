@@ -498,12 +498,12 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
-Printf(" Position Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
+Printf(" Position Control                        \t0\t\t1\t\t2\t\t3\t\t4\t\t5\t\t6\t\t7\n");
 local int tmp_i3 = 0;
 for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
     if (list_of_grouped_controls[tmp_i3] > 0){
-        Printf ("  %i:\t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3], control_request_value_1[tmp_i3], control_request_value_2[tmp_i3],control_request_value_3[tmp_i3],control_request_value_4[tmp_i3],control_request_value_5[tmp_i3],control_request_value_6[tmp_i3],control_request_value_7[tmp_i3]);
+        Printf ("  %i:\t %-30s \t%i\t\t%i\t\t%i\t\t%i\t\t%i\t\t%i\t\t%i\t\t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3], control_request_value_1[tmp_i3], control_request_value_2[tmp_i3],control_request_value_3[tmp_i3],control_request_value_4[tmp_i3],control_request_value_5[tmp_i3],control_request_value_6[tmp_i3],control_request_value_7[tmp_i3]);
    }
 }
 //----
