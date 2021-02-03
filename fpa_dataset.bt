@@ -19,6 +19,9 @@ ushort data_start<format=decimal,bgcolor=cGreen>;
 
 FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
 
+FSeek(526);
+byte number_of_controls_in_specific_group[4]<bgcolor=cDkGreen >;
+
 FSeek(662);
 ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;
 // this is an interesting one. it seems to match the amount of bytes in the next block,
@@ -185,6 +188,7 @@ byte grouped_controls[30] <bgcolor=cDkGreen>;
 
 long grouped_controls_controlbyte <bgcolor=cDkGreen, fgcolor=cLtGreen,format=binary>;
 // works as follows:
+// 1 grouped setting:  01 (Bit 0 set)
 // 2 grouped settings: 03 (Bit 0-1 set)
 // 3 grouped settings: 07 (Bit 0-2 set)
 // 4 grouped settings: 0F (Bit 0-3 set)
@@ -343,13 +347,13 @@ byte unknown_278[6] <bgcolor=cRed>;
 // after flashing with 0B 0B 0B 05 00 00, the dashboard and MIB showed offroad-icon for a short moment and that's it.
 
 FSeek(515);
-short unknown_515[13] <bgcolor=cRed>;
+byte unknown_515[11] <bgcolor=cRed>;
 // Known values:
-// Octavia: 2124 FFFF FFFF FFFF 0402
-// Magotan: FFFF FFFF FFFF FFFF 0000
-// Passat:  FFFF FFFF FFFF FFFF 0000
-// Leon:    01FF FFFF FFFF FFFF 0400
-// FR 2020: 01FF FFFF FFFF FFFF 0500
+// Octavia: 2124 FFFF FFFF FFFF 
+// Magotan: FFFF FFFF FFFF FFFF 
+// Passat:  FFFF FFFF FFFF FFFF 
+// Leon:    01FF FFFF FFFF FFFF 
+// FR 2020: 01FF FFFF FFFF FFFF 
 
 FSeek(568);
 byte unknown_568[8] <bgcolor=cRed>;
@@ -477,9 +481,16 @@ while (indivgroup_setting_number < 30) {
     indivgroup_setting_number++;
 }
 if (num_of_groups == 0) {
-Printf(" No groups configured. %i \n", num_of_groups);
+Printf(" No groups configured at 0xA09 range.\n");
 }
 
+local int group_number_2 = 0;
+while (group_number_2 < 4){
+    if (number_of_controls_in_specific_group[group_number_2] > 0){
+        Printf(" Group number %i is configured in the 0x20E range to have %i controls.\n", group_number_2+1, number_of_controls_in_specific_group[group_number_2]);
+    }
+group_number_2++;
+}
 
 
 
