@@ -19,8 +19,69 @@ ushort data_start<format=decimal,bgcolor=cGreen>;
 
 FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
 
-FSeek(526);
-byte number_of_controls_in_specific_group[4]<bgcolor=cDkGreen >;
+FSeek(518);
+byte group_properties[8] <bgcolor=cYellow>;
+// Known values:
+
+// sets with 1 group
+// IB:      21FF FFFF FFFF FFFF 0400 0000 - 1 group: 4 controls
+// J6:      21FF FFFF FFFF FFFF 0400 0000 - 1 group: 4 controls
+// JC:      21FF FFFF FFFF FFFF 0200 0000 - 1 group: 2 controls
+// LI:      01FF FFFF FFFF FFFF 0500 0000 - 1 group: 5 controls
+// LK:      01FF FFFF FFFF FFFF 0600 0000 - 1 group: 6 controls
+// OS:      21FF FFFF FFFF FFFF 0400 0000 - 1 group: 4 controls
+
+// sets with 2 groups
+// M9:      2124 FFFF FFFF FFFF 0402 0000 - 2 groups: 4 controls, 2 controls
+// OC:      2124 FFFF FFFF FFFF 0402 0000 - 2 groups: 4 controls, 2 controls
+// OY:      2124 FFFF FFFF FFFF 0402 0000 - 2 groups: 4 controls, 2 controls
+
+// sets without groups
+// J4:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+// KN:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+// O2:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+// O3:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+// ON:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+// OO:      FFFF FFFF FFFF FFFF 0000 0000 - NO FPA, 0 groups
+// P4:      FFFF FFFF FFFF FFFF 0000 0000 - 0 groups
+
+// Audi, so different logic:
+// N1:      030A FFFF FFFF FFFF 0403 0000 - 2 groups
+
+
+byte number_of_controls_in_specific_group[8]<bgcolor=cDkGreen >;
+
+
+FSeek(568);
+byte unknown_group_properties[8] <bgcolor=cRed>;
+// Known values:
+
+// sets with 1 group
+// IB:      4018 0000 0000 0000             1 group: 4 controls
+// J6:      4018 0000 0000 0000             1 group: 4 controls
+// JC:      1000 0010 0000 0000             1 group: 2 controls
+// LI:      4018 0000 0000 0000             1 group: 5 controls   
+// LK:      4018 0000 0000 0000             1 group: 6 controls
+// OS:      4018 0000 0000 0000             1 group: 4 controls
+
+// sets with 2 groups
+// M9:      401C 0000 2001 0000             2 groups: 4 controls, 2 controls
+// OC:      4018 0080 2000 0000             2 groups: 4 controls, 2 controls
+// OY:      4018 0080 2000 0000             2 groups: 4 controls, 2 controls
+
+// sets without groups
+// J4:      0000 0000 0000 0000
+// KN:      0000 0000 0000 0000
+// O2:      0000 0000 0000 0000
+// O3:      0000 0000 0000 0000
+// ON:      0000 0000 0000 0000
+// OO:      0000 0000 0000 0000
+// P4:      0000 0000 0000 0000
+
+// Audi, so different logic:
+// N1:      0010 0080 2001 0000
+
+
 
 FSeek(662);
 ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;
@@ -345,26 +406,6 @@ FSeek(278);
 byte unknown_278[6] <bgcolor=cRed>;
 // FR 2020: 0B 0B 0B 05 00 00
 // after flashing with 0B 0B 0B 05 00 00, the dashboard and MIB showed offroad-icon for a short moment and that's it.
-
-FSeek(515);
-byte unknown_515[11] <bgcolor=cRed>;
-// Known values:
-// Octavia: 2124 FFFF FFFF FFFF 
-// Magotan: FFFF FFFF FFFF FFFF 
-// Passat:  FFFF FFFF FFFF FFFF 
-// Leon:    01FF FFFF FFFF FFFF 
-// FR 2020: 01FF FFFF FFFF FFFF 
-
-FSeek(568);
-byte unknown_568[8] <bgcolor=cRed>;
-// Known values:
-// Octavia: 401C 0000 2001 0000
-// Magotan: 0000 0000 0000 0000
-// Passat:  0000 0000 0000 0000
-// Leon:    4018 0000 0000 0000
-// FR 2020: 4018 0000 0000 0000
-// 0C:      4018 0080 2000 0000
-
 
 
 // Don't mess with anything below here, unless you know what you're doing.
