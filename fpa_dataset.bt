@@ -170,7 +170,7 @@ byte profile_0_nodata[30] <bgcolor=cBlack>;
 struct
 {
     // refer to FPA_controls for the meaning of each byte number
-    byte setting_byte[30] <bgcolor=cDkGreen, comment=getSettingName, open=true>;
+    byte setting_byte[30] <bgcolor=cDkGreen, comment=getSettingName, open=true, format=hex>;
 }profile[12]; 
 // the driving profiles as they are displayed underneath the (i) icon in the HMI.
 
@@ -222,7 +222,7 @@ long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = lo
 byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;
 // PF: 0000 0102 FFFF
 // OY: 0000 FFFF FFFF
-long button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
+ulong button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
 short unknown_value<bgcolor=cRed >;
 // PF: 0003
 // OY: 02FF
@@ -358,7 +358,7 @@ calculated_checksum = Checksum(CHECKSUM_CRC32, 0,4348);
 ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 
 
-// the following bytes are not known yet, but are different between datasets:
+// the following bytes are not known yet, but are different between datasets.
 
 // versions:
 // Octavia:
@@ -403,8 +403,13 @@ long unknown_18 <bgcolor=cRed>;
 // PF:      0702 0001
 // OY:      0702 0000
 
-
+// From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
 FSeek(38);
+struct{
+    byte unknown_38x[15];
+    } unknown_38[32];
+
+/*
 short unknown_38 <bgcolor=cRed>;
 // Known values:
 // Octavia: 2222
@@ -489,7 +494,7 @@ short unknown_60 <bgcolor=cRed>;
 // Leon:    0000
 // PF00:    0000
 // OY:      2322
-
+*/
 
 FSeek(158);
 byte unknown_158[6] <bgcolor=cRed>;
@@ -671,6 +676,18 @@ for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
         Printf ("  %i: \t%-30s \t %02x \t %04x  \t %04x \t %s\n", tmp_i4, getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], function_bytes_settings_shifted_by_1_bit[tmp_i4], function_bytes_settings[tmp_i4], getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
    }
 }
+//--- research stuff, what looks like a table from position 38:
+
+Printf("\n Unknown 38x research\n");
+Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+local int tmp_i5 = 0;
+for( tmp_i5 = 0; tmp_i5 < 32; tmp_i5++)
+{
+        Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\n", tmp_i5, unknown_38[tmp_i5].unknown_38x[0], unknown_38[tmp_i5].unknown_38x[1], unknown_38[tmp_i5].unknown_38x[2], unknown_38[tmp_i5].unknown_38x[3], unknown_38[tmp_i5].unknown_38x[4], unknown_38[tmp_i5].unknown_38x[5], unknown_38[tmp_i5].unknown_38x[6], unknown_38[tmp_i5].unknown_38x[7], unknown_38[tmp_i5].unknown_38x[8], unknown_38[tmp_i5].unknown_38x[9], unknown_38[tmp_i5].unknown_38x[10], unknown_38[tmp_i5].unknown_38x[11], unknown_38[tmp_i5].unknown_38x[12], unknown_38[tmp_i5].unknown_38x[13], unknown_38[tmp_i5].unknown_38x[14]);
+
+}
+
+
 
 printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
