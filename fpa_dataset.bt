@@ -679,13 +679,26 @@ for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
 //--- research stuff, what looks like a table from position 38:
 
 Printf("\n Unknown 38x research\n");
-Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount of values\n");
 local int tmp_i5 = 0;
+local int tmp_i6 = 0;
+local int amount_of_unknown38_rows_with_value = 0;
+local int amount_of_unknown38_values = 0;
+
 for( tmp_i5 = 0; tmp_i5 < 32; tmp_i5++)
 {
-        Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\n", tmp_i5, unknown_38[tmp_i5].unknown_38x[0], unknown_38[tmp_i5].unknown_38x[1], unknown_38[tmp_i5].unknown_38x[2], unknown_38[tmp_i5].unknown_38x[3], unknown_38[tmp_i5].unknown_38x[4], unknown_38[tmp_i5].unknown_38x[5], unknown_38[tmp_i5].unknown_38x[6], unknown_38[tmp_i5].unknown_38x[7], unknown_38[tmp_i5].unknown_38x[8], unknown_38[tmp_i5].unknown_38x[9], unknown_38[tmp_i5].unknown_38x[10], unknown_38[tmp_i5].unknown_38x[11], unknown_38[tmp_i5].unknown_38x[12], unknown_38[tmp_i5].unknown_38x[13], unknown_38[tmp_i5].unknown_38x[14]);
+amount_of_unknown38_values = 0;
 
+        for( tmp_i6 = 0; tmp_i6 < 15; tmp_i6++)
+        if (unknown_38[tmp_i5].unknown_38x[tmp_i6]>0){
+            amount_of_unknown38_values++;
+        }
+        if (amount_of_unknown38_values > 0) {
+            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", tmp_i5, unknown_38[tmp_i5].unknown_38x[0], unknown_38[tmp_i5].unknown_38x[1], unknown_38[tmp_i5].unknown_38x[2], unknown_38[tmp_i5].unknown_38x[3], unknown_38[tmp_i5].unknown_38x[4], unknown_38[tmp_i5].unknown_38x[5], unknown_38[tmp_i5].unknown_38x[6], unknown_38[tmp_i5].unknown_38x[7], unknown_38[tmp_i5].unknown_38x[8], unknown_38[tmp_i5].unknown_38x[9], unknown_38[tmp_i5].unknown_38x[10], unknown_38[tmp_i5].unknown_38x[11], unknown_38[tmp_i5].unknown_38x[12], unknown_38[tmp_i5].unknown_38x[13], unknown_38[tmp_i5].unknown_38x[14], amount_of_unknown38_values);
+            amount_of_unknown38_rows_with_value++;
+        }
 }
+Printf("Amount of rows with a value: %i\n", amount_of_unknown38_rows_with_value);
 
 
 
