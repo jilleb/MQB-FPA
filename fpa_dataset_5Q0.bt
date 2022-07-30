@@ -1,0 +1,192 @@
+//------------------------------------------------
+//--- 010 Editor v12.0.1 Binary Template
+//
+//      File: fpa_dataset.bt
+//   Authors: Jille
+//   Version: 0.1
+//   Purpose: parse driving profile datasets for 5Q0 gateways
+//   History: 0.1 - first version
+//  Comments: red = unknown, yellow = possible, green = sure
+//   
+//------------------------------------------------
+char dataset_version[4]       <bgcolor=cGreen,name="Version">; // something like J1 00
+byte unknown_0A <bgcolor=cDkYellow, format=hex>; // seems to be 0A always?  0A is also present in the header of 3Q0 FPA datasets, probably determines the type of dataset.
+short unknown_1 <bgcolor=cDkRed, format=hex>;
+byte unknown_FF00 <bgcolor=cDkYellow, format=hex>; // seems to be the same FF000A01F40001
+
+FSeek(56);
+struct
+    {
+    short data[32] <bgcolor=cDkRed, format=hex>;
+    } unknown_table [4];
+// no idea what this is. 
+// but row 1 and 3 are totally in relation to each other.
+
+local int i = 0;
+local int j = 0;
+
+while( i < 4 )
+    {
+    j =0;
+    while( j < 32 )
+        {
+            Printf ("%i\t", unknown_table[i].data[j] );
+            j++;
+        }
+        Printf("\n");
+        i++;
+    }
+
+
+FSeek(760);
+struct{
+    byte possible_profile_data[32] <bgcolor=cDkYellow, format=hex>;
+    } possible_profiles[8];
+// this looks like it could be filling the actual profiles (like: control 1 = normal, control 2 = normal, etc)
+// not sure about the amount of profiles.. on 3Q0 it's as follows:
+// 12 profiles
+// 30 bytes per profile for settings
+
+FSeek(1559);
+
+struct{
+    byte unknown_set_a_[8] <bgcolor=cDkYellow, format=hex>;
+    } unknown_set_a[8];
+
+struct{
+    byte unknown_set_b_[12] <bgcolor=cYellow, format=hex>;
+    } unknown_set_b[8];
+
+FSeek(1776);
+byte set_of_controls_1[32] <bgcolor=cYellow,name=getControlName, format=hex>;
+// this appears to be the set of controls
+
+struct{
+    byte unknown_set_x_[8] <bgcolor=cDkYellow , format=hex>;
+    } unknown_set_x[18];
+
+FSeek(1952);
+byte set_of_controls_2[32] <bgcolor=cYellow,name=getControlName, format=hex>;
+// Almost similar to set_of_controls_1. 
+// It looks like set 1 is the ungrouped version, while set 2 is grouped
+// The set of controls seems to be plausible
+
+struct{
+    byte unknown_set_y_[8] <bgcolor=cDkYellow, format=hex>;
+    } unknown_set_y[18];
+
+FSeek(2065);
+struct{
+    byte unknown_profile_1[8] <bgcolor=cYellow, format=hex>;
+    }unknown_profile_struct[18];
+
+
+FSeek(2873);
+struct {
+    byte possible_indiv_data_[32] <bgcolor=cYellow,name=getFPAName, format=hex>;
+}possible_indiv_profiles[7];
+
+struct {
+    byte unknown_xx[16] <bgcolor=cDkYellow,name=getFPAName, format=hex>;
+}unknown_xx_set[7];
+// these could be the request values?
+
+
+string getControlName(int controlNumber) {
+    switch (controlNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Engine";
+        case 0x02: return "Start/Stop System";
+        case 0x03: return "Gearbox";
+        case 0x04: return "Rear Differential Lock";
+        case 0x05: return "Steering";
+        case 0x06: return "Progressive Steering";
+        case 0x07: return "DCC";
+        case 0x08: return "HVAC (Air Conditioning)";
+        case 0x0A: return "Interior Engine Sound";
+        case 0x09: return "ACC";
+        case 0x0B: return "Motorway Light";
+        case 0x0C: return "Background Lighting";
+        case 0x0D: return "Air Suspension";
+        case 0x0E: return "Automatic Belt Pre-Tensioning";
+        case 0x0F: return "Seat Bolster Setting";
+        case 0x10: return "Route Option";
+        case 0x11: return "Navigation";
+        case 0x12: return "DSG Coasting";
+        case 0x13: return "Eco Tips";
+        case 0x14: return "Exterior Engine Sound";
+        case 0x15: return "Front Differential Lock";
+        case 0x16: return "Center Differential Lock";
+        case 0x17: return "Four-Wheel Drive (AWD)";
+        case 0x18: return "Electronic Torque Vectoring (Audi-Text)";
+        case 0x19: return "Anti-Slip regulation";
+        case 0x1A: return "Headlight Control";
+        case 0x1B: return "Rear spoiler";
+        case 0x1C: return "ESC System";
+        case 0x1D: return "Rear Axle Steering";
+        case 0x1E: return "Adaptive Body Roll Compensation";
+        case 0x1F: return "Road Recognitiion";
+        case 0x20: return "Hybrid Drive";
+        case 0x21: return "Drive";
+        case 0x22: return "Chassis";
+        case 0x23: return "Exhaust Valves";
+        case 0x24: return "Engine Sound";
+        case 0x25: return "Passenger Compartment";
+        case 0x26: return "Driver's Seat";
+        case 0x27: return "Tyre Pressure Monitoring System (TPMS)";
+        case 0x28: return "Lane Assist";
+        case 0x29: return "Aggregatelagerung (Audi-Text)";
+        case 0x2A: return "Magnetic Ride (Audi-Text)";
+        case 0x2B: return "Sport Select Chassis";
+        case 0x2C: return "Hill Descent Assist";
+        case 0x2D: return "Hill Hold Assist";
+        case 0x2E: return "Parking Assist";
+        case 0x2F: return "Instrument Cluster";
+        case 0x30: return "Infotainment System";
+        case 0x31: return "Eco Driving Tips";
+        case 0x32: return "Speed Adjustment";
+        case 0x33: return "Electronic Engine Sound";
+        case 0x34: return "Nothing displays, just Engine";
+        case 0x35: return "Nothing displays, just Engine";
+        case 0x36: return "ESC System";
+        case 0x37: return "Nothing displays";
+        case 0x41: return "Engine";
+        case 0x4B: return "Engine";        //seen on TCR
+        case 0x4C: return "Freilauf_DefaultON";
+        default:   return "Unknown";
+    }
+}
+
+string getFPAName(int settingNumber) {
+    switch (settingNumber) {
+        case 0x00: return "not set";
+        case 0x01: return "Comfort";
+        case 0x02: return "Auto/Normal";
+        case 0x03: return "Dynamic/Sport";
+        case 0x04: return "Offroad";
+        case 0x05: return "Eco/Efficiency";
+        case 0x06: return "Race/Cupra";
+        case 0x07: return "Individual";
+        case 0x08: return "Range/PHEV 1/Clubsport";
+        case 0x09: return "Lift/PHEV 2";
+        case 0x0A: return "Offroad Snow/PHEV 3/EV On";
+        case 0x0B: return "Offroad Individual/PHEV 4/Hybrid Auto";
+        case 0x0C: return "Offroad 4/Hybrid Hold";
+        case 0x0D: return "Offroad 5/Hybrid Charge";
+        case 0x0E: return "Offroad 6/Hybrid Area";
+        case 0x0F: return "EV Off";
+        case 0x10: return "Second Hold/Torque Vectoring";
+        case 0x11: return "Racetrack/Hybrid Charge Off";
+        case 0x12: return "Offroad Level 2/Adaptive";
+        case 0x13: return "Offroad Level 3/Traction";
+        case 0x14: return "Offroad Level 4";
+        case 0x15: return "Hybrid Sport";
+        case 0x16: return "Second Auto";
+        case 0x17: return "Unknown Profile";
+        case 0x28: return "GTE Off";
+        case 0x29: return "GTE Off 2";
+        case 0x2A: return "Unknown Profile 2";
+        case 0xFF: return "none";
+        default:   return "Unknown";
+    }
+}
