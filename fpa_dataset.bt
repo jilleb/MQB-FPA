@@ -107,23 +107,23 @@ ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;
 FSeek(662);
 
 struct{
-    ubyte allowed_to_change_in_clubsport: 1         <read = getAllowed>;
-    ubyte allowed_to_change_in_lift: 1              <read = getAllowed>;
-    ubyte allowed_to_change_in_snow: 1              <read = getAllowed>;
-    ubyte allowed_to_change_in_offroadindividual: 1 <read = getAllowed>;
-    ubyte allowed_to_change_in_hybridhold: 1        <read = getAllowed>;
-    ubyte allowed_to_change_in_hybridcharge: 1      <read = getAllowed>;
-    ubyte allowed_to_change_in_hybridarea: 1        <read = getAllowed>;
-    ubyte allowed_to_change_in_evoff: 1             <read = getAllowed>;
-    ubyte allowed_to_change_in_comfort: 1           <read = getAllowed>;
-    ubyte allowed_to_change_in_normal: 1            <read = getAllowed>;
-    ubyte allowed_to_change_in_sport: 1             <read = getAllowed>;
-    ubyte allowed_to_change_in_offroad: 1           <read = getAllowed>;
-    ubyte allowed_to_change_in_eco: 1               <read = getAllowed>;       
-    ubyte allowed_to_change_in_race: 1              <read = getAllowed>;
-    ubyte allowed_to_change_in_individual: 1        <read = getAllowed>;
-    ubyte allowed_to_change_in_notset: 1            <read = getAllowed>;
-    }control_is_allowed_to_change[30]    ;                      
+    ubyte allowed_to_change_in_clubsport: 1         <read = getYesNo>;
+    ubyte allowed_to_change_in_lift: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_snow: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_offroadindividual: 1 <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridhold: 1        <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridcharge: 1      <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridarea: 1        <read = getYesNo>;
+    ubyte allowed_to_change_in_evoff: 1             <read = getYesNo>;
+    ubyte allowed_to_change_in_comfort: 1           <read = getYesNo>;
+    ubyte allowed_to_change_in_normal: 1            <read = getYesNo>;
+    ubyte allowed_to_change_in_sport: 1             <read = getYesNo>;
+    ubyte allowed_to_change_in_offroad: 1           <read = getYesNo>;
+    ubyte allowed_to_change_in_eco: 1               <read = getYesNo>;       
+    ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
+    ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
+    }control_is_allowed_to_change[30]    ; 
 
 
 
@@ -318,23 +318,19 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>;
 // it is the value range that is used when communicating to the control module.
 // These bytes actually control what is happening when a certain mode is chosen
 // You can diplay these as a matrix
+BitfieldRightToLeft();
 
-ubyte control_request_value_0[30]<bgcolor=cBlack, fgcolor=cWhite>;   
-ubyte control_request_value_1[30]<bgcolor=cBlack, fgcolor=cLtYellow>; 
-ubyte control_request_value_2[30]<bgcolor=cBlack, fgcolor=cYellow>;
-ubyte control_request_value_3[30]<bgcolor=cBlack, fgcolor=cDkYellow>;
-ubyte control_request_value_4[30]<bgcolor=cBlack, fgcolor=cRed>; 
-ubyte control_request_value_5[30]<bgcolor=cBlack, fgcolor=cPurple>;
-ubyte control_request_value_6[30]<bgcolor=cBlack, fgcolor=cBlue>;
-ubyte control_request_value_7[30]<bgcolor=cBlack, fgcolor=cDkBlue>;
-// range from 0 to 254 (decimal).
-// it appears that:
-// 0 = not set
-// 16 = sport
-// 50 = normal
-// 84 = eco
-// 118 = sport
-// the values correspond with the request value that can be found in
+struct{
+    struct{
+        int request_value_A     :4;
+        int request_value_B     :4;
+    }request_value[30];
+} request_values[8];
+
+// This is a matrix of 8 bytes x 30 controls.
+// Each byte holds 2 profiles (4 bit per profile)
+// The value is sent to the control module, which changes it's behavior to a given mode when it's supported.
+// The values correspond with the request value that can be found in
 // measurements values, driving profile selection, requested value.
 // If a Requested Value leads to a change in Actual Value, it means the module accepts this value.
 
@@ -697,13 +693,13 @@ for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
-Printf(" Position Control                        \t 0 \t 1 \t 2 \t 3 \t 4 \t 5 \t 6 \t 7\n");
+
+Printf(" Position Control                        \t00\tnrml(1)\tcmft(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\t07\t08\t09\t10\t11\t12\t13\t14\t15\n");
 local int tmp_i3 = 0;
-local int factor = 16; // use 1 or 16
 for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
 {
     if (list_of_grouped_controls[tmp_i3] > 0){
-        Printf ("  %i:\t %-30s \t %i \t %i \t %i \t %i \t %i \t %i \t %i \t %i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), control_request_value_0[tmp_i3]/factor, control_request_value_1[tmp_i3]/factor, control_request_value_2[tmp_i3]/factor,control_request_value_3[tmp_i3]/factor,control_request_value_4[tmp_i3]/factor,control_request_value_5[tmp_i3]/factor,control_request_value_6[tmp_i3]/factor,control_request_value_7[tmp_i3]/factor);
+        Printf ("  %i:\t %-30s \t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\n", tmp_i3, getControlName(list_of_grouped_controls[tmp_i3]), request_values[0].request_value[tmp_i3].request_value_A, request_values[0].request_value[tmp_i3].request_value_B,request_values[1].request_value[tmp_i3].request_value_A, request_values[1].request_value[tmp_i3].request_value_B, request_values[2].request_value[tmp_i3].request_value_A, request_values[2].request_value[tmp_i3].request_value_B, request_values[3].request_value[tmp_i3].request_value_A, request_values[3].request_value[tmp_i3].request_value_B, request_values[4].request_value[tmp_i3].request_value_A, request_values[4].request_value[tmp_i3].request_value_B, request_values[5].request_value[tmp_i3].request_value_A, request_values[5].request_value[tmp_i3].request_value_B, request_values[6].request_value[tmp_i3].request_value_A, request_values[6].request_value[tmp_i3].request_value_B, request_values[7].request_value[tmp_i3].request_value_A, request_values[7].request_value[tmp_i3].request_value_B) ;
    }
 }
 //----
@@ -1023,7 +1019,7 @@ string getBoolean(int state) {
     }
 }
 
-string getAllowed(int value) {
+string getYesNo(int value) {
     switch (value) {
     case 0x00: return "No";
     case 0x01: return "Yes";
