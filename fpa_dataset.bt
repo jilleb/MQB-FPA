@@ -106,6 +106,8 @@ ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow, hidden=t
 
 FSeek(662);
 
+
+
 struct {
     ubyte allowed_to_change_in_clubsport: 1         <read = getYesNo>;
     ubyte allowed_to_change_in_lift: 1              <read = getYesNo>;
@@ -123,7 +125,7 @@ struct {
     ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
     ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
-    }control_is_allowed_to_change[30]               <optimize=false,bgcolor=cGreen>; 
+    } control_is_allowed_to_change[30]               <bgcolor=cGreen>; 
 
 
 
@@ -149,7 +151,7 @@ struct {
     ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
     ubyte remember_after_reset_in_individual: 1        <read = getYesNo>;
     ubyte remember_after_reset_in_notset: 1            <read = getYesNo>;
-    }control_is_reset[30]               <optimize=false,bgcolor=cDkGreen>; 
+    }control_is_reset[30]               <bgcolor=cDkGreen>; 
 
 
 // this is an interesting one. it seems to match the amount of bytes in the next block,
