@@ -789,7 +789,8 @@ string getControlName(int controlNumber) {
         case 0x36: return "ESC System";
         case 0x37: return "Nothing displays";
         case 0x41: return "Engine";
-        case 0x4B: return "Engine";        //seen on TCR
+        case 0x46: return "Range calculation";  //doesn't seem to display on screen
+        case 0x4B: return "Engine";             //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
         default:   return "Unknown";
     }
