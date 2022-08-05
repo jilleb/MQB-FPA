@@ -55,9 +55,19 @@ byte group_properties[8] <bgcolor=cYellow>;
 
 byte number_of_controls_in_specific_group[8]<bgcolor=cDkGreen >;
 
+FSeek(568);
+byte unknown_group_properties[16] <hidden=true>;
+
 
 FSeek(568);
-byte unknown_group_properties[8] <bgcolor=cRed>;
+byte group_1__ignore : 4  <hidden=true>;
+byte group_1_size : 4  <bgcolor=cYellow>;
+byte group_1_properties[3]  <bgcolor=cRed>;
+
+byte group_2__ignore : 4  <hidden=true>;
+byte group_2_size : 4  <bgcolor=cYellow>;
+byte group_2_properties[3]  <bgcolor=cRed>;
+
 // Known values:
 
 // sets with 1 group
@@ -91,22 +101,12 @@ byte unknown_group_properties[8] <bgcolor=cRed>;
 
 
 FSeek(662);
-ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow >;
-// this is an interesting one. it seems to match the amount of bytes in the next block,
-// and it's the same amount as "individual_configuration bytes" as well
-// Known values:
-// Octavia: 001E 001E 0010 0012 0017 0017 0006 0007 0012 0017 0006 000E 0006 000A 000A 005E 0057 000A (18x short)
-// Magotan: 0006 0006 0006 0007 0012 0017 0057 0006 0006 0007 00D7 (11x short)
-// Passat:  0006 0006 0006 7FFF 0012 0017 0057 0006006 0007 00D7 (11x short)
-// Leon:    001E 0010 001E 0037 0012 0006 0012 0007 001F (9x short)
-// FR 2020: 001E 0010 001E 0037 0412 0012 0006 0012 0007 001F (10 values)
+ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow, hidden=true>;
 
-// TODO: Let's get rid of these car names and use more accurate dataset version numbering instead.
-// OY00:    001E 001E 0010 0412 0006 0002 0006 7FFF 0012 0017 000E 000E 0012 005F 000A 000A 0007
 
 FSeek(662);
 
-struct{
+struct {
     ubyte allowed_to_change_in_clubsport: 1         <read = getYesNo>;
     ubyte allowed_to_change_in_lift: 1              <read = getYesNo>;
     ubyte allowed_to_change_in_snow: 1              <read = getYesNo>;
@@ -123,12 +123,33 @@ struct{
     ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
     ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
-    }control_is_allowed_to_change[30]               <optimize=false>; 
+    }control_is_allowed_to_change[30]               <optimize=false,bgcolor=cGreen>; 
 
 
 
 FSeek(722);
-ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName>;
+ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName,hidden=true>;
+
+FSeek(722);
+
+struct {
+    ubyte remember_after_reset_in_clubsport: 1         <read = getYesNo>;
+    ubyte remember_after_reset_in_lift: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_snow: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_offroadindividual: 1 <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridhold: 1        <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridcharge: 1      <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridarea: 1        <read = getYesNo>;
+    ubyte remember_after_reset_in_evoff: 1             <read = getYesNo>;
+    ubyte remember_after_reset_in_comfort: 1           <read = getYesNo>;
+    ubyte remember_after_reset_in_normal: 1            <read = getYesNo>;
+    ubyte remember_after_reset_in_sport: 1             <read = getYesNo>;
+    ubyte remember_after_reset_in_offroad: 1           <read = getYesNo>;
+    ubyte remember_after_reset_in_eco: 1               <read = getYesNo>;       
+    ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_individual: 1        <read = getYesNo>;
+    ubyte remember_after_reset_in_notset: 1            <read = getYesNo>;
+    }control_is_reset[30]               <optimize=false,bgcolor=cDkGreen>; 
 
 
 // this is an interesting one. it seems to match the amount of bytes in the next block,
@@ -325,7 +346,7 @@ struct{
         int request_value_A     :4;
         int request_value_B     :4;
     }request_value[30]<optimize=false>;
-} request_values[8]<optimize=false>;
+} request_values[8]<optimize=false, bgcolor=cGreen>;
 
 // This is a matrix of 8 bytes x 30 controls.
 // Each byte holds 2 profiles (4 bit per profile)
@@ -440,116 +461,11 @@ long unknown_18 <bgcolor=cRed>;
 // OY:      0702 0000
 
 // From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
+// it appears to override the request values before they are sent to a control module
 FSeek(38);
 struct{
-    byte unknown_38x[15];
+    byte unknown_38x[15] <bgcolor=cDkRed>;
     } unknown_38[32];
-
-/*
-short unknown_38 <bgcolor=cRed>;
-// Known values:
-// Octavia: 2222
-// Magotan: 2222
-// Passat:  0000
-// Leon:    0202
-// PF00:    5500
-// OY:      2222
-
-FSeek(40);
-short unknown_40 <bgcolor=cRed>;
-// Known values:
-// Octavia: 3344
-// Magotan: 3344
-// Passat:  0000
-// Leon:    0304
-// FR 2020: 0355
-// PF00:    2244
-// OY       3344
-
-FSeek(42);
-short unknown_42 <bgcolor=cRed>;
-// Known values:
-// Octavia: 5500
-// Magotan: 5533
-// Passat:  0000
-// Leon:    5503
-// FR 2020: 0000
-// PF00:    0033
-// OY:      4455
-
-FSeek(52);
-short unknown_52 <bgcolor=cRed>;
-// Known values:
-// Octavia: 0011
-// Magotan: 0011
-// Passat:  0000
-// Leon:    0000
-// PF00:    0011
-// OY:      0000
-
-
-FSeek(54);
-short unknown_54 <bgcolor=cRed>;
-// Known values:
-// Octavia: 2233
-// Magotan: 0011
-// Passat:  0000
-// Leon:    0000
-// PF00:    0022
-// OY:      0000
-
-
-FSeek(56);
-short unknown_56 <bgcolor=cRed>;
-// Known values:
-// Octavia: 0055
-// Magotan: 0055
-// Passat:  0000
-// Leon:    0000
-// PF00:    2400
-// OY:      0000
-
-
-FSeek(58);
-short unknown_58 <bgcolor=cRed>;
-// Known values:
-// Octavia: 0000
-// Magotan: 0000
-// Passat:  0000
-// Leon:    0000
-// PF00:    3300
-// OY:      0000
-
-
-FSeek(60);
-short unknown_60 <bgcolor=cRed>;
-// Known values:
-// Octavia: 0055
-// Magotan: 0055
-// Passat:  0000
-// Leon:    0000
-// PF00:    0000
-// OY:      2322
-*/
-
-FSeek(158);
-byte unknown_158[6] <bgcolor=cRed>;
-// Known values:
-// Octavia: 2020 2020 5500
-// Magotan: b0b0 b020 5500
-// Passat:  0000 0000 0000
-// Leon:    1222 3324 5563
-// FR 2020: 1222 3355 0132
-// PF00:    0500 0202 0002
-// OY:      B0B0 B020 5500
-
-FSeek(278);
-byte unknown_278[6] <bgcolor=cRed>;
-// FR 2020: 0B0B 0B05 0000
-// after flashing with 0B 0B 0B 05 00 00, the dashboard and MIB showed offroad-icon for a short moment and that's it.
-// PF:    0000 0000 0000
-// OY:    0000 0000 0000
-
 
 // Don't mess with anything below here, unless you know what you're doing.
 
@@ -676,20 +592,8 @@ while (group_number_2 < 4){
 group_number_2++;
 }
 
+printTitle("Request values");
 
-
-printTitle("Research stuff");
-
-// Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
-Printf(" Byte_active settings\n");
-Printf(" Position Control                        \t 0x30E  \t Meaning\n");
-local int tmp_i2 = 0;
-for( tmp_i2 = 0; tmp_i2 < 30; tmp_i2++)
-{
-    if (list_of_controls[tmp_i2] > 0){
-        Printf ("  %i:\t %-30s \t %i \n", tmp_i2, getControlName(list_of_controls[tmp_i2]), is_active[tmp_i2]);
-   }
-}
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
@@ -703,41 +607,72 @@ for( tmp_i3 = 0; tmp_i3 < 30; tmp_i3++)
    }
 }
 //----
-Printf("\n Individual controls research\n");
-Printf("\n                                      \t           \t Change allowed \t After ignition\n");
+printTitle("Allowed to make changes and remember after reset");
 
-Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ???????? \t \tMeaning\n");
+Printf("                                      \t           \t Change allowed \t After ignition\n");
+
+Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ????????\n");
 local int tmp_i4 = 0;
 for( tmp_i4 = 0; tmp_i4 < 30; tmp_i4++)
 {
 
     if (list_of_controls[tmp_i4] > 0){
-        Printf ("  %i: \t%-30s \t %02x \t %s   %s \t %s\n", tmp_i4, getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[tmp_i4],2,true), IntToBinaryStr(function_bytes_settings[tmp_i4],2,true), getFunctionByteSettingName(function_bytes_settings[tmp_i4]));
+        Printf ("  %i: \t%-30s \t %02x \t %s   %s\n", tmp_i4, getControlName(list_of_controls[tmp_i4]), list_of_controls[tmp_i4], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[tmp_i4],2,true), IntToBinaryStr(function_bytes_settings[tmp_i4],2,true));
    }
 }
-//--- research stuff, what looks like a table from position 38:
 
+
+printTitle("Research stuff");
+
+// Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
+Printf(" Byte_active settings\n");
+Printf(" Position Control                        \t 0x30E  \t 0xA67 \tMeaning\n");
+for( i = 0; i < 30; i++)
+{
+    if (list_of_controls[i] > 0){
+        Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), is_active[i],SettingBytes_again[i]);
+   }
+}
+
+//--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
 Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount of values\n");
-local int tmp_i5 = 0;
-local int tmp_i6 = 0;
+i = 0;
+local int j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
 local int amount_of_unknown38_values = 0;
 
-for( tmp_i5 = 0; tmp_i5 < 32; tmp_i5++)
+for( i = 0; i < 32; i++)
 {
 amount_of_unknown38_values = 0;
 
-        for( tmp_i6 = 0; tmp_i6 < 15; tmp_i6++)
-        if (unknown_38[tmp_i5].unknown_38x[tmp_i6]>0){
+        for( j = 0; j < 15; j++)
+        if (unknown_38[i].unknown_38x[j]>0){
             amount_of_unknown38_values++;
         }
         if (amount_of_unknown38_values > 0) {
-            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", tmp_i5, unknown_38[tmp_i5].unknown_38x[0], unknown_38[tmp_i5].unknown_38x[1], unknown_38[tmp_i5].unknown_38x[2], unknown_38[tmp_i5].unknown_38x[3], unknown_38[tmp_i5].unknown_38x[4], unknown_38[tmp_i5].unknown_38x[5], unknown_38[tmp_i5].unknown_38x[6], unknown_38[tmp_i5].unknown_38x[7], unknown_38[tmp_i5].unknown_38x[8], unknown_38[tmp_i5].unknown_38x[9], unknown_38[tmp_i5].unknown_38x[10], unknown_38[tmp_i5].unknown_38x[11], unknown_38[tmp_i5].unknown_38x[12], unknown_38[tmp_i5].unknown_38x[13], unknown_38[tmp_i5].unknown_38x[14], amount_of_unknown38_values);
+            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", i, unknown_38[i].unknown_38x[0], unknown_38[i].unknown_38x[1], unknown_38[i].unknown_38x[2], unknown_38[i].unknown_38x[3], unknown_38[i].unknown_38x[4], unknown_38[i].unknown_38x[5], unknown_38[i].unknown_38x[6], unknown_38[i].unknown_38x[7], unknown_38[i].unknown_38x[8], unknown_38[i].unknown_38x[9], unknown_38[i].unknown_38x[10], unknown_38[i].unknown_38x[11], unknown_38[i].unknown_38x[12], unknown_38[i].unknown_38x[13], unknown_38[i].unknown_38x[14], amount_of_unknown38_values);
             amount_of_unknown38_rows_with_value++;
         }
 }
-Printf("Amount of rows with a value: %i\n", amount_of_unknown38_rows_with_value);
+Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
+
+
+Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
+Printf(" Unknown_group_properties:\t");
+for (i=0;i<16;i++){
+    Printf("%02x", unknown_group_properties[i]);
+    }
+
+Printf("\n Unknown_button_specifics:\t");
+for (i=0;i<6;i++){
+    Printf("%d\t", unknown_bytes_button_specifics[i]);
+    }
+
+Printf("\n Unknown_profiles_related:\t");
+for (i=0;i<12;i++){
+    Printf("%i\t", unknown_profiles_related[i]);
+    }
 
 
 
@@ -745,9 +680,9 @@ printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
 Printf(" Calculated checksum : %06lx \n\n",((unsigned long)calculated_checksum & 0xFFFFFFFFUL));
 if (dataset_checksum != calculated_checksum){
-    Printf("    ! Checksums are not identical \n    ! Copy calculated value into checksum at Variables screen \n");
+    Printf(" ! Checksums are not identical \n    ! Copy calculated value into checksum at Variables screen \n");
 } else {
-    Printf("    Checksums are identical, no updates needed\n");
+    Printf(" Checksums are identical, no updates needed\n");
   };
 Printf(" #################################################\n");
 
@@ -850,14 +785,6 @@ string getControlName(int controlNumber) {
         case 0x4B: return "Engine";        //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
         default:   return "Unknown";
-    }
-}
-
-string getFunctionByteSettingName(int byteSettingNumber) {
-    switch (byteSettingNumber) {
-        //TODO: research to get more known values here
-        case 65279: return "Remember after reset";
-        default:    return "Unknown";
     }
 }
 
@@ -1029,7 +956,7 @@ string getYesNo(int value) {
 // helper function to print nice titles without needing to type them manually each time
 void printTitle( string title )
     {
-    Printf(" \n");
+    Printf(" \n\n");
     Printf(" #################################################\n");
     Printf(" %s\n", title);
     Printf(" #################################################\n");
