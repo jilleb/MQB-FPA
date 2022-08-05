@@ -307,19 +307,14 @@ byte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // OY: 0003 0502 0001 F1F1 0000 0000
 
 
-byte unknown_value_816[4]<bgcolor=cDkRed >;
+long unknown_value6<bgcolor=cDkRed >;
 // todo: test this
 // PF: 0270 7100
 // OY: 0100 0000
 
-FSeek(2107);
-byte unknown_value_83B[10]<bgcolor=cDkRed >;
-
-FSeek(2240);
-byte unknown_value_8C0<bgcolor=cDkRed >;
-
+FSeek(2242);
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
-byte unknown_8CE[12]<bgcolor=cDkRed>;
+byte reserved[12]<bgcolor=cGray>;
 byte unknown_setting[9]<bgcolor=cRed>;
 // after setting to 123456789, the default settings on individual profile were reset.
 // OY: 0001 0200 0000 0000 00
@@ -483,6 +478,9 @@ Printf(" \n");
 
 local int i = 0;
 local int j = 0;
+
+local int profile_number = 0;
+local int setting_number = 0;
 local string settingText;
 printTitle("Profile buttons");
 
@@ -492,7 +490,7 @@ while(i<9)
   
     if (button_order[i] != 00){
         { if (button_order[i] < 100) {
-        Printf (" â•‘ %10s â•‘   ", getFPAName(FPA_profile[button_order[i]-1]));
+        Printf (" ¦ %10s ¦   ", getFPAName(FPA_profile[button_order[i]-1]));
              }
         }
     }
@@ -501,43 +499,48 @@ while(i<9)
 
 Printf (" \n");
 Printf (" \n");
-for(i=0; i < 12;i++ )
+
+while( profile_number < 12 )
 
 {
-        if (FPA_profile[i] != 00) {
-        Printf (" Profile position %i: %s(%x) \n", i, getFPAName(FPA_profile[i]),FPA_profile[i] );
-        Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[i]) );
-        Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[i]) );
-        Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[i]));
+        if (FPA_profile[profile_number] != 00) {
+        Printf (" Profile position %i: %s(%x) \n", profile_number, getFPAName(FPA_profile[profile_number]),FPA_profile[profile_number] );
+        Printf ("  Returns to %s after restart\n", getFPAName(profile_returns_after_restart[profile_number]) );
+        Printf ("  Banner on AID: %s \n", getAIDBanner(AID_profile_banner[profile_number]) );
+        Printf ("  Mode button LED: %s \n", getModeButtonLightState(mode_light_on[profile_number]));
         Printf ("  Settings: \n");
 
-          for( j = 0; j < 30; j++)
+          for( setting_number = 0; setting_number < 30; setting_number++)
         {
-            settingText = getSettingName(profile[i].setting_byte[j]);
+            settingText = getSettingName(profile[profile_number].setting_byte[setting_number]);
             if (settingText!="not set"){
-                Printf ("     %i \t %-30s: %s (%x) \n", j, getControlName(list_of_grouped_controls[j]),getSettingName(profile[i].setting_byte[j]),profile[i].setting_byte[j]);
+                Printf ("     %i \t %-30s: %s (%x) \n", setting_number, getControlName(list_of_grouped_controls[setting_number]),getSettingName(profile[profile_number].setting_byte[setting_number]),profile[profile_number].setting_byte[setting_number]);
             }
         }
  }
+    profile_number += 1;
     Printf("\n");
 }
 
+local int indiv_profile_number = 0;
+local int indiv_setting_number = 0;
 
 printTitle("HMI");
 Printf(" The following settings are shown in the HMI.\n Items that have no settings are hidden.\n\n");
-for(i=0; i < 12 ; i++)
+while( indiv_profile_number < 12 )
     {
         {
-             Printf (" %s HMI shows the following settings: \n", getSettingName(i+1) );
+             Printf (" %s HMI shows the following settings: \n", getSettingName(indiv_profile_number+1) );
              Printf (" Position  Control                         setting: \n");
 
-              for( j = 0; j < 30; j++)
+              for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
-                if (list_of_grouped_controls[j] > 0){
-                    Printf ("  %i \t %-30s: %s(%x) \n", j, getControlName( list_of_grouped_controls[j]),getIndividualSettingName(available_choices_at_individual_profile[i].individual_setting_byte[j]),(available_choices_at_individual_profile[i].individual_setting_byte[j]));
+                if (list_of_grouped_controls[indiv_setting_number] > 0){
+                    Printf ("  %i \t %-30s: %s(%x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
+    indiv_profile_number += 1;
     Printf("\n");
 }
 
@@ -549,15 +552,16 @@ local int group_number = 0;
 printTitle("Controls");
 Printf(" Pos \tDisplayed Name                  \tControl \t Gateway Long Coding Byte \n");
 
+local int ctrlPosition = 0;
 
-for( i = 0; i < 30; i++)
+for( ctrlPosition = 0; ctrlPosition < 30; ctrlPosition++)
 {
 
-    if (list_of_controls[i] > 0){
-        if (gw_longcoding_controls_without_links[i] == gw_longcoding_controls_with_links[i]){
-            Printf ("  %i \t%-30s\t%02x \t %s (%02x)\n", i, getControlName(list_of_controls[i]), list_of_controls[i], getLongCodingByteName(gw_longcoding_controls_with_links[i]),gw_longcoding_controls_with_links[i]);
+    if (list_of_controls[ctrlPosition] > 0){
+        if (gw_longcoding_controls_without_links[ctrlPosition] == gw_longcoding_controls_with_links[ctrlPosition]){
+            Printf ("  %i \t%-30s\t%02x \t %s (%02x)\n", ctrlPosition, getControlName(list_of_controls[ctrlPosition]), list_of_controls[ctrlPosition], getLongCodingByteName(gw_longcoding_controls_with_links[ctrlPosition]),gw_longcoding_controls_with_links[ctrlPosition]);
         } else { 
-            Printf ("  %i \t%-30s\t%02x \t %s (%02x) linked to %s (%02x)\n", i, getControlName(list_of_controls[i]), list_of_controls[i], getLongCodingByteName(gw_longcoding_controls_with_links[i]),gw_longcoding_controls_with_links[i],getLongCodingByteName(gw_longcoding_controls_without_links[i]),gw_longcoding_controls_without_links[i]);
+            Printf ("  %i \t%-30s\t%02x \t %s (%02x) linked to %s (%02x)\n", ctrlPosition, getControlName(list_of_controls[ctrlPosition]), list_of_controls[ctrlPosition], getLongCodingByteName(gw_longcoding_controls_with_links[ctrlPosition]),gw_longcoding_controls_with_links[ctrlPosition],getLongCodingByteName(gw_longcoding_controls_without_links[ctrlPosition]),gw_longcoding_controls_without_links[ctrlPosition]);
         }
  }
 }
@@ -565,27 +569,43 @@ for( i = 0; i < 30; i++)
 
 printTitle("Setting Groups");
 local int num_of_groups = 0;
-for (i=0;i < 30;i++) {
+while (indivgroup_setting_number < 30) {
     group_number = 1;
 
     while (group_number < 30) {
-        if (grouped_controls[i] == group_number) {
-            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number - 1]), getControlName(list_of_controls[i]));
+        if (grouped_controls[indivgroup_setting_number] == group_number) {
+            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number - 1]), getControlName(list_of_controls[indivgroup_setting_number]));
                         num_of_groups++;
 
         }
         group_number++;
     }
+    indivgroup_setting_number++;
 }
-
 if (num_of_groups == 0) {
 Printf(" No groups configured at 0xA09 range.\n");
 }
 
-for (i = 0; i < 4 ; i++){
-    if (number_of_controls_in_specific_group[i] > 0){
-        Printf(" Group number %i is configured in the 0x20E range to have %i controls.\n", i+1, number_of_controls_in_specific_group[i]);
+local int group_number_2 = 0;
+while (group_number_2 < 4){
+    if (number_of_controls_in_specific_group[group_number_2] > 0){
+        Printf(" Group number %i is configured in the 0x20E range to have %i controls.\n", group_number_2+1, number_of_controls_in_specific_group[group_number_2]);
     }
+group_number_2++;
+}
+
+//----
+printTitle("Allowed to make changes and remember after reset");
+
+Printf("                                      \t           \t Change allowed \t After ignition\n");
+
+Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ????????\n");
+for( i = 0; i < 30; i++)
+{
+
+    if (list_of_controls[i] > 0){
+        Printf ("  %i: \t%-30s \t %02x \t %s   %s\n", i, getControlName(list_of_controls[i]), list_of_controls[i], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[i],2,true), IntToBinaryStr(function_bytes_settings[i],2,true));
+   }
 }
 
 printTitle("Request values");
@@ -598,20 +618,13 @@ Printf(" Position\tControl                        \t00\tcmft(1)\tnrml(2)\tsprt(3
 for( i = 0; i < 30; i++)
 {
     if (list_of_grouped_controls[i] > 0){
-        Printf ("  %i:\t %-30s(%02x)\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\t%02i\n", i, getControlName(list_of_grouped_controls[i]),list_of_grouped_controls[i], request_values[0].request_value[i].request_value_A, request_values[0].request_value[i].request_value_B,request_values[1].request_value[i].request_value_A, request_values[1].request_value[i].request_value_B, request_values[2].request_value[i].request_value_A, request_values[2].request_value[i].request_value_B, request_values[3].request_value[i].request_value_A, request_values[3].request_value[i].request_value_B, request_values[4].request_value[i].request_value_A, request_values[4].request_value[i].request_value_B, request_values[5].request_value[i].request_value_A, request_values[5].request_value[i].request_value_B, request_values[6].request_value[i].request_value_A, request_values[6].request_value[i].request_value_B, request_values[7].request_value[i].request_value_A, request_values[7].request_value[i].request_value_B) ;
-   }
-}
-//----
-printTitle("Allowed to make changes and remember after reset");
-
-Printf("                                      \t           \t Change allowed \t After ignition\n");
-
-Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ????????\n");
-for( i = 0; i < 30; i++)
-{
-
-    if (list_of_controls[i] > 0){
-        Printf ("  %i: \t%-30s \t %02x \t %s   %s\n", i, getControlName(list_of_controls[i]), list_of_controls[i], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[i],2,true), IntToBinaryStr(function_bytes_settings[i],2,true));
+        Printf ("  %i:\t %-30s(%02x)", i, getControlName(list_of_grouped_controls[i]),list_of_grouped_controls[i]);
+        j = 0;
+        while (j < 8){ 
+        Printf ("\t%02i\t%02i", request_values[j].request_value[i].request_value_A, request_values[j].request_value[i].request_value_B) ;
+        j++;
+        }
+        Printf("\n");
    }
 }
 
@@ -631,6 +644,8 @@ for( i = 0; i < 30; i++)
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
 Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount of values\n");
+i = 0;
+j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
 local int amount_of_unknown38_values = 0;
 
@@ -650,39 +665,23 @@ amount_of_unknown38_values = 0;
 Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
 
 
-Printf(" Unknown_value_1\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
-Printf(" Unknown_group_properties\t");
+Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
+Printf(" Unknown_group_properties:\t");
 for (i=0;i<16;i++){
     Printf("%02x", unknown_group_properties[i]);
     }
 
-Printf("\n Unknown_button_specifics\t");
+Printf("\n Unknown_button_specifics:\t");
 for (i=0;i<6;i++){
     Printf("%d\t", unknown_bytes_button_specifics[i]);
     }
 
-Printf("\n Unknown_profiles_related\t");
+Printf("\n Unknown_profiles_related:\t");
 for (i=0;i<12;i++){
     Printf("%i\t", unknown_profiles_related[i]);
     }
 
-Printf("\n Unknown_value_0x816\t");
-for (i=0;i<4;i++){
-    Printf("%i\t", unknown_value_816[i]);
-    }
-    
 
-Printf("\n Unknown_value_0x83B\t");
-for (i=0;i<10;i++){
-    Printf("%i\t", unknown_value_83B[i]);
-    }
-
-Printf("\n Unknown_value_0x8C0\t%00x %s", unknown_value_8C0, IntToBinaryStr(unknown_value_8C0));
-
-Printf("\n Unknown_value_0x8CE\t");
-for (i=0;i<12;i++){
-    Printf("%i\t", unknown_8CE[i]);
-    }
 
 printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
@@ -969,5 +968,3 @@ void printTitle( string title )
     Printf(" %s\n", title);
     Printf(" #################################################\n");
     }
-
-
