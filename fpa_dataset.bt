@@ -348,7 +348,7 @@ struct{
         int request_value_A     :4;
         int request_value_B     :4;
     }request_value[30]<optimize=false>;
-} request_values[8]<optimize=false, bgcolor=cGreen>;
+} request_values[8]<bgcolor=cGreen>;
 
 // This is a matrix of 8 bytes x 30 controls.
 // Each byte holds 2 profiles (4 bit per profile)
