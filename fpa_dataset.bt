@@ -125,7 +125,7 @@ struct {
     ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
     ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
-    } control_is_allowed_to_change[30]               <bgcolor=cGreen>; 
+    } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=false>; 
 
 
 
@@ -151,7 +151,7 @@ struct {
     ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
     ubyte remember_after_reset_in_individual: 1        <read = getYesNo>;
     ubyte remember_after_reset_in_notset: 1            <read = getYesNo>;
-    }control_is_reset[30]               <bgcolor=cDkGreen>; 
+    }control_is_reset[30]               <bgcolor=cDkGreen,optimize=false>; 
 
 
 // this is an interesting one. it seems to match the amount of bytes in the next block,
@@ -348,7 +348,7 @@ struct{
         int request_value_A     :4;
         int request_value_B     :4;
     }request_value[30]<optimize=false>;
-} request_values[8]<bgcolor=cGreen>;
+} request_values[8]<bgcolor=cGreen,optimize=false>;
 
 // This is a matrix of 8 bytes x 30 controls.
 // Each byte holds 2 profiles (4 bit per profile)
@@ -601,7 +601,7 @@ printTitle("Allowed to make changes and remember after reset");
 
 Printf("                                      \t           \t Change allowed \t After ignition\n");
 
-Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ????????\n");
+Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   IREOSNC? ????????\n");
 for( i = 0; i < 30; i++)
 {
 
@@ -616,7 +616,7 @@ printTitle("Request values");
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
 
-Printf(" Position\tControl                        \t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
+Printf(" Position\tControl                        \t\t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_grouped_controls[i] > 0){
