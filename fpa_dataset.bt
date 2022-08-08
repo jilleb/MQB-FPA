@@ -26,17 +26,8 @@ byte group_name[8] <bgcolor=cGreen,name=getControlName>;
 byte number_of_controls_in_specific_group[8]<bgcolor=cDkGreen >;
 
 FSeek(568);
-byte unknown_group_properties[16] <hidden=true>;
+long unknown_group_properties[8] <bgcolor=cRed>;
 
-
-FSeek(568);
-byte group_1__ignore : 4  <hidden=true>;
-byte group_1_size : 4  <bgcolor=cYellow>;
-byte group_1_properties[3]  <bgcolor=cRed>;
-
-byte group_2__ignore : 4  <hidden=true>;
-byte group_2_size : 4  <bgcolor=cYellow>;
-byte group_2_properties[3]  <bgcolor=cRed>;
 
 // Known values:
 
@@ -361,9 +352,10 @@ byte gw_longcoding_controls_without_links[30]<bgcolor=cDkGreen, name=getLongCodi
 // Same list as previous one, but can be used to link one control to another.  Is used with Sailing and 4x4 features.
 
 byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes?
+byte SettingBytes_more[30] <bgcolor=cDkRed>; // rhymes with earlier setting bytes?
 
 // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
-byte PHEV_data[1659]<format=decimal,bgcolor=cBlue>;
+byte PHEV_data[1625]<format=decimal,bgcolor=cBlue>;
 FSeek(3340);
 byte hybrid_modes[12]<format=decimal,bgcolor=cYellow>; //not sure, needs testing
 byte hybrid_modes_active[12]<bgcolor=cRed >; //not sure, needs testing
@@ -605,11 +597,11 @@ printTitle("Research stuff");
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf(" Byte_active settings\n");
-Printf(" Position Control                        \t 0x30E  \t 0xA67 \tMeaning\n");
+Printf(" Position Control                        \t 0x30E  \t 0xA67 \t 0xA85 \t Meaning\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_controls[i] > 0){
-        Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), is_active[i],SettingBytes_again[i]);
+        Printf ("  %i:\t %-30s \t %i \t %i \t %i \n", i, getControlName(list_of_controls[i]), is_active[i],SettingBytes_again[i],SettingBytes_more[i]);
    }
 }
 
@@ -626,7 +618,7 @@ for( i = 0; i < 32; i++)
 amount_of_unknown38_values = 0;
 
         for( j = 0; j < 15; j++)
-        if (unknown_38[i].unknown_38x[j]>0){
+        if (unknown_38[i].unknown_38x[j]!=0){
             amount_of_unknown38_values++;
         }
         if (amount_of_unknown38_values > 0) {
@@ -639,7 +631,7 @@ Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_val
 
 Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
 Printf(" Unknown_group_properties:\t");
-for (i=0;i<16;i++){
+for (i=0;i<8;i++){
     Printf("%02x", unknown_group_properties[i]);
     }
 
@@ -732,7 +724,7 @@ string getControlName(int controlNumber) {
         case 0x19: return "Anti-Slip regulation";
         case 0x1A: return "Headlight Control";
         case 0x1B: return "Rear spoiler";
-        case 0x1C: return "ESC System";
+        case 0x1C: return "ESC System"; //this one has the ability to change the start/stop behavior.
         case 0x1D: return "Rear Axle Steering";
         case 0x1E: return "Adaptive Body Roll Compensation";
         case 0x1F: return "Road Recognitiion";
@@ -764,6 +756,7 @@ string getControlName(int controlNumber) {
         case 0x46: return "Range calculation";  //doesn't seem to display on screen
         case 0x4B: return "Engine";             //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
+        case 0xFF: return "-";
         default:   return "Unknown";
     }
 }
