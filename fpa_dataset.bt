@@ -601,7 +601,7 @@ printTitle("Allowed to make changes and remember after reset");
 
 Printf("                                      \t           \t Change allowed \t After ignition\n");
 
-Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   ?IREOSNC ????????\n");
+Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   CNSOERI? ????????\n");
 for( i = 0; i < 30; i++)
 {
 
