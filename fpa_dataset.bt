@@ -74,7 +74,7 @@ byte group_2_properties[3]  <bgcolor=cRed>;
 // IB:      4018 0000 0000 0000             1 group: 4 controls
 // J6:      4018 0000 0000 0000             1 group: 4 controls
 // JC:      1000 0010 0000 0000             1 group: 2 controls
-// LI:      4018 0000 0000 0000             1 group: 5 controls   
+// LI:      4018 0000 0000 0000             1 group: 7 controls   
 // LK:      4018 0000 0000 0000             1 group: 6 controls
 // OS:      4018 0000 0000 0000             1 group: 4 controls
 
@@ -125,7 +125,7 @@ struct {
     ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
     ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
-    } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=false>; 
+    } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
 
 
 
@@ -151,7 +151,7 @@ struct {
     ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
     ubyte remember_after_reset_in_individual: 1        <read = getYesNo>;
     ubyte remember_after_reset_in_notset: 1            <read = getYesNo>;
-    }control_is_reset[30]               <bgcolor=cDkGreen,optimize=false>; 
+    }control_is_reset[30]               <bgcolor=cDkGreen,optimize=true>; 
 
 
 // this is an interesting one. it seems to match the amount of bytes in the next block,
@@ -616,7 +616,7 @@ printTitle("Request values");
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
 
-Printf(" Position\tControl                        \t\t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
+Printf(" Position\tControl                        \t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_grouped_controls[i] > 0){
@@ -645,7 +645,7 @@ for( i = 0; i < 30; i++)
 
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
-Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount of values\n");
+Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount\tControl\n");
 i = 0;
 j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
