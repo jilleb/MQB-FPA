@@ -52,9 +52,21 @@ struct{
 
 FSeek(518);
 byte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
-// determines the name of the group. For instance "Engine" or "Drive" and such.
-// TODO: refactor this, to incorporate the groups logic of 0x38
+// examples:
 
+// IB   21 FF FF FF FF FF FF FF 04
+// J6   21 FF FF FF FF FF FF FF 04
+// JA   21 24 FF FF FF FF FF FF 03 02
+// JD   21 FF FF FF FF FF FF FF 04
+// N1   03 0A FF FF FF FF FF FF 04 03
+// OC   21 24 FF FF FF FF FF FF 04 02
+// OS   21 FF FF FF FF FF FF FF 04
+// OY   21 24 FF FF FF FF FF FF 04 02
+
+// LI   01 FF FF FF FF FF FF FF 05
+// LK   01 FF FF FF FF FF FF FF 06
+// LO   01 FF FF FF FF FF FF FF 07
+// O2   00 FF FF FF FF FF FF FF FF
 
 FSeek(568);
 long unknown_group_properties[8] <bgcolor=cRed>;
@@ -639,7 +651,6 @@ Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t
 
 for( i = 0; i < 30; i++)
 {
-amount_of_unknown38_values = 0;
         if ((list_of_grouped_controls[i] != 0) && (child_request_values_controls[i] != -1) && (child_request_values_controls[i] != 0)) {
 
             Printf ("   %i:\t %-30s(%02x)\t", i, getControlName(child_request_values_controls[i]),child_request_values_controls[i]);
@@ -661,7 +672,16 @@ Printf("\n\n");
 
 
 Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
-Printf(" Unknown_group_properties:\t");
+Printf(" Unknown_0x38_controls_stuff at 0x206:\t");
+for (i=0;i<32;i++){
+    if (child_request_values_controls[i] == -1){
+        Printf("-");
+    } else {
+        Printf("%02x", child_request_values_controls[i]);
+        }
+    }
+
+Printf("\n Unknown_group_properties:\t");
 for (i=0;i<8;i++){
     Printf("%02x", unknown_group_properties[i]);
     }
