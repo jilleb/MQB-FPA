@@ -115,25 +115,6 @@ struct {
     }control_is_reset[30]               <bgcolor=cDkGreen,optimize=true>; 
 
 
-// this is an interesting one. it seems to match the amount of bytes in the next block,
-// and seems to have a match with other settings as well.
-// if DSG has value FFFE here, it will no longer go back to D at start.
-
-// Known values:
-// Octavia: 0004 0004 0001 0004 002E 002E 000C 000E 0024 002E 000C 000C 000C 0004 0004 0004 00AE 0004 (18x short)
-// Magotan: 0004 0004 000C 000E 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Passat:  0004 0004 000C FFFE 0024 002E 00AE 000C 000C 000E 01AE (11x short)
-// Leon:    0004 0001 0004 006E 0004 000C 0024 000E 003E (9x short)
-// FR2020:  0004 0001 0004 006E 0800 0004 000C 0024 000E 003E (10x)
-
-// OY00:    0004 0004 0001 0800 000C 0004 000C FFFE  0024 002E 000C 000C 0004 00AE 0004 0004 000E
-
-
-
-// interesting!!!
-// these values seem to be a *2 of the values at unknown_662!
-
-
 FSeek(782);
 byte is_active[30] <format=hex, bgcolor=cYellow, comment=getSettingByteActive>;
 // 00 = setting byte not active, although setting value 0 doesn't seem to have any impact?
@@ -428,8 +409,32 @@ long unknown_18 <bgcolor=cRed>;
 // it appears to override the request values before they are sent to a control module
 FSeek(38);
 struct{
-    byte unknown_38x[15] <bgcolor=cDkRed>;
+    ubyte unknown_38x[15] <bgcolor=cDkRed>;
     } unknown_38[32];
+
+// findings so far:
+// on these datasets, the controls line up with their respective position in list_of_grouped_controls:
+// IB (Golf 2019)
+// OS (GTI 2021)
+// OC (Magotan 2021 with DCC Slider)
+// JA (Golf R 310)
+// JD (Golf Standard)
+// N1 (A3 tdi 2018)
+// OY
+// J6 (Tiguan 2019)
+
+// looks like they match:
+// M9 (Octavia 2019)
+// MJ (Superb 2020)
+
+
+// on these datasets, they don't:
+// O2 (Magotan 2021 GTE)
+// LI (Leon FR 2020)
+// LK (Leon Cupra 300)
+// LO (Leon Cupra)
+
+
 
 // Don't mess with anything below here, unless you know what you're doing.
 
@@ -538,7 +543,7 @@ while (indivgroup_setting_number < 30) {
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
-            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number - 1]), getControlName(list_of_controls[indivgroup_setting_number]));
+            Printf("    Group %i (%s): %s \n", group_number, getControlName(group_name[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]));
                         num_of_groups++;
 
         }
@@ -627,6 +632,35 @@ amount_of_unknown38_values = 0;
         }
 }
 Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
+
+
+
+
+
+
+// experimental 0x38 research, extended view:
+Printf("\n Extended Unknown 38x research\n");
+for( i = 0; i < 30; i++)
+{
+amount_of_unknown38_values = 0;
+        if (list_of_grouped_controls[i] !=0) {
+
+            Printf (" %i \t", i);
+            for( j = 0; j < 15; j++){
+                if (unknown_38[i].unknown_38x[j]==0)
+                {
+                    Printf ("--\t");
+                }
+                else
+                {
+                    Printf ("%02x\t", unknown_38[i].unknown_38x[j]);
+                }
+            }
+            Printf ("\t %s\n",getControlName(list_of_grouped_controls[i]));
+        }
+    }
+
+Printf("\n\n");
 
 
 Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
