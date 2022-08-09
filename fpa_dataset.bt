@@ -19,11 +19,42 @@ ushort data_start<format=decimal,bgcolor=cGreen>;
 
 FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
 
-FSeek(518);
-byte group_name[8] <bgcolor=cGreen,name=getControlName>;
-// determines the name of the group. For instance "Engine" or "Drive" and such.
+// From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
+// it appears to override the request values before they are sent to a control module
+FSeek(38);
+struct{
+    ubyte group_children_request_value[15] <bgcolor=cDkRed>;
+    } group_children_request_values[32];
 
-byte number_of_controls_in_specific_group[8]<bgcolor=cDkGreen >;
+// findings so far:
+// on these datasets, the controls line up with their respective position in list_of_grouped_controls:
+// IB (Golf 2019)
+// J6 (Tiguan 2019)
+// JA (Golf R 310)
+// JD (Golf Standard)
+// N1 (A3 tdi 2018)
+// OC (Magotan 2021 with DCC Slider)
+// OS (GTI 2021)
+// OY
+
+
+// looks like they match:
+// M9 (Octavia 2019)
+// MJ (Superb 2020)
+
+
+// on these datasets, they don't:
+// LI (Leon FR 2020)
+// LK (Leon Cupra 300)
+// LO (Leon Cupra)
+// O2 (Magotan 2021 GTE)
+
+
+FSeek(518);
+byte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
+// determines the name of the group. For instance "Engine" or "Drive" and such.
+// TODO: refactor this, to incorporate the groups logic of 0x38
+
 
 FSeek(568);
 long unknown_group_properties[8] <bgcolor=cRed>;
@@ -399,35 +430,6 @@ long unknown_18 <bgcolor=cRed>;
 // PF:      0702 0001
 // OY:      0702 0000
 
-// From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
-// it appears to override the request values before they are sent to a control module
-FSeek(38);
-struct{
-    ubyte unknown_38x[15] <bgcolor=cDkRed>;
-    } unknown_38[32];
-
-// findings so far:
-// on these datasets, the controls line up with their respective position in list_of_grouped_controls:
-// IB (Golf 2019)
-// J6 (Tiguan 2019)
-// JA (Golf R 310)
-// JD (Golf Standard)
-// N1 (A3 tdi 2018)
-// OC (Magotan 2021 with DCC Slider)
-// OS (GTI 2021)
-// OY
-
-
-// looks like they match:
-// M9 (Octavia 2019)
-// MJ (Superb 2020)
-
-
-// on these datasets, they don't:
-// LI (Leon FR 2020)
-// LK (Leon Cupra 300)
-// LO (Leon Cupra)
-// O2 (Magotan 2021 GTE)
 
 FSeek(3800);
 byte unkonwn_3800<bgcolor=cDkRed>;
@@ -543,7 +545,7 @@ while (indivgroup_setting_number < 30) {
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
-            Printf("    Group %i (%s): %s \n", group_number, getControlName(group_name[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]));
+            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]));
                         num_of_groups++;
 
         }
@@ -555,13 +557,6 @@ if (num_of_groups == 0) {
 Printf(" No groups configured at 0xA09 range.\n");
 }
 
-local int group_number_2 = 0;
-while (group_number_2 < 4){
-    if (number_of_controls_in_specific_group[group_number_2] > 0){
-        Printf(" Group number %i is configured in the 0x20E range to have %i controls.\n", group_number_2+1, number_of_controls_in_specific_group[group_number_2]);
-    }
-group_number_2++;
-}
 
 //----
 printTitle("Allowed to make changes and remember after reset");
@@ -623,11 +618,11 @@ for( i = 0; i < 32; i++)
 amount_of_unknown38_values = 0;
 
         for( j = 0; j < 15; j++)
-        if (unknown_38[i].unknown_38x[j]!=0){
+        if (group_children_request_values[i].group_children_request_value[j]!=0){
             amount_of_unknown38_values++;
         }
         if (amount_of_unknown38_values > 0) {
-            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", i, unknown_38[i].unknown_38x[0], unknown_38[i].unknown_38x[1], unknown_38[i].unknown_38x[2], unknown_38[i].unknown_38x[3], unknown_38[i].unknown_38x[4], unknown_38[i].unknown_38x[5], unknown_38[i].unknown_38x[6], unknown_38[i].unknown_38x[7], unknown_38[i].unknown_38x[8], unknown_38[i].unknown_38x[9], unknown_38[i].unknown_38x[10], unknown_38[i].unknown_38x[11], unknown_38[i].unknown_38x[12], unknown_38[i].unknown_38x[13], unknown_38[i].unknown_38x[14], amount_of_unknown38_values);
+            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", i, group_children_request_values[i].group_children_request_value[0], group_children_request_values[i].group_children_request_value[1], group_children_request_values[i].group_children_request_value[2], group_children_request_values[i].group_children_request_value[3], group_children_request_values[i].group_children_request_value[4], group_children_request_values[i].group_children_request_value[5], group_children_request_values[i].group_children_request_value[6], group_children_request_values[i].group_children_request_value[7], group_children_request_values[i].group_children_request_value[8], group_children_request_values[i].group_children_request_value[9], group_children_request_values[i].group_children_request_value[10], group_children_request_values[i].group_children_request_value[11], group_children_request_values[i].group_children_request_value[12], group_children_request_values[i].group_children_request_value[13], group_children_request_values[i].group_children_request_value[14], amount_of_unknown38_values);
             amount_of_unknown38_rows_with_value++;
         }
 }
@@ -639,24 +634,26 @@ Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_val
 
 
 // experimental 0x38 research, extended view:
-Printf("\n Extended Unknown 38x research\n");
+Printf("\n Group Children request value matrix\n");
+Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+
 for( i = 0; i < 30; i++)
 {
 amount_of_unknown38_values = 0;
-        if (list_of_grouped_controls[i] !=0) {
+        if ((list_of_grouped_controls[i] != 0) && (child_request_values_controls[i] != -1) && (child_request_values_controls[i] != 0)) {
 
-            Printf (" %i \t", i);
+            Printf ("   %i:\t %-30s(%02x)\t", i, getControlName(child_request_values_controls[i]),child_request_values_controls[i]);
             for( j = 0; j < 15; j++){
-                if (unknown_38[i].unknown_38x[j]==0)
+                if (group_children_request_values[i].group_children_request_value[j]==0)
                 {
                     Printf ("--\t");
                 }
                 else
                 {
-                    Printf ("%02x\t", unknown_38[i].unknown_38x[j]);
+                    Printf ("%02x\t", group_children_request_values[i].group_children_request_value[j]);
                 }
             }
-            Printf ("\t %s\n",getControlName(list_of_grouped_controls[i]));
+            Printf ("\n");
         }
     }
 
