@@ -116,16 +116,8 @@ struct {
 
 
 FSeek(782);
-byte is_active[30] <format=hex, bgcolor=cYellow, comment=getSettingByteActive>;
-// 00 = setting byte not active, although setting value 0 doesn't seem to have any impact?
-// 02 = active
-// other known settings are:
-// 0B; tested, no noticeable change.
-// 11; tested, no noticeable change.
-// 01; 
-// 03; (seen on PF)
-// 08;
-// TODO: more testing needed.
+byte restart_value[30] <format=hex, bgcolor=cGreen, name=getSettingName>;
+// this is the default value after restart
 
 
 byte unknown_value_0 <bgcolor=cYellow>;
@@ -607,11 +599,11 @@ printTitle("Research stuff");
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf(" Byte_active settings\n");
-Printf(" Position Control                        \t 0x30E  \t 0xA67 \t 0xA85 \t Meaning\n");
+Printf(" Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_controls[i] > 0){
-        Printf ("  %i:\t %-30s \t %i \t %i \t %i \n", i, getControlName(list_of_controls[i]), is_active[i],SettingBytes_again[i],SettingBytes_more[i]);
+        Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
    }
 }
 
