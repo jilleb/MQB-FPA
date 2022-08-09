@@ -607,15 +607,6 @@ for( i = 0; i < 30; i++)
 
 printTitle("Research stuff");
 
-// Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
-Printf(" Byte_active settings\n");
-Printf(" Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
-for( i = 0; i < 30; i++)
-{
-    if (list_of_controls[i] > 0){
-        Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
-   }
-}
 
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
@@ -671,7 +662,16 @@ for( i = 0; i < 30; i++)
 Printf("\n\n");
 
 
-Printf(" Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
+// Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
+Printf(" Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
+for( i = 0; i < 30; i++)
+{
+    if (list_of_controls[i] > 0){
+        Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
+   }
+}
+
+Printf("\n Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
 Printf(" Unknown_0x38_controls_stuff at 0x206:\t");
 for (i=0;i<32;i++){
     if (child_request_values_controls[i] == -1){
