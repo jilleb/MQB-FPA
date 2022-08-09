@@ -415,13 +415,14 @@ struct{
 // findings so far:
 // on these datasets, the controls line up with their respective position in list_of_grouped_controls:
 // IB (Golf 2019)
-// OS (GTI 2021)
-// OC (Magotan 2021 with DCC Slider)
+// J6 (Tiguan 2019)
 // JA (Golf R 310)
 // JD (Golf Standard)
 // N1 (A3 tdi 2018)
+// OC (Magotan 2021 with DCC Slider)
+// OS (GTI 2021)
 // OY
-// J6 (Tiguan 2019)
+
 
 // looks like they match:
 // M9 (Octavia 2019)
@@ -429,10 +430,10 @@ struct{
 
 
 // on these datasets, they don't:
-// O2 (Magotan 2021 GTE)
 // LI (Leon FR 2020)
 // LK (Leon Cupra 300)
 // LO (Leon Cupra)
+// O2 (Magotan 2021 GTE)
 
 
 
@@ -459,7 +460,7 @@ while(i<9)
   
     if (button_order[i] != 00){
         { if (button_order[i] < 100) {
-        Printf (" ¦ %10s ¦   ", getFPAName(FPA_profile[button_order[i]-1]));
+        Printf ("[ %10s ]", getFPAName(FPA_profile[button_order[i]-1]));
              }
         }
     }
