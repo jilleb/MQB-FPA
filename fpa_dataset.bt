@@ -324,7 +324,10 @@ byte gw_longcoding_controls_without_links[30]<bgcolor=cDkGreen, name=getLongCodi
 // Same list as previous one, but can be used to link one control to another.  Is used with Sailing and 4x4 features.
 
 byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes?
+// known values: 2 and 3. Changes didn't seem to touch the 0x38 table logic
 byte SettingBytes_more[30] <bgcolor=cDkRed>; // rhymes with earlier setting bytes?
+// known values: 0 and 8. Changes didn't seem to touch the 0x38 table logic
+
 
 // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
 byte PHEV_data[1625]<format=decimal,bgcolor=cBlue>;
@@ -838,7 +841,7 @@ string getIndividualSettingName(int settingNumber) {
         return "not set ";
     }
 
-    if (settingNumber == 65279) {
+    if (settingNumber == 65534) {
         return "A slider is displayed ";
     }
 
