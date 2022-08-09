@@ -9,7 +9,7 @@
 //              Currently only useful for FPA datasets for 3Q0907530Q and newer.
 //--------------------------------------
 BitfieldDisablePadding();
-
+BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 // Anything older than version IA seems to be a different format.
 
@@ -175,7 +175,6 @@ byte list_of_grouped_controls[30]<format=hex,bgcolor=cGreen, comment=getControlN
 // This list is what's actually shown in the User Interface, and it can represent a group of controls.
 // See list_of_controls for all the ungrouped controls
 // NEVER PUT FF HERE
-
 struct{
     // this block consists of 30 bytes, after that the same pattern can be found, once for each enabled profile.
     // so there will be data for profile 1, 2, 3, but the 4th set of data here will be filled with zeroes when it's not used.
@@ -435,6 +434,11 @@ struct{
 // LO (Leon Cupra)
 // O2 (Magotan 2021 GTE)
 
+FSeek(3800);
+byte unkonwn_3800<bgcolor=cDkRed>;
+byte unkonwn_3801<bgcolor=cRed>;
+
+
 
 
 // Don't mess with anything below here, unless you know what you're doing.
@@ -506,7 +510,7 @@ while( indiv_profile_number < 12 )
               for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
                 if (list_of_grouped_controls[indiv_setting_number] > 0){
-                    Printf ("  %i \t %-30s: %s(%x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
+                    Printf ("  %i \t %-30s: %s(%04x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
@@ -847,22 +851,22 @@ string getIndividualSettingName(int settingNumber) {
     }
 
     local string settingName = "";
-    if (settingNumber & (1 << 0))  { settingName += "On "; }
-    if (settingNumber & (1 << 1))  { settingName += "Off "; }
-    if (settingNumber & (1 << 2))  { settingName += "Snow "; }
-    if (settingNumber & (1 << 3))  { settingName += "Unknown 1 "; }
-    if (settingNumber & (1 << 4))  { settingName += "Unknown 2 "; }
-    if (settingNumber & (1 << 5))  { settingName += "Sand "; }
-    if (settingNumber & (1 << 6))  { settingName += "Unknown 3 "; }
-    if (settingNumber & (1 << 7))  { settingName += "Unknown 4 "; }
-    if (settingNumber & (1 << 8))  { settingName += "Unknown 5 "; }
-    if (settingNumber & (1 << 9))  { settingName += "Comfort "; }
-    if (settingNumber & (1 << 10)) { settingName += "Normal "; }
-    if (settingNumber & (1 << 11)) { settingName += "Sport "; }
-    if (settingNumber & (1 << 12)) { settingName += "Offroad "; }
-    if (settingNumber & (1 << 13)) { settingName += "Eco "; }
-    if (settingNumber & (1 << 14)) { settingName += "Race "; }
-    if (settingNumber & (1 << 15)) { settingName += "Eco+ "; }
+    if (settingNumber & (1 << 0))  { settingName += "Unknown 1 "; }
+    if (settingNumber & (1 << 1))  { settingName += "Comfort "; }
+    if (settingNumber & (1 << 2))  { settingName += "Normal "; }
+    if (settingNumber & (1 << 3))  { settingName += "Sport "; }
+    if (settingNumber & (1 << 4))  { settingName += "Offroad "; }
+    if (settingNumber & (1 << 5))  { settingName += "Eco "; }
+    if (settingNumber & (1 << 6))  { settingName += "Race "; }
+    if (settingNumber & (1 << 7))  { settingName += "Eco+ "; }
+    if (settingNumber & (1 << 8))  { settingName += "On "; }
+    if (settingNumber & (1 << 9))  { settingName += "Off "; }
+    if (settingNumber & (1 << 10)) { settingName += "Snow "; }
+    if (settingNumber & (1 << 11)) { settingName += "Unknown 2"; }
+    if (settingNumber & (1 << 12)) { settingName += "Unknown 3"; }
+    if (settingNumber & (1 << 13)) { settingName += "Sand "; }
+    if (settingNumber & (1 << 14)) { settingName += "Unknown 4 "; }
+    if (settingNumber & (1 << 15)) { settingName += "Unknown 5 "; }
 
     return settingName;
 }
