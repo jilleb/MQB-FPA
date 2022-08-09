@@ -583,7 +583,7 @@ printTitle("Request values");
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
-
+Printf ("\t\t\t\t\t| request_values_0\t| request_values_1\t| request_values_2\t| request_values_3\t| request_values_4\t| request_values_5\t| request_values_6\t| request_values_7\t|\n");
 Printf(" Position\tControl                        \t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
 for( i = 0; i < 30; i++)
 {
