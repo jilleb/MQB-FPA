@@ -13,7 +13,57 @@ BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 // Anything older than version IA seems to be a different format.
 
-char unknown[4]       <format=hex,bgcolor=cYellow,comment="sub-version?">;
+byte unknown_header_01<format=hex,bgcolor=cDkYellow,comment="sub-version?">; 
+// Seems to be 64 in all datasets
+byte unknown_header_02<format=hex,bgcolor=cYellow>;
+// Something like manufacturing year? (range: 7 to 12..  add 2010 to this to get MY?) 
+//IB:   07
+//J4:   08
+//J6:   08
+//J7:   08
+//JA:   08
+//JC:   08
+//JD:   08
+//KN:   08
+//LA:   07
+//LG:   07
+//LI:   0B
+//LK:   08
+//LO:   0B
+//M9:   09
+//MJ:   0A
+//N1:   08
+//05:   09
+//OC:   09
+//OJ:   0A
+//ON:   09
+//OO:   09
+//OS:   OB
+//OY:   OB
+//OZ:   0B
+//P4:   OB
+//PF:   0B
+//TA:   0C
+
+
+byte unknown_header_03<format=hex,bgcolor=cDkYellow>; 
+// Always 00
+byte unknown_header_04<format=hex,bgcolor=cDkYellow>; 
+// Always OA
+byte unknown_header_06<format=hex,bgcolor=cYellow>; 
+// Almost always 00, except for:
+//LA:   1E
+//LG:   1E
+//LI:   1E
+//LK:   1E
+//LO:   1E
+//Seems to be a Seat-thing?
+
+
+byte unknown_header_07<format=hex,bgcolor=cYellow>; 
+
+
+
 FSeek(18);
 ushort unknown_header<format=decimal,bgcolor=cYellow>;
 
@@ -52,22 +102,29 @@ struct{
 
 
 FSeek(518);
-ubyte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
+ubyte child_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
+ubyte amount_of_childs_per_group[8] <bgcolor=cGreen>;
+
+// these are the names of the groups.
 // examples:
 
-// IB   21 FF FF FF FF FF FF FF 04
-// J6   21 FF FF FF FF FF FF FF 04
-// JA   21 24 FF FF FF FF FF FF 03 02
-// JD   21 FF FF FF FF FF FF FF 04
-// N1   03 0A FF FF FF FF FF FF 04 03
-// OC   21 24 FF FF FF FF FF FF 04 02
-// OS   21 FF FF FF FF FF FF FF 04
-// OY   21 24 FF FF FF FF FF FF 04 02
+// IB   21 FF FF FF FF FF FF FF 04          - 1 group, 4 controls
+// J6   21 FF FF FF FF FF FF FF 04          - 1 group, 4 controls
+// JA   21 24 FF FF FF FF FF FF 03 02       - 2 groups, 3+2 controls
+// JD   21 FF FF FF FF FF FF FF 04          - 1 group, 4 controls
+// N1   03 0A FF FF FF FF FF FF 04 03       - 2 groups, 4 controls, 3 controls
+// OC   21 24 FF FF FF FF FF FF 04 02       - 2 groups, 4 controls, 2 controls
+// OS   21 FF FF FF FF FF FF FF 04          - 1 group, 4 controls
+// OY   21 24 FF FF FF FF FF FF 04 02       - 2 groups, 4 + 2 controls
 
-// LI   01 FF FF FF FF FF FF FF 05
-// LK   01 FF FF FF FF FF FF FF 06
-// LO   01 FF FF FF FF FF FF FF 07
-// O2   00 FF FF FF FF FF FF FF FF
+// LI   01 FF FF FF FF FF FF FF 05          - 1 group, 5 controls
+// LK   01 FF FF FF FF FF FF FF 06          - 1 group, 6 controls
+// LO   01 FF FF FF FF FF FF FF 07          - 1 group, 7 controls
+// O2   00 FF FF FF FF FF FF FF FF          - no groups
+// PF   21 24 07 FF FF FF FF FF 03 02 02    - 3 groups, 3+2+2 controls
+// Having 3+2+2 in dataset PF rules out that this is anything other than group size.
+
+
 
 FSeek(566);
 ubyte unknown_group_properties[16] <bgcolor=cRed>;
@@ -249,10 +306,10 @@ ubyte unknown_bytes_button_specifics[6];
 // OY: 0000 FFFF FFFF
 
 struct{
-    byte order<bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
-    byte unknown_button1<bgcolor=cYellow>;      //untested, these seem to be just filler bytes, but are they?
-    byte unknown_button2<bgcolor=cYellow>;
-    byte unknown_button3<bgcolor=cYellow>;
+    ubyte order<bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
+    ubyte unknown_button1<bgcolor=cYellow>;      //untested, these seem to be just filler bytes, but are they?
+    ubyte unknown_button2<bgcolor=cYellow>;      //Possible R-button bytes
+    ubyte unknown_button3<bgcolor=cYellow>;
     } button[9] <optimize=true> ;
 
 short unknown_value<bgcolor=cRed >;
@@ -562,8 +619,14 @@ while (indivgroup_setting_number < 30) {
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
+            //The following statement is to fix a bug where the name of the group 4 needs the control that's in position 3.
+            if (group_number == 4){ 
+            Printf("    Group %i (%s): %s (%02x)\n", group_number, getControlName(list_of_grouped_controls[group_number-2]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number]);
+            }else{            
             Printf("    Group %i (%s): %s (%02x)\n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number]);
-                        num_of_groups++;
+            }
+            num_of_groups++;
+            
 
         }
         group_number++;
@@ -702,7 +765,7 @@ Printf("\n Unknown values:");
 Printf("\n value_1          (0x345):\t%04x (bin: %s)\n", unknown_value_1, IntToBinaryStr(unknown_value_1, 1, true));
 
 Printf(" 0x38_controls    (0x206):\t");
-for (i=0;i<32;i++){
+for (i=0;i<8;i++){
         Printf("%02x ", child_request_values_controls[i]);
     }
 
