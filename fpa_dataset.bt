@@ -619,6 +619,9 @@ i = 0;
 j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
 local int amount_of_unknown38_values = 0;
+local int amount_of_unknown38_values_A = 0;
+local int amount_of_unknown38_values_B = 0;
+
 
 local string even_lines;
 local string uneven_lines;
@@ -627,6 +630,7 @@ Printf(" \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
 
 for( i = 0; i < 30; i++)
     {
+
         Printf("  %i:\t", line_number);
         for( j = 0; j < 15; j++)
         {
@@ -645,30 +649,53 @@ for( i = 0; i < 30; i++)
 }
 
 
+        Printf("\n");
 
-//// experimental 0x38 research, extended view:
-//Printf("\n Group Children request value matrix\n");
-//Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
-//
-//for( i = 0; i < 30; i++)
-//{
-//        if ((list_of_grouped_controls[i] != 0) && (child_request_values_controls[i] != -1) && (child_request_values_controls[i] != 0) && (child_request_values_controls[i] < 30)) {
-//            
-//            //Printf ("   %i:\t %-30s(%02x)\t", i, getControlName(list_of_controls[child_request_values_controls[i]]),child_request_values_controls[i]);
-//            for( j = 0; j < 15; j++){
-//                if (group_children_request_values[i].group_children_request_value[j]==0)
-//                {
-//                    Printf ("--\t");
-//                }
-//                else
-//                {
-//                    Printf ("%02x\t", group_children_request_values[i].group_children_request_value[j]);
-//                }
-//            }
-//            Printf ("\n");
-//        }
-//    }
-//
+Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount\tControl\n");
+i = 0;
+j = 0;
+local int k = 0;
+line_number =0;
+for( i = 0; i < 32; i++)
+{
+        amount_of_unknown38_values_A=0;
+        amount_of_unknown38_values_B=0;
+
+        for( j = 0; j < 15; j++){
+        if (group_children_request_values[i].group_children_request_values_x[j].value_A!=0){
+            amount_of_unknown38_values_A++;
+        }
+        if (group_children_request_values[i].group_children_request_values_x[j].value_B!=0){
+            amount_of_unknown38_values_B++;
+            }
+        }
+
+        if (amount_of_unknown38_values_A > 0){
+                amount_of_unknown38_rows_with_value++;
+                Printf("  %i:\t", line_number);
+                for( j = 0; j < 15; j++)
+                {
+                    Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
+                }
+
+                Printf("%i \n", amount_of_unknown38_values_A);
+
+           }
+        line_number++;
+        if (amount_of_unknown38_values_B > 0){
+                amount_of_unknown38_rows_with_value++;
+                Printf("  %i:\t", line_number);
+                for( j = 0; j < 15; j++)
+                {
+                    Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
+                }
+
+                Printf("%i \n", amount_of_unknown38_values_B);
+           }
+            line_number++;
+}
+Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
+
 
 Printf("\n Unknown values:");
 
