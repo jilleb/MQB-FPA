@@ -51,7 +51,7 @@ struct{
 
 
 FSeek(518);
-byte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
+ubyte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
 // examples:
 
 // IB   21 FF FF FF FF FF FF FF 04
@@ -68,8 +68,8 @@ byte child_request_values_controls[32] <bgcolor=cBlue,name=getControlName>;
 // LO   01 FF FF FF FF FF FF FF 07
 // O2   00 FF FF FF FF FF FF FF FF
 
-FSeek(568);
-long unknown_group_properties[8] <bgcolor=cRed>;
+FSeek(566);
+ubyte unknown_group_properties[16] <bgcolor=cRed>;
 
 
 // Known values:
@@ -247,7 +247,7 @@ long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = lo
 // 0303 0300 on Tiguan R (dataset version PF)
 
 
-byte unknown_bytes_button_specifics[6] <bgcolor=cRed >;
+ubyte unknown_bytes_button_specifics[6] <bgcolor=cRed >;
 // PF: 0000 0102 FFFF
 // OY: 0000 FFFF FFFF
 ulong button_order[9] <bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
@@ -276,7 +276,7 @@ long unknown_value5<bgcolor=cDkRed >;
 // OY: FA00
 
 
-byte unknown_profiles_related[12]<bgcolor=cLtRed >;
+ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // todo: test this some more
 // tested the following:
 // 00 03 05 02 00 01 changed to
@@ -610,7 +610,7 @@ printTitle("Research stuff");
 
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
-Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount\tControl\n");
+Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
 i = 0;
 j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
@@ -625,45 +625,73 @@ amount_of_unknown38_values = 0;
             amount_of_unknown38_values++;
         }
         if (amount_of_unknown38_values > 0) {
-            Printf ("  %i\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%i\n", i, group_children_request_values[i].group_children_request_value[0], group_children_request_values[i].group_children_request_value[1], group_children_request_values[i].group_children_request_value[2], group_children_request_values[i].group_children_request_value[3], group_children_request_values[i].group_children_request_value[4], group_children_request_values[i].group_children_request_value[5], group_children_request_values[i].group_children_request_value[6], group_children_request_values[i].group_children_request_value[7], group_children_request_values[i].group_children_request_value[8], group_children_request_values[i].group_children_request_value[9], group_children_request_values[i].group_children_request_value[10], group_children_request_values[i].group_children_request_value[11], group_children_request_values[i].group_children_request_value[12], group_children_request_values[i].group_children_request_value[13], group_children_request_values[i].group_children_request_value[14], amount_of_unknown38_values);
+            Printf ("   %i:\t<to be determined>\t\t(%02x)\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\n", i, child_request_values_controls[i],group_children_request_values[i].group_children_request_value[0], group_children_request_values[i].group_children_request_value[1], group_children_request_values[i].group_children_request_value[2], group_children_request_values[i].group_children_request_value[3], group_children_request_values[i].group_children_request_value[4], group_children_request_values[i].group_children_request_value[5], group_children_request_values[i].group_children_request_value[6], group_children_request_values[i].group_children_request_value[7], group_children_request_values[i].group_children_request_value[8], group_children_request_values[i].group_children_request_value[9], group_children_request_values[i].group_children_request_value[10], group_children_request_values[i].group_children_request_value[11], group_children_request_values[i].group_children_request_value[12], group_children_request_values[i].group_children_request_value[13], group_children_request_values[i].group_children_request_value[14]);
             amount_of_unknown38_rows_with_value++;
         }
 }
-Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
 
 
 
 
 
 
-// experimental 0x38 research, extended view:
-Printf("\n Group Children request value matrix\n");
-Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+//// experimental 0x38 research, extended view:
+//Printf("\n Group Children request value matrix\n");
+//Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+//
+//for( i = 0; i < 30; i++)
+//{
+//        if ((list_of_grouped_controls[i] != 0) && (child_request_values_controls[i] != -1) && (child_request_values_controls[i] != 0) && (child_request_values_controls[i] < 30)) {
+//            
+//            //Printf ("   %i:\t %-30s(%02x)\t", i, getControlName(list_of_controls[child_request_values_controls[i]]),child_request_values_controls[i]);
+//            for( j = 0; j < 15; j++){
+//                if (group_children_request_values[i].group_children_request_value[j]==0)
+//                {
+//                    Printf ("--\t");
+//                }
+//                else
+//                {
+//                    Printf ("%02x\t", group_children_request_values[i].group_children_request_value[j]);
+//                }
+//            }
+//            Printf ("\n");
+//        }
+//    }
+//
 
-for( i = 0; i < 30; i++)
-{
-        if ((list_of_grouped_controls[i] != 0) && (child_request_values_controls[i] != -1) && (child_request_values_controls[i] != 0) && (child_request_values_controls[i] < 30)) {
-// todo: fix this, because it currently doesn't display 21 and 24
-            Printf ("   %i:\t %-30s(%02x)\t", i, getControlName(list_of_controls[child_request_values_controls[i]]),child_request_values_controls[i]);
-            for( j = 0; j < 15; j++){
-                if (group_children_request_values[i].group_children_request_value[j]==0)
-                {
-                    Printf ("--\t");
-                }
-                else
-                {
-                    Printf ("%02x\t", group_children_request_values[i].group_children_request_value[j]);
-                }
-            }
-            Printf ("\n");
-        }
+Printf("\n Unknown values:");
+
+Printf("\n value_1 (0x345):\t\t%04x (bin: %s)\n", unknown_value_1, IntToBinaryStr(unknown_value_1, 1, true));
+
+Printf(" 0x38_controls (0x206):\t");
+for (i=0;i<32;i++){
+        Printf("%02x ", child_request_values_controls[i]);
     }
 
-Printf("\n\n");
+
+Printf("\n group_properties (0x234):\t");
+for (i=0;i<16;i++){
+    Printf("%02x ", unknown_group_properties[i]);
+    }
+
+Printf("\n group_properties (0x234):\t");
+for (i=0;i<16;i++){
+    Printf("%s ", IntToBinaryStr(unknown_group_properties[i]));
+    }
+
+Printf("\n button_specifics (0x7D0):\t");
+for (i=0;i<6;i++){
+    Printf("%02x ", unknown_bytes_button_specifics[i]);
+    }
+
+Printf("\n profiles_related (0x80A):\t");
+for (i=0;i<12;i++){
+    Printf("%02x ", unknown_profiles_related[i]);
+    }
 
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
-Printf(" Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
+Printf("\n\nn Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_controls[i] > 0){
@@ -671,30 +699,7 @@ for( i = 0; i < 30; i++)
    }
 }
 
-Printf("\n Unknown_value_1:\t %04x %s\n", unknown_value_1, IntToBinaryStr(unknown_value_1));
-Printf(" Unknown_0x38_controls_stuff at 0x206:\t");
-for (i=0;i<32;i++){
-    if (child_request_values_controls[i] == -1){
-        Printf("-");
-    } else {
-        Printf("%02x", child_request_values_controls[i]);
-        }
-    }
 
-Printf("\n Unknown_group_properties:\t");
-for (i=0;i<8;i++){
-    Printf("%02x", unknown_group_properties[i]);
-    }
-
-Printf("\n Unknown_button_specifics:\t");
-for (i=0;i<6;i++){
-    Printf("%d\t", unknown_bytes_button_specifics[i]);
-    }
-
-Printf("\n Unknown_profiles_related:\t");
-for (i=0;i<12;i++){
-    Printf("%i\t", unknown_profiles_related[i]);
-    }
 
 
 
