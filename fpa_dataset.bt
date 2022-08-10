@@ -15,16 +15,17 @@ char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // 
 
 char unknown[4]       <format=hex,bgcolor=cYellow,comment="sub-version?">;
 FSeek(18);
-ushort data_start<format=decimal,bgcolor=cGreen>;
-
-FSeek(data_start-1); // this is pointing to the start of the datablock, is currently not implemented yet.
+ushort unknown_header<format=decimal,bgcolor=cYellow>;
 
 // From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
 // it appears to override the request values before they are sent to a control module
 FSeek(38);
 struct{
-    ubyte group_children_request_value[15] <bgcolor=cDkRed>;
-    } group_children_request_values[32];
+    struct{
+        ubyte value_A:4<bgcolor=cDkRed>;
+        ubyte value_B:4<bgcolor=cDkRed>;
+        }group_children_request_values_x [15]<optimize=false>;
+}group_children_request_values[32]<optimize=false>;
 
 // findings so far:
 // on these datasets, the controls line up with their respective position in list_of_grouped_controls:
@@ -130,14 +131,10 @@ struct {
     ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
     } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
-
-
-
 FSeek(722);
 ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName,hidden=true>;
 
 FSeek(722);
-
 struct {
     ubyte remember_after_reset_in_clubsport: 1         <read = getYesNo>;
     ubyte remember_after_reset_in_lift: 1              <read = getYesNo>;
@@ -575,7 +572,7 @@ printTitle("Allowed to make changes and remember after reset");
 
 Printf("                                      \t           \t Change allowed \t After ignition\n");
 
-Printf(" Position Control                        \t ConfByte\t ?IREOSNC ????????   IREOSNC? ????????\n");
+Printf(" Position Control                        \t ConfByte\t ???????? ?IREOSNC   ???????? IREOSNC?\n");
 for( i = 0; i < 30; i++)
 {
 
@@ -589,7 +586,7 @@ printTitle("Request values");
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
-Printf ("\t\t\t\t\t| request_values_0 | request_values_1  | request_values_2  | request_values_3  | request_values_4  | request_values_5  | request_values_6  | request_values_7  |\n");
+Printf ("\t\t\t\t\trequest_values_0\t|request_values_1\t|request_values_2\t|request_values_3\t|request_values_4\t|request_values_5\t|request_values_6\t|request_values_7\n");
 Printf(" Position\tControl                        \t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
 for( i = 0; i < 30; i++)
 {
@@ -610,28 +607,48 @@ printTitle("Research stuff");
 
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
-Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
+//Printf(" Position\tControl                  \t \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
 i = 0;
 j = 0;
 local int amount_of_unknown38_rows_with_value = 0;
 local int amount_of_unknown38_values = 0;
 
-for( i = 0; i < 32; i++)
-{
-amount_of_unknown38_values = 0;
+//for( i = 0; i < 32; i++)
+//{
+//amount_of_unknown38_values = 0;
+//
+//        for( j = 0; j < 15; j++)
+//        if (group_children_request_values[i].group_children_request_value[j]!=0){
+//            amount_of_unknown38_values++;
+//        }
+//        if (amount_of_unknown38_values > 0) {
+//            Printf ("   %i:\t<to be determined>\t\t(%02x)\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\n", i, child_request_values_controls[i],group_children_request_values[i].group_children_request_value[0], group_children_request_values[i].group_children_request_value[1], group_children_request_values[i].group_children_request_value[2], group_children_request_values[i].group_children_request_value[3], group_children_request_values[i].group_children_request_value[4], group_children_request_values[i].group_children_request_value[5], group_children_request_values[i].group_children_request_value[6], group_children_request_values[i].group_children_request_value[7], group_children_request_values[i].group_children_request_value[8], group_children_request_values[i].group_children_request_value[9], group_children_request_values[i].group_children_request_value[10], group_children_request_values[i].group_children_request_value[11], group_children_request_values[i].group_children_request_value[12], group_children_request_values[i].group_children_request_value[13], group_children_request_values[i].group_children_request_value[14]);
+//            amount_of_unknown38_rows_with_value++;
+//        }
+//}
+local string even_lines;
+local string uneven_lines;
+local int line_number =0;
+Printf(" \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
 
+for( i = 0; i < 30; i++)
+    {
+        Printf("%i:\t", line_number);
         for( j = 0; j < 15; j++)
-        if (group_children_request_values[i].group_children_request_value[j]!=0){
-            amount_of_unknown38_values++;
+        {
+            Printf("%02x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
         }
-        if (amount_of_unknown38_values > 0) {
-            Printf ("   %i:\t<to be determined>\t\t(%02x)\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\t%02x\n", i, child_request_values_controls[i],group_children_request_values[i].group_children_request_value[0], group_children_request_values[i].group_children_request_value[1], group_children_request_values[i].group_children_request_value[2], group_children_request_values[i].group_children_request_value[3], group_children_request_values[i].group_children_request_value[4], group_children_request_values[i].group_children_request_value[5], group_children_request_values[i].group_children_request_value[6], group_children_request_values[i].group_children_request_value[7], group_children_request_values[i].group_children_request_value[8], group_children_request_values[i].group_children_request_value[9], group_children_request_values[i].group_children_request_value[10], group_children_request_values[i].group_children_request_value[11], group_children_request_values[i].group_children_request_value[12], group_children_request_values[i].group_children_request_value[13], group_children_request_values[i].group_children_request_value[14]);
-            amount_of_unknown38_rows_with_value++;
+        line_number = line_number + 1;
+        Printf("\n");
+        Printf("%i:\t", line_number);
+        for( j = 0; j < 15; j++)
+        {
+            Printf("%02x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
         }
+        line_number = line_number + 1;
+
+        Printf("\n");
 }
-
-
-
 
 
 
