@@ -562,7 +562,7 @@ while (indivgroup_setting_number < 30) {
 
     while (group_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
-            Printf("    Group %i (%s): %s \n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]));
+            Printf("    Group %i (%s): %s (%02x)\n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number]);
                         num_of_groups++;
 
         }
@@ -678,7 +678,7 @@ for( i = 0; i < 32; i++)
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
                 }
 
-                Printf("%i \n", amount_of_unknown38_values_A);
+                Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_A,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
 
            }
         line_number++;
@@ -690,7 +690,7 @@ for( i = 0; i < 32; i++)
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
                 }
 
-                Printf("%i \n", amount_of_unknown38_values_B);
+                Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_B,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
            }
             line_number++;
 }
