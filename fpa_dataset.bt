@@ -5,75 +5,159 @@
 // Author:      MQB-coding
 // Revision:    9999
 // Purpose:     VAG MQB FPA (fahrprofilauswahl / driving profile) dataset parsing
-// Comments:    red = unknown, yellow = possible, green = sure
+// Comments:    red = unknown, yellow = possible, green = sure, gray = doesn't look very relevant.
 //              Currently only useful for FPA datasets for 3Q0907530Q and newer.
 //--------------------------------------
+OutputPaneClear();
 BitfieldDisablePadding();
 BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 // Anything older than version IA seems to be a different format.
 
-byte unknown_header_01<format=hex,bgcolor=cDkYellow,comment="sub-version?">; 
-// Seems to be 64 in all datasets
-byte unknown_header_02<format=hex,bgcolor=cYellow>;
-// Something like manufacturing year? (range: 7 to 12..  add 2010 to this to get MY?) 
-//IB:   07
-//J4:   08
-//J6:   08
-//J7:   08
-//JA:   08
-//JC:   08
-//JD:   08
-//KN:   08
-//LA:   07
-//LG:   07
-//LI:   0B
-//LK:   08
-//LO:   0B
-//M9:   09
-//MJ:   0A
-//N1:   08
-//05:   09
-//OC:   09
-//OJ:   0A
-//ON:   09
-//OO:   09
-//OS:   OB
-//OY:   OB
-//OZ:   0B
-//P4:   OB
-//PF:   0B
-//TA:   0C
+struct{
+    byte unknown_04<format=hex,bgcolor=cDkGray,comment="sub-version?">; 
+    // Seems to be 64 in all datasets
+    byte unknown_05<format=hex,bgcolor=cDkGray>;
+    // Something like manufacturing year? (range: 7 to 12..  add 2010 to this to get MY?) 
+    //IB:   07
+    //J4:   08
+    //J6:   08
+    //J7:   08
+    //JA:   08
+    //JC:   08
+    //JD:   08
+    //KN:   08
+    //LA:   07
+    //LG:   07
+    //LI:   0B
+    //LK:   08
+    //LO:   0B
+    //M9:   09
+    //MJ:   0A
+    //N1:   08
+    //N8:   0B
+    //O2:   09
+    //03:   09
+    //O4:   09
+    //05:   09
+    //OC:   09
+    //OJ:   0A
+    //ON:   09
+    //OO:   09
+    //OS:   OB
+    //OY:   OB
+    //OZ:   0B
+    //P4:   OB
+    //PF:   0B
+    //TA:   0C
+    
+    
+    byte unknown_06<format=hex,bgcolor=cDkGray>; 
+    // Always 00
+    byte unknown_07<format=hex,bgcolor=cDkGray>; 
+    // Always OA
+    byte unknown_08<format=hex,bgcolor=cDkGray>; 
+    // Almost always 00, except for:
+    //LA:   1E
+    //LG:   1E
+    //LI:   1E
+    //LK:   1E
+    //LO:   1E
+    //Seems to be a Seat-thing?
+    
+    
+    byte unknown_09<format=hex,bgcolor=cDkGray>; 
+    // Almost always 01 except for:
+    // KN: FF
+    // N1: FF
+    // N8: FF
+    // FF Seems to be an Audi thing?
+    // J7: 00
+    
+    byte unknown_0A <bgcolor=cDkGray>;
+    // Known values are either 01 or 00
+    //IB:   01   
+    //J4:   01   
+    //J6:   00
+    //J7:   06
+    //JA:   01 
+    //JC:   01
+    //JD:   01
+    //KN:   00
+    //LA:   01
+    //LG:   01
+    //LI:   01
+    //LK:   01
+    //LO:   01
+    //M9:   01
+    //MJ:   01
+    //N1:   00
+    //N8:   00
+    //O2:   01
+    //O3:   01
+    //O4:   01
+    //05:   00
+    //OC:   01
+    //OJ:   01
+    //ON:   01
+    //OO:   01
+    //OS:   01
+    //OY:   01
+    //OZ:   00   
+    //P4:   01
+    //PF:   00
+    //TA:   01    
+
+    byte unknown_0B <format=decimal,bgcolor=cDkGray>;
+    // Known values are in the range of dec 10 to 50, but there's no clear pattern yet.
+    //IB:   32      
+    //J4:   32 
+    //J6:   0A
+    //J7:   03
+    //JA:   32    
+    //JC:   32
+    //JD:   32
+    //KN:   00
+    //LA:   32
+    //LG:   32
+    //LI:   32
+    //LK:   32
+    //LO:   32
+    //M9:   32
+    //MJ:   32
+    //N1:   14
+    //N8:   14
+    //O2:   0A
+    //O3:   0A
+    //O4:   0A
+    //05:   0A
+    //OC:   32
+    //OJ:   32
+    //ON:   32
+    //OO:   32
+    //OS:   14
+    //OY:   14
+    //OZ:   14   
+    //P4:   14
+    //PF:   14
+    //TA:   0A    
+    
+    byte unknown_0C<bgcolor=cDkGray>;
+    // Almost always 0F except for Tiguan datasets (J6, OZ, PF), where it's 0A
+    // Could this influence button behavior, because Tiguan has a knob instead of a mode button?\
+
+    byte unknown_0D<bgcolor=cDkGray>;
 
 
-byte unknown_header_03<format=hex,bgcolor=cDkYellow>; 
-// Always 00
-byte unknown_header_04<format=hex,bgcolor=cDkYellow>; 
-// Always OA
-byte unknown_header_06<format=hex,bgcolor=cYellow>; 
-// Almost always 00, except for:
-//LA:   1E
-//LG:   1E
-//LI:   1E
-//LK:   1E
-//LO:   1E
-//Seems to be a Seat-thing?
-
-
-byte unknown_header_07<format=hex,bgcolor=cYellow>; 
-
-
-
-FSeek(18);
-ushort unknown_header<format=decimal,bgcolor=cYellow>;
+    }   header;
 
 // From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
 // it appears to override the request values before they are sent to a control module
 FSeek(38);
 struct{
     struct{
-        ubyte value_A:4<bgcolor=cDkRed>;
         ubyte value_B:4<bgcolor=cDkRed>;
+        ubyte value_A:4<bgcolor=cDkRed>;
         }group_children_request_values_x [15]<optimize=true>;
 }group_children_request_values[32]<optimize=true>;
 
@@ -100,6 +184,43 @@ struct{
 // LO (Leon Cupra)
 // O2 (Magotan 2021 GTE)
 
+FSeek(38);
+
+
+struct{
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_1children_request_values_x [15]<optimize=true,bgcolor=0xff0000>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_2children_request_values_x [15]<optimize=true,bgcolor=0xff2424>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_3children_request_values_x [15]<optimize=true,bgcolor=0xff4747>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_4children_request_values_x [15]<optimize=true,bgcolor=0xff6b6b>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_5children_request_values_x [15]<optimize=true,bgcolor=0xff8f8f>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_6children_request_values_x [15]<optimize=true,bgcolor=0xffb3b3>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_7children_request_values_x [15]<optimize=true,bgcolor=0xffd6d6>;
+    struct{
+            ubyte value_B:4;
+            ubyte value_A:4;
+            }group_8children_request_values_x [15]<optimize=true,bgcolor=0xffffff>;
+    }groups_request_values_matrix[4];
 
 FSeek(518);
 ubyte child_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
@@ -470,17 +591,6 @@ ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 // Tiguan R 2021: PF00
 // Passat 2021:   0Y00
 
-FSeek(10);
-long unknown_10 <bgcolor=cRed>;
-// Known values:
-// Octavia: 0132
-// Magotan: 010A
-// Passat:  0132
-// Leon:    0132
-// PF:      0014 0A01
-// OY:      0114 0F01
-// Some kind of date/year?
-
 
 FSeek(14);
 long unknown_14 <bgcolor=cRed>;
@@ -719,6 +829,8 @@ i = 0;
 j = 0;
 local int k = 0;
 line_number =0;
+local string filled_lines = "";
+local string used_controls = "";
 for( i = 0; i < 32; i++)
 {
         amount_of_unknown38_values_A=0;
@@ -736,28 +848,36 @@ for( i = 0; i < 32; i++)
         if (amount_of_unknown38_values_A > 0){
                 amount_of_unknown38_rows_with_value++;
                 Printf("  %i:\t", line_number);
+                filled_lines = filled_lines + Str("%i,",line_number);
                 for( j = 0; j < 15; j++)
                 {
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
                 }
 
                 Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_A,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
-
+                used_controls = used_controls + (getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1])) + Str("(%i), ", list_of_controls[amount_of_unknown38_rows_with_value-1]);
            }
         line_number++;
         if (amount_of_unknown38_values_B > 0){
                 amount_of_unknown38_rows_with_value++;
                 Printf("  %i:\t", line_number);
+                filled_lines = filled_lines + Str("%i,",line_number);
                 for( j = 0; j < 15; j++)
                 {
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
                 }
 
                 Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_B,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
+                used_controls = used_controls + (getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1])) + Str("(%i), ", list_of_controls[amount_of_unknown38_rows_with_value-1]);
+
            }
             line_number++;
 }
-Printf(" Amount of rows with a value: %i\n\n", amount_of_unknown38_rows_with_value);
+Printf(" Amount of rows with a value: %i\n", amount_of_unknown38_rows_with_value);
+Printf(" Filled lines: %s\n", filled_lines);
+Printf(" Used controls: %s\n", used_controls);
+
+
 
 
 Printf("\n Unknown values:");
@@ -769,15 +889,14 @@ for (i=0;i<8;i++){
         Printf("%02x ", child_request_values_controls[i]);
     }
 
-
-Printf("\n group_properties (0x234):\t");
-for (i=0;i<16;i++){
-    Printf("%02x ", unknown_group_properties[i]);
+Printf("\n amount_of_childs (0x20E):\t");
+for (i=0;i<8;i++){
+    Printf("%02x ", amount_of_childs_per_group[i]);
     }
 
 Printf("\n group_properties (0x234):\t");
 for (i=0;i<16;i++){
-    Printf("%s ", IntToBinaryStr(unknown_group_properties[i]));
+    Printf("%02x ", unknown_group_properties[i]);
     }
 
 Printf("\n button_specifics (0x7D0):\t");
@@ -1091,3 +1210,7 @@ void printTitle( string title )
     Printf(" %s\n", title);
     Printf(" #################################################\n");
     }
+
+local string filename = "";
+filename = "c:\\temp\\" + dataset_version +  ".txt";
+OutputPaneSave(filename);
