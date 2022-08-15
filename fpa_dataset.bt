@@ -156,8 +156,8 @@ struct{
 FSeek(38);
 struct{
     struct{
-        ubyte value_B:4<bgcolor=cDkRed>;
-        ubyte value_A:4<bgcolor=cDkRed>;
+        ubyte value_B:4<bgcolor=cDkYellow>;
+        ubyte value_A:4<bgcolor=cYellow>;
         }group_children_request_values_x [15]<optimize=true>;
 }group_children_request_values[32]<optimize=true>;
 
@@ -184,43 +184,8 @@ struct{
 // LO (Leon Cupra)
 // O2 (Magotan 2021 GTE)
 
-FSeek(38);
 
 
-struct{
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_1children_request_values_x [15]<optimize=true,bgcolor=0xff0000>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_2children_request_values_x [15]<optimize=true,bgcolor=0xff2424>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_3children_request_values_x [15]<optimize=true,bgcolor=0xff4747>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_4children_request_values_x [15]<optimize=true,bgcolor=0xff6b6b>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_5children_request_values_x [15]<optimize=true,bgcolor=0xff8f8f>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_6children_request_values_x [15]<optimize=true,bgcolor=0xffb3b3>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_7children_request_values_x [15]<optimize=true,bgcolor=0xffd6d6>;
-    struct{
-            ubyte value_B:4;
-            ubyte value_A:4;
-            }group_8children_request_values_x [15]<optimize=true,bgcolor=0xffffff>;
-    }groups_request_values_matrix[4];
 
 FSeek(518);
 ubyte child_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
@@ -566,8 +531,6 @@ struct{
 }
 hybrid_mode_settings[12];
 
-
-
 FSeek(3741);
 byte AID_mode_banner[12]<bgcolor=cGreen, comment=getAIDBanner>;
 
@@ -721,8 +684,8 @@ for( ctrlPosition = 0; ctrlPosition < 30; ctrlPosition++)
  }
 }
 
-
 printTitle("Setting Groups");
+local int groupsMatrixControlsArray[30];
 local int num_of_groups = 0;
 while (indivgroup_setting_number < 30) {
     group_number = 1;
@@ -731,14 +694,12 @@ while (indivgroup_setting_number < 30) {
         if (grouped_controls[indivgroup_setting_number] == group_number) {
             //The following statement is to fix a bug where the name of the group 4 needs the control that's in position 3.
             if (group_number == 4){ 
-            Printf("    Group %i (%s): %s (%02x)\n", group_number, getControlName(list_of_grouped_controls[group_number-2]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number]);
+            Printf("    Group %i (%s): %s (%02x) - 0x38 Matrix line: %i\n", group_number, getControlName(list_of_grouped_controls[group_number-2]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number], groupMemberMatrixPosition(indivgroup_setting_number,group_number));
             }else{            
-            Printf("    Group %i (%s): %s (%02x)\n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number]);
+            Printf("    Group %i (%s): %s (%02x) - 0x38 Matrix line: %i\n", group_number, getControlName(list_of_grouped_controls[group_number-1]), getControlName(list_of_controls[indivgroup_setting_number]),list_of_controls[indivgroup_setting_number], groupMemberMatrixPosition(indivgroup_setting_number,group_number));
             }
             num_of_groups++;
-            
-
-        }
+                  }
         group_number++;
     }
     indivgroup_setting_number++;
@@ -781,10 +742,7 @@ for( i = 0; i < 30; i++)
         Printf("\n");
    }
 }
-
-
 printTitle("Research stuff");
-
 
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
@@ -799,32 +757,10 @@ local int amount_of_unknown38_values_B = 0;
 local string even_lines;
 local string uneven_lines;
 local int line_number =0;
-Printf(" \t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
-
-for( i = 0; i < 30; i++)
-    {
-
-        Printf("  %i:\t", line_number);
-        for( j = 0; j < 15; j++)
-        {
-            Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
-        }
-        line_number = line_number + 1;
-        Printf("\n");
-        Printf("  %i:\t", line_number);
-        for( j = 0; j < 15; j++)
-        {
-            Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
-        }
-        line_number = line_number + 1;
-
-        Printf("\n");
-}
-
 
         Printf("\n");
 
-Printf(" Number\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\tAmount\tControl\n");
+Printf(" Position\tControl\t\t\t\t1\t2\t3\t4\t5\t6\t7\t8\t9\t10\t11\t12\t13\t14\t15\n");
 i = 0;
 j = 0;
 local int k = 0;
@@ -847,27 +783,27 @@ for( i = 0; i < 32; i++)
 
         if (amount_of_unknown38_values_A > 0){
                 amount_of_unknown38_rows_with_value++;
-                Printf("  %i:\t", line_number);
+                Printf("  %i:\t %-30s (%02x)\t", line_number, getControlName(list_of_controls[groupsMatrixControlsArray[amount_of_unknown38_rows_with_value-1]]),list_of_controls[amount_of_unknown38_rows_with_value-1]);
                 filled_lines = filled_lines + Str("%i,",line_number);
                 for( j = 0; j < 15; j++)
                 {
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_A);
                 }
 
-                Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_A,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
+                Printf("\n");
                 used_controls = used_controls + (getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1])) + Str("(%i), ", list_of_controls[amount_of_unknown38_rows_with_value-1]);
            }
         line_number++;
         if (amount_of_unknown38_values_B > 0){
                 amount_of_unknown38_rows_with_value++;
-                Printf("  %i:\t", line_number);
+                Printf("  %i:\t %-30s (%02x)\t", line_number, getControlName(list_of_controls[groupsMatrixControlsArray[amount_of_unknown38_rows_with_value-1]]),list_of_controls[amount_of_unknown38_rows_with_value-1]);
                 filled_lines = filled_lines + Str("%i,",line_number);
                 for( j = 0; j < 15; j++)
                 {
                     Printf("%01x\t", group_children_request_values[i].group_children_request_values_x[j].value_B);
                 }
 
-                Printf("%i\t %s(%02x)\n", amount_of_unknown38_values_B,getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1]), list_of_controls[amount_of_unknown38_rows_with_value-1]);
+                Printf("\n");
                 used_controls = used_controls + (getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1])) + Str("(%i), ", list_of_controls[amount_of_unknown38_rows_with_value-1]);
 
            }
@@ -876,9 +812,6 @@ for( i = 0; i < 32; i++)
 Printf(" Amount of rows with a value: %i\n", amount_of_unknown38_rows_with_value);
 Printf(" Filled lines: %s\n", filled_lines);
 Printf(" Used controls: %s\n", used_controls);
-
-
-
 
 Printf("\n Unknown values:");
 
@@ -909,7 +842,6 @@ for (i=0;i<12;i++){
     Printf("%02x ", unknown_profiles_related[i]);
     }
 
-
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf("\n\n Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
 for( i = 0; i < 30; i++)
@@ -918,10 +850,6 @@ for( i = 0; i < 30; i++)
         Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
    }
 }
-
-
-
-
 
 printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
@@ -1077,7 +1005,6 @@ string getLongCodingByteName(int controlNumber) {
     }
 }
 
-
 string getIndividualSettingName(int settingNumber) {
     if (settingNumber == 0) {
         return "not set ";
@@ -1177,7 +1104,6 @@ string getAIDBanner(int settingNumber) {
     }
 }
 
-
 string getSettingByteActive(int state) {
     switch (state) {
         case 0x0: return "Inactive";
@@ -1210,6 +1136,45 @@ void printTitle( string title )
     Printf(" %s\n", title);
     Printf(" #################################################\n");
     }
+
+int groupMemberMatrixPosition (int value, int group){
+local int temp_order=0;
+local int temp_group=0;
+local int order = 0;
+local int factor = 0;
+
+   if (group == 4){ 
+        group= 3;
+    }
+
+for(i = 0 ; i < 30 ; i ++){
+	if (temp_group < grouped_controls[i]){
+		temp_order = 0;
+		temp_group = grouped_controls[i];
+		} else {
+		temp_order = temp_order+1;
+		}
+    if (i==value){
+        order= temp_order;
+    }
+    }
+
+    if( order < 2){
+        factor = 0;
+    }   else if (order < 4){
+        factor = 1;
+        order = order -2;
+    }   else if (order < 6){
+        factor = 2;
+        order = order - 4;
+    }   else if (order < 8){
+        factor = 3;
+        order = order -6;
+    }
+    order = (factor * 16) + order + (2*(group-1));
+    groupsMatrixControlsArray[order] = value; 
+    return order;       
+}                               
 
 local string filename = "";
 filename = "c:\\temp\\" + dataset_version +  ".txt";
