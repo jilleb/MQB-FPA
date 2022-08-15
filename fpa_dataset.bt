@@ -9,6 +9,8 @@
 //              Currently only useful for FPA datasets for 3Q0907530Q and newer.
 //--------------------------------------
 OutputPaneClear();
+local int groupsMatrixControlsArray[64];
+
 BitfieldDisablePadding();
 BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
@@ -685,7 +687,6 @@ for( ctrlPosition = 0; ctrlPosition < 30; ctrlPosition++)
 }
 
 printTitle("Setting Groups");
-local int groupsMatrixControlsArray[64];
 local int num_of_groups = 0;
 while (indivgroup_setting_number < 30) {
     group_number = 1;
@@ -791,12 +792,12 @@ for( i = 0; i < 32; i++)
                 }
 
                 Printf("\n");
-                Printf("  %i:\t %-30s (%02x)\t", line_number, getControlName(list_of_controls[groupsMatrixControlsArray[line_number]]),list_of_controls[groupsMatrixControlsArray[line_number]]);
+                used_controls = used_controls + (getControlName(list_of_controls[amount_of_unknown38_rows_with_value-1])) + Str("(%i), ", list_of_controls[amount_of_unknown38_rows_with_value-1]);
            }
         line_number++;
         if (amount_of_unknown38_values_B > 0){
                 amount_of_unknown38_rows_with_value++;
-                Printf("  %i:\t %-30s (%02x)\t", line_number, getControlName(list_of_controls[groupsMatrixControlsArray[amount_of_unknown38_rows_with_value-1]]),list_of_controls[amount_of_unknown38_rows_with_value-1]);
+                Printf("  %i:\t %-30s (%02x)\t", line_number, getControlName(list_of_controls[groupsMatrixControlsArray[line_number]]),list_of_controls[groupsMatrixControlsArray[line_number]]);
                 filled_lines = filled_lines + Str("%i,",line_number);
                 for( j = 0; j < 15; j++)
                 {
