@@ -213,9 +213,33 @@ ubyte amount_of_childs_per_group[8] <bgcolor=cGreen>;
 // Having 3+2+2 in dataset PF rules out that this is anything other than group size.
 
 
-
 FSeek(566);
-ubyte unknown_group_properties[16] <bgcolor=cRed>;
+ubyte unknown_group_properties_0 <bgcolor=cRed>;
+ubyte unknown_group_properties_1 <bgcolor=cDkRed>;
+ubyte unknown_group_properties_2 <bgcolor=cRed>;  
+// always 40 when there are groups
+// 40: 01000000
+// when set to 00, Sound group doesnt seem to work.
+
+ubyte unknown_group_properties_3 <bgcolor=cDkRed>;  
+// 18 or 1C when there are groups
+// 18: 0001 1000
+// 1C: 0001 1100
+
+ubyte unknown_group_properties_4 <bgcolor=cRed>; // always 00
+ubyte unknown_group_properties_5 <bgcolor=cDkRed>; // 80 or 00;
+// 80: 10000000
+
+ubyte unknown_group_properties_6 <bgcolor=cRed>;
+ubyte unknown_group_properties_7 <bgcolor=cDkRed>;
+ubyte unknown_group_properties_8 <bgcolor=cRed>;
+ubyte unknown_group_properties_9 <bgcolor=cDkRed>;
+ubyte unknown_group_properties_A <bgcolor=cRed>;
+ubyte unknown_group_properties_B <bgcolor=cDkRed>;
+ubyte unknown_group_properties_C <bgcolor=cRed>;
+ubyte unknown_group_properties_D <bgcolor=cDkRed>;
+ubyte unknown_group_properties_E <bgcolor=cRed>;
+ubyte unknown_group_properties_F <bgcolor=cDkRed>;
 
 
 // Known values:
@@ -363,17 +387,32 @@ byte filler <bgcolor=cYellow>;
 // appears to be just zeroes, at all time
 
 byte button_filler_1;
-long enable_fpa_button_part_1 <bgcolor=cYellow, comment=getBoolean>;
+
+ubyte enable_fpa_button_part_1_1 <bgcolor=cYellow, comment=getBoolean>;
 // 1 = enabled
 // 0 = disabled
-// 0005 FDFE  on Tiguan R (has enabled steering wheel FPA buttons)
+// 5 = on PF00, which has R button on steering wheel
+ubyte enable_fpa_button_part_1_2 <bgcolor=cYellow, comment=getBoolean>;
+// FD  on Tiguan R (has enabled steering wheel FPA buttons)
+
+ubyte enable_fpa_button_part_1_3 <bgcolor=cYellow, comment=getBoolean>;
+// FE  on Tiguan R (has enabled steering wheel FPA buttons)
+
+ubyte enable_fpa_button_part_1_4 <bgcolor=cYellow, comment=getBoolean>;
+
 
 byte button_filler_2;
-long enable_fpa_button_part_2 <bgcolor=cYellow, comment=getBoolean>;
+ubyte enable_fpa_button_part_2_1 <bgcolor=cYellow, comment=getBoolean>;
 // 1 = enabled
 // 0 = disabled
 // 4 = unknown
 // 0401 0100 on Tiguan R (has enabled steering wheel FPA buttons) (dataset version PF)
+
+ubyte enable_fpa_button_part_2_2 <bgcolor=cYellow, comment=getBoolean>;
+ubyte enable_fpa_button_part_2_3 <bgcolor=cYellow, comment=getBoolean>;
+ubyte enable_fpa_button_part_2_4 <bgcolor=cYellow, comment=getBoolean>;
+
+
  
 byte button_filler_3;
 long button_behavior <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
@@ -400,11 +439,13 @@ struct{
     ubyte unknown_button3<bgcolor=cYellow>;
     } button[9] <optimize=true> ;
 
-short unknown_value<bgcolor=cRed >;
+short unknown_value<bgcolor=cRed >; // this is Steering-wheel R-button related!
 // PF: 0003
+// OZ: 0002 - R steering wheel button
 // OY: 02FF
 
 short unknown_FFFFFF00<bgcolor=cDkRed >;
+// OZ: 06FF
 // PF: 06FF
 // OY: FFFF
 
@@ -435,12 +476,29 @@ ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // OY: 0003 0502 0001 F1F1 0000 0000
 
 
-long unknown_value6<bgcolor=cDkRed >;
+ubyte unknown_value6_1 <bgcolor=cDkRed >; 
+ubyte unknown_value6_2 <bgcolor=cLtRed >; // relevant for R button on steering wheel
+ubyte unknown_value6_3 <bgcolor=cDkRed >;
+ubyte unknown_value6_4 <bgcolor=cDkRed >;
 // todo: test this
 // PF: 0270 7100
 // OY: 0100 0000
 
-FSeek(2242);
+FSeek(2107);
+ubyte unknown_2107[10]<bgcolor=cRed >;
+// known values:
+// all datasets: FF FF FF FF FF FF FF FF FF FF (reserved for future use?)
+
+
+FSeek(2240);
+ubyte unknown_2240<bgcolor=cDkRed >;
+// Known values:
+// 00
+// 2E (0010 1110)
+
+ubyte unknown_2241<bgcolor=cDkRed >;
+
+
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
 byte reserved[12]<bgcolor=cGray>;
 byte unknown_setting[9]<bgcolor=cRed>;
@@ -821,16 +879,6 @@ Printf("\n value_1          (0x345):\t%04x (bin: %s)\n", unknown_value_1, IntToB
 Printf(" 0x38_controls    (0x206):\t");
 for (i=0;i<8;i++){
         Printf("%02x ", child_request_values_controls[i]);
-    }
-
-Printf("\n amount_of_childs (0x20E):\t");
-for (i=0;i<8;i++){
-    Printf("%02x ", amount_of_childs_per_group[i]);
-    }
-
-Printf("\n group_properties (0x234):\t");
-for (i=0;i<16;i++){
-    Printf("%02x ", unknown_group_properties[i]);
     }
 
 Printf("\n button_specifics (0x7D0):\t");
