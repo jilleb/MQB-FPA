@@ -369,7 +369,7 @@ struct{
 
 
 
-byte list_of_grouped_controls[30]<format=hex,bgcolor=cGreen, comment=getControlName>; 
+byte list_of_grouped_controls[30]<format=hex,bgcolor=cGreen, name=getControlName>; 
 // The value of this determines what value is used in the profiles for instance, 
 // if there's a value 01 on the first position, that means the first value in the 
 // profile sets this specific setting.
@@ -937,11 +937,11 @@ string getSettingName(int settingNumber) {
 // helper function to get light mode name
 string getModeButtonLightState(int lightMode) {
     switch (lightMode) {
-        case 0x000: return "Off";
-        case 0x100: return "On";
-        case 0x200: return "Blinking";
-        case 0x500: return "Unknown Skoda value";
-        case 0x600: return "Blinking";
+        case 0x0: return "Off";
+        case 0x1: return "On";
+        case 0x2: return "Blinking";
+        case 0x5: return "Unknown Skoda value";
+        case 0x6: return "Blinking";
         default:  return "Unknown";
     }
 }
