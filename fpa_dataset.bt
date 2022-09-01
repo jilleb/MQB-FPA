@@ -433,7 +433,7 @@ ubyte unknown_bytes_button_specifics[6];
 // OY: 0000 FFFF FFFF
 
 struct{
-    ubyte order<bgcolor=cGreen,name=getFPAName>; // in what order are the profiles set
+    ubyte order<bgcolor=cGreen,comment=getFPAName>; // in what order are the profiles set
     ubyte unknown_button1<bgcolor=cYellow>;      //untested, these seem to be just filler bytes, but are they?
     ubyte unknown_button2<bgcolor=cYellow>;      //Possible R-button bytes
     ubyte unknown_button3<bgcolor=cYellow>;
@@ -1037,7 +1037,7 @@ string getLongCodingByteName(int controlNumber) {
         case 0x11: return "Byte 10, bit 0 - IVB (??)";
         case 0x12: return "Byte 10, bit 1 - KL (Climate control)";
         case 0x13: return "Byte 10, bit 2 - HSP (Rear Spoiler)";
-        case 0x14: return "Byte 10, bit 3 - AV (Area View)";
+        case 0x14: return "Byte 10, bit 3 - AV (Area View??)";
         case 0x15: return "Byte 10, bit 4 - RWB (Range calculation)";
         case 0x16: return "Byte 10, bit 5 - HDC (Downhill Assistant)";
         case 0x17: return "Byte 10, bit 6 - eBKV (Electric Brake Power Amplifier)";
@@ -1060,7 +1060,7 @@ string getIndividualSettingName(int settingNumber) {
     }
 
     if (settingNumber == 65534) {
-        return "A slider is displayed ";
+        return "Slider (on DCC) ";
     }
 
     local string settingName = "";
