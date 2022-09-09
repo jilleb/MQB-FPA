@@ -275,7 +275,7 @@ ubyte unknown_group_properties_F <bgcolor=cDkRed>;
 
 
 FSeek(662);
-ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow, hidden=true>;
+ushort function_bytes_settings_shifted_by_1_bit[30] <hidden=true>;
 
 
 FSeek(662);
@@ -301,7 +301,7 @@ struct {
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
     } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
 FSeek(722);
-ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName,hidden=true>;
+ushort function_bytes_settings[30] <comment=getFunctionByteSettingName,hidden=true>;
 
 FSeek(722);
 struct {
@@ -462,10 +462,16 @@ long unknown_value4<bgcolor=cRed >;//zeroes
 // OY: 0000
 
 
-long unknown_value5<bgcolor=cDkRed >;
-// PF: FA06
-// OY: FA00
-
+long user_interface_button_specifics<bgcolor=cYellow >;
+// todo:improve this. This determines the behavior of the FPA screen depending on the button you press.
+// first position = mode button, second = knob, third = steeringwheel button
+//01: Title = "<brand> drive profile with DCC"
+//02: Title = "<brand> drive profile"
+//03: Profiles are no longer matching, and a different animation
+//04: No HMI screen, only FPA icon
+//05: Nothing on HMI screen, FPA only visible on virtual cockpit.
+//06: Title = profile name
+//07: No HMI screen, only FPA icon
 
 ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // todo: test this some more
@@ -899,6 +905,7 @@ for( i = 0; i < 30; i++)
         Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
    }
 }
+
 
 printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
