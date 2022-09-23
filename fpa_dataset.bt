@@ -190,8 +190,8 @@ struct{
 
 
 FSeek(518);
-ubyte child_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
-ubyte amount_of_childs_per_group[8] <bgcolor=cGreen>;
+ubyte group_member_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
+ubyte amount_of_members_per_group[8] <bgcolor=cGreen>;
 
 // these are the names of the groups.
 // examples:
@@ -214,32 +214,10 @@ ubyte amount_of_childs_per_group[8] <bgcolor=cGreen>;
 
 
 FSeek(566);
-ubyte unknown_group_properties_0 <bgcolor=cRed>;
-ubyte unknown_group_properties_1 <bgcolor=cDkRed>;
-ubyte unknown_group_properties_2 <bgcolor=cRed>;  
-// always 40 when there are groups
-// 40: 01000000
-// when set to 00, Sound group doesnt seem to work.
+// these determine specifically which controls are set in the group member matrix.
+long members_in_group_[4]<read=getGroupMemberLongCodingByteName>;
 
-ubyte unknown_group_properties_3 <bgcolor=cDkRed>;  
-// 18 or 1C when there are groups
-// 18: 0001 1000
-// 1C: 0001 1100
-
-ubyte unknown_group_properties_4 <bgcolor=cRed>; // always 00
-ubyte unknown_group_properties_5 <bgcolor=cDkRed>; // 80 or 00;
-// 80: 10000000
-
-ubyte unknown_group_properties_6 <bgcolor=cRed>;
-ubyte unknown_group_properties_7 <bgcolor=cDkRed>;
-ubyte unknown_group_properties_8 <bgcolor=cRed>;
-ubyte unknown_group_properties_9 <bgcolor=cDkRed>;
-ubyte unknown_group_properties_A <bgcolor=cRed>;
-ubyte unknown_group_properties_B <bgcolor=cDkRed>;
-ubyte unknown_group_properties_C <bgcolor=cRed>;
-ubyte unknown_group_properties_D <bgcolor=cDkRed>;
-ubyte unknown_group_properties_E <bgcolor=cRed>;
-ubyte unknown_group_properties_F <bgcolor=cDkRed>;
+      
 
 
 // Known values:
@@ -275,7 +253,7 @@ ubyte unknown_group_properties_F <bgcolor=cDkRed>;
 
 
 FSeek(662);
-ushort function_bytes_settings_shifted_by_1_bit[30] <bgcolor=cDkYellow, hidden=true>;
+ushort function_bytes_settings_shifted_by_1_bit[30] <hidden=true>;
 
 
 FSeek(662);
@@ -301,7 +279,7 @@ struct {
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
     } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
 FSeek(722);
-ushort function_bytes_settings[30] <bgcolor=cDkYellow, comment=getFunctionByteSettingName,hidden=true>;
+ushort function_bytes_settings[30] <comment=getFunctionByteSettingName,hidden=true>;
 
 FSeek(722);
 struct {
@@ -462,10 +440,17 @@ long unknown_value4<bgcolor=cRed >;//zeroes
 // OY: 0000
 
 
-long unknown_value5<bgcolor=cDkRed >;
-// PF: FA06
-// OY: FA00
-
+byte user_interface_specifics_button_[4]<bgcolor=cYellow >;
+// todo:improve this. This determines the behavior of the FPA screen depending on the button you press.
+// first position = mode button, second = knob, third = steeringwheel button
+// 01: Title = "<brand> drive profile with DCC"
+// 02: Title = "<brand> drive profile"
+// 03: Profiles are no longer matching, and a different animation
+// 04: No HMI screen, only FPA icon
+// 05: Nothing on HMI screen, FPA only visible on virtual cockpit.
+// 06: Title = profile name
+// 07: No HMI screen, only FPA icon
+// FA: -
 
 ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // todo: test this some more
@@ -868,9 +853,15 @@ for( i = 0; i < 32; i++)
            }
             line_number++;
 }
-Printf(" Amount of rows with a value: %i\n", amount_of_unknown38_rows_with_value);
-Printf(" Filled lines: %s\n", filled_lines);
-Printf(" Used controls: %s\n", used_controls);
+
+Printf("\n Group members as defined in matrix:\n");
+for (i=0;i<4;i++){
+        if (members_in_group_[i] != 0){
+        Printf("  Group %i: %s \n", i+1, getGroupMemberLongCodingByteName(members_in_group_[i]));
+        }
+    }
+
+
 
 Printf("\n Unknown values:");
 
@@ -878,7 +869,7 @@ Printf("\n value_1          (0x345):\t%04x (bin: %s)\n", unknown_value_1, IntToB
 
 Printf(" 0x38_controls    (0x206):\t");
 for (i=0;i<8;i++){
-        Printf("%02x ", child_request_values_controls[i]);
+        Printf("%02x ", group_member_request_values_controls[i]);
     }
 
 Printf("\n button_specifics (0x7D0):\t");
@@ -899,6 +890,7 @@ for( i = 0; i < 30; i++)
         Printf ("  %i:\t %-30s \t %i \t %i \n", i, getControlName(list_of_controls[i]), SettingBytes_again[i],SettingBytes_more[i]);
    }
 }
+
 
 printTitle("Checksum");
 Printf(" Checksum in file    : %06lx \n", ((unsigned long)dataset_checksum & 0xFFFFFFFFUL));
@@ -924,12 +916,13 @@ string getSettingName(int settingNumber) {
         case 0x4: return "Offroad";
         case 0x5: return "Eco";
         case 0x6: return "Race";
-        case 0x7: return "Individual";
-        case 0x8: return "Config 8";
-        case 0x9: return "Config 9";
-        case 0xA: return "Config 10";
+        case 0x7: return "Individual/Eco+";
+        case 0x8: return "On";
+        case 0x9: return "Off";
+        case 0xA: return "Snow";
         case 0xB: return "Config 11";
         case 0xC: return "Config 12";
+        case 0xD: return "Sand";
         default:  return "Unknown";
     }
 }
@@ -1052,6 +1045,48 @@ string getLongCodingByteName(int controlNumber) {
         case 0x20: return "Byte 09, bit 7 - Stages DCC (??)";
         default:   return "Unknown";
     }
+}
+
+
+string getGroupMemberLongCodingByteName(int value) {
+    if (value == 0) {
+        return "not set ";
+    }
+
+    local string controlName = "";
+    if (value & (1 << 0))  { controlName += "AGA (External Exhaust sound), ";}
+    if (value & (1 << 1))  { controlName += "ESP (Stability Program), ";}
+    if (value & (1 << 2))  { controlName += "Freilauf (Sailing/Freerunning), ";}
+    if (value & (1 << 3))  { controlName += "MO (Engine Management), ";}
+    if (value & (1 << 4))  { controlName += "GE (Transmission Management), ";}
+    if (value & (1 << 5))  { controlName += "ALR (All Wheel Drive), ";}
+    if (value & (1 << 6))  { controlName += "MO_BZS(Engine.......), ";}
+    if (value & (1 << 7))  { controlName += "DR (Damper Control / DCC), ";}
+    if (value & (1 << 8))  { controlName += "VAQ (Front differential lock), ";}
+    if (value & (1 << 9))  { controlName += "AFS (Advanced Front Lighting), ";}
+    if (value & (1 << 10))  { controlName += "RGS (Seatbelt Tensioner), ";}
+    if (value & (1 << 11))  { controlName += "EPS (Electrical Power Steering), ";}
+    if (value & (1 << 12))  { controlName += "ACC (Adaptive Cruise Control), ";}
+    if (value & (1 << 13))  { controlName += "SAK (Interior Sound Control), ";}
+    if (value & (1 << 14))  { controlName += "MO_StSt (Start/Stop System), ";}
+    if (value & (1 << 15))  { controlName += "AMB (Ambient Lights), ";}
+    if (value & (1 << 16))  { controlName += "IVB (??), ";}
+    if (value & (1 << 17))  { controlName += "KL (Climate control), ";}
+    if (value & (1 << 18))  { controlName += "HSP (Rear Spoiler), ";}
+    if (value & (1 << 19))  { controlName += "AV (Area View??), ";}
+    if (value & (1 << 20))  { controlName += "RWB (Range calculation), ";}
+    if (value & (1 << 21))  { controlName += "HDC (Downhill Assistant), ";}
+    if (value & (1 << 22))  { controlName += "eBKV (Electric Brake Power Amplifier), ";}
+    if (value & (1 << 23))  { controlName += "AGK (Exhaust valves), ";}
+    if (value & (1 << 24))  { controlName += "EDS (Rear differential lock), ";}
+    if (value & (1 << 25))  { controlName += "HHC (Hill Hold Control), ";}
+    if (value & (1 << 26))  { controlName += "PDC (Park Distance Control), ";}
+    if (value & (1 << 27))  { controlName += "FMA (Freewheeling, engine off), ";}
+    if (value & (1 << 28))  { controlName += "Freewheeling, Default ON, ";}
+    if (value & (1 << 29))  { controlName += "mFDR (??), ";}
+    if (value & (1 << 30))  { controlName += "SchaltDR (Operating Mode Selection?), ";}
+    if (value & (1 << 31))  { controlName += "Stages DCC (??), ";}
+    return controlName;
 }
 
 string getIndividualSettingName(int settingNumber) {
