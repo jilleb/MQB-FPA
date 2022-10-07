@@ -261,44 +261,44 @@ FSeek(662);
 
 
 struct {
-    ubyte allowed_to_change_in_clubsport: 1         <read = getYesNo>;
-    ubyte allowed_to_change_in_lift: 1              <read = getYesNo>;
-    ubyte allowed_to_change_in_snow: 1              <read = getYesNo>;
-    ubyte allowed_to_change_in_offroadindividual: 1 <read = getYesNo>;
-    ubyte allowed_to_change_in_hybridhold: 1        <read = getYesNo>;
-    ubyte allowed_to_change_in_hybridcharge: 1      <read = getYesNo>;
-    ubyte allowed_to_change_in_hybridarea: 1        <read = getYesNo>;
-    ubyte allowed_to_change_in_evoff: 1             <read = getYesNo>;
-    ubyte allowed_to_change_in_comfort: 1           <read = getYesNo>;
-    ubyte allowed_to_change_in_normal: 1            <read = getYesNo>;
-    ubyte allowed_to_change_in_sport: 1             <read = getYesNo>;
-    ubyte allowed_to_change_in_offroad: 1           <read = getYesNo>;
-    ubyte allowed_to_change_in_eco: 1               <read = getYesNo>;       
-    ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
-    ubyte allowed_to_change_in_individual: 1        <read = getYesNo>;
     ubyte allowed_to_change_in_notset: 1            <read = getYesNo>;
+    ubyte allowed_to_change_in_ecoplus: 1           <read = getYesNo>;
+    ubyte allowed_to_change_in_race: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_eco: 1               <read = getYesNo>;       
+    ubyte allowed_to_change_in_offroad: 1           <read = getYesNo>;
+    ubyte allowed_to_change_in_sport: 1             <read = getYesNo>;
+    ubyte allowed_to_change_in_normal: 1            <read = getYesNo>;
+    ubyte allowed_to_change_in_comfort: 1           <read = getYesNo>;
+    ubyte allowed_to_change_in_evoff: 1             <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridarea: 1        <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridcharge: 1      <read = getYesNo>;
+    ubyte allowed_to_change_in_hybridhold: 1        <read = getYesNo>;
+    ubyte allowed_to_change_in_offroadindividual: 1 <read = getYesNo>;
+    ubyte allowed_to_change_in_snow: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_lift: 1              <read = getYesNo>;
+    ubyte allowed_to_change_in_clubsport: 1         <read = getYesNo>;
     } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
 FSeek(722);
 ushort function_bytes_settings[30] <comment=getFunctionByteSettingName,hidden=true>;
 
 FSeek(722);
 struct {
-    ubyte remember_after_reset_in_clubsport: 1         <read = getYesNo>;
-    ubyte remember_after_reset_in_lift: 1              <read = getYesNo>;
-    ubyte remember_after_reset_in_snow: 1              <read = getYesNo>;
-    ubyte remember_after_reset_in_offroadindividual: 1 <read = getYesNo>;
-    ubyte remember_after_reset_in_hybridhold: 1        <read = getYesNo>;
-    ubyte remember_after_reset_in_hybridcharge: 1      <read = getYesNo>;
-    ubyte remember_after_reset_in_hybridarea: 1        <read = getYesNo>;
-    ubyte remember_after_reset_in_evoff: 1             <read = getYesNo>;
-    ubyte remember_after_reset_in_comfort: 1           <read = getYesNo>;
-    ubyte remember_after_reset_in_normal: 1            <read = getYesNo>;
-    ubyte remember_after_reset_in_sport: 1             <read = getYesNo>;
-    ubyte remember_after_reset_in_offroad: 1           <read = getYesNo>;
-    ubyte remember_after_reset_in_eco: 1               <read = getYesNo>;       
-    ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
-    ubyte remember_after_reset_in_individual: 1        <read = getYesNo>;
     ubyte remember_after_reset_in_notset: 1            <read = getYesNo>;
+    ubyte remember_after_reset_in_ecoplus: 1           <read = getYesNo>;
+    ubyte remember_after_reset_in_race: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_eco: 1               <read = getYesNo>;       
+    ubyte remember_after_reset_in_offroad: 1           <read = getYesNo>;
+    ubyte remember_after_reset_in_sport: 1             <read = getYesNo>;
+    ubyte remember_after_reset_in_normal: 1            <read = getYesNo>;
+    ubyte remember_after_reset_in_comfort: 1           <read = getYesNo>;
+    ubyte remember_after_reset_in_evoff: 1             <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridarea: 1        <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridcharge: 1      <read = getYesNo>;
+    ubyte remember_after_reset_in_hybridhold: 1        <read = getYesNo>;
+    ubyte remember_after_reset_in_offroadindividual: 1 <read = getYesNo>;
+    ubyte remember_after_reset_in_snow: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_lift: 1              <read = getYesNo>;
+    ubyte remember_after_reset_in_clubsport: 1         <read = getYesNo>;
     }control_is_reset[30]               <bgcolor=cDkGreen,optimize=true>; 
 
 
