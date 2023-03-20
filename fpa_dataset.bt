@@ -345,7 +345,7 @@ struct{
     ubyte allow_return_to_comfort: 1           <read = getYesNo>;
 	ubyte allow_return_to_notset: 1            <read = getYesNo>;   
 
-} allow_return_to_profile <optimize=false, <bgcolor=cGreen>;
+} allow_return_to_profile <optimize=false, bgcolor=cGreen>;
 // this determines whether or not it's allowed to return to a given profile upon reset.
 
 byte profile_0_nodata[30] <bgcolor=cBlack>;
