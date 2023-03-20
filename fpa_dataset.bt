@@ -215,7 +215,7 @@ ubyte amount_of_members_per_group[8] <bgcolor=cGreen>;
 
 FSeek(566);
 // these determine specifically which controls are set in the group member matrix.
-long members_in_group_[4]<read=getGroupMemberLongCodingByteName>;
+long members_in_group_[4]<read=getGroupMemberLongCodingByteName, bgcolor=cGreen>;
 
       
 
@@ -307,7 +307,7 @@ struct {
 
 FSeek(782);
 byte restart_value[30] <format=hex, bgcolor=cGreen, name=getSettingName>;
-// this is the default value after restart
+// this is the default value after restart  
 
 
 byte unknown_value_0 <bgcolor=cYellow>;
@@ -343,9 +343,9 @@ struct{
     ubyte allow_return_to_sport: 1             <read = getYesNo>;
     ubyte allow_return_to_normal: 1            <read = getYesNo>;
     ubyte allow_return_to_comfort: 1           <read = getYesNo>;
-	ubyte allow_return_to_notset: 1            <read = getYesNo>;
+	ubyte allow_return_to_notset: 1            <read = getYesNo>;   
 
-} allow_return_to_profile <optimize=false>;
+} allow_return_to_profile <optimize=false, <bgcolor=cGreen>;
 // this determines whether or not it's allowed to return to a given profile upon reset.
 
 byte profile_0_nodata[30] <bgcolor=cBlack>;
@@ -375,83 +375,98 @@ struct{
     ushort individual_setting_byte[30] <comment=getIndividualSettingName,open=true, bgcolor=cDkGreen> ;
 } available_choices_at_individual_profile[12];
 
+// button section starts here
 byte filler <bgcolor=cYellow>; 
 // appears to be just zeroes, at all time
 
 byte button_filler_1;
+// no idea why they have all these zeroes.. maybe there is space for 5 buttons?
 
-ubyte enable_fpa_button_part_1_1 <bgcolor=cYellow, comment=getBoolean>;
-// 1 = enabled
+ubyte button_type[4] <bgcolor=cYellow>;
+// 1 = push button
 // 0 = disabled
-// 5 = on PF00, which has R button on steering wheel
-ubyte enable_fpa_button_part_1_2 <bgcolor=cYellow, comment=getBoolean>;
+// 5 = knob
 // FD  on Tiguan R (has enabled steering wheel FPA buttons)
-
-ubyte enable_fpa_button_part_1_3 <bgcolor=cYellow, comment=getBoolean>;
 // FE  on Tiguan R (has enabled steering wheel FPA buttons)
-
-ubyte enable_fpa_button_part_1_4 <bgcolor=cYellow, comment=getBoolean>;
-
+// there are 4 bytes, because there's room for 4 buttons. Maybe even 5 (there's room for it, with the "filler" byte.
 
 byte button_filler_2;
-ubyte enable_fpa_button_part_2_1 <bgcolor=cYellow, comment=getBoolean>;
+ubyte button_behavior[4] <bgcolor=cYellow>;
 // 1 = enabled
 // 0 = disabled
-// 4 = unknown
+// 4 = can rotate in 2 directions?
 // 0401 0100 on Tiguan R (has enabled steering wheel FPA buttons) (dataset version PF)
-
-ubyte enable_fpa_button_part_2_2 <bgcolor=cYellow, comment=getBoolean>;
-ubyte enable_fpa_button_part_2_3 <bgcolor=cYellow, comment=getBoolean>;
-ubyte enable_fpa_button_part_2_4 <bgcolor=cYellow, comment=getBoolean>;
+// there are 4 bytes, because there's room for 4 buttons. Maybe even 5, not sure yet.
 
 
  
 byte button_filler_3;
-long button_behavior <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+byte button_action[4] <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
 // 01 = button press cycles through the modes
 // 03 = only open FPA dialog, no selection by button
 // TODO: test other values like 2, 4, 5, 6.
 // 0101 0100 on Tiguan R (dataset version PF)
+// again, for each of the 4 buttons.
+
 
 byte button_filler_4;
-long cycling_through_modes <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
+byte cycling_through_modes[4] <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
 // 01 = there's no loop
 // 03 = loop through all the modes over and over again
 // 0303 0300 on Tiguan R (dataset version PF)
+// again, for each of the 4 buttons.
 
 
-ubyte unknown_bytes_button_specifics[6];
-// PF: 0000 0102 FFFF
-// OY: 0000 FFFF FFFF
+ubyte unknown_bytes_button_specifics[6]<bgcolor=cRed >;
+// analysis of 63 datasets shows:
+// byte 1: always 0
+// byte 2: always 0, except for version KN00, which is Audi
+// byte 3: 0, 1 or ff. 
+//          0 on N1, N8, PD, PH, PO, TC and TK. These are all  R, Cupra or S/RS cars. 0 = steering wheel button?
+//          1 on PF, KV, MX, MZ, NB, NC, ND. These probably all have a knob instead of button, from the looks of it.
+//          ff on the rest.
+// byte 4: 0, 1, 2 or ff.
+//         0 on N1 and N8, both Audi that have 0 from byte 3 as well.
+//         1 on PD, PH, PO, TC and TK. All others from the byte 3 that have 0. So these bytes have some kind of link.
+//         2 on PF.
+// byte 5 and 6: all ff
 
 struct{
-    ubyte order<bgcolor=cGreen,comment=getFPAName>; // in what order are the profiles set
-    ubyte unknown_button1<bgcolor=cYellow>;      //untested, these seem to be just filler bytes, but are they?
-    ubyte unknown_button2<bgcolor=cYellow>;      //Possible R-button bytes
-    ubyte unknown_button3<bgcolor=cYellow>;
-    } button[9] <optimize=true> ;
+    ubyte button_1<bgcolor=cGreen,comment=getFPAName>; 
+    ubyte button_2<bgcolor=cDkGreen ,comment=getFPAName>;      
+    ubyte button_3<bgcolor=cGreen ,comment=getFPAName>;      
+    ubyte button_4<bgcolor=cDkGreen ,comment=getFPAName>;
+    } button[8] <optimize=true> ;
+// these is room for 4 (maybe even 5?) buttons/knobs. 
+// these 8 sets of 4 hold the 8 profiles you can choose from using each of the 4 buttons.
+// it appears that the last one in the list is activated by long press on the mode button, 
+// but this appears to be gateway version specific.
 
-short unknown_value<bgcolor=cRed >; // this is Steering-wheel R-button related!
+// the following need more research.
+ubyte unknown_button_data_2[32] <bgcolor=cRed >;
+//byte unknown_button_data_1[4] <bgcolor=cRed >; 
+// this is Steering-wheel R-button related!
 // PF: 0003
 // OZ: 0002 - R steering wheel button
 // OY: 02FF
 
-short unknown_FFFFFF00<bgcolor=cDkRed >;
-// OZ: 06FF
-// PF: 06FF
-// OY: FFFF
+//byte unknown_button_data_2[4] <bgcolor=cRed >; 
+// this is Steering-wheel R-button related!
+// PF: 0003 0002
+// OZ: 0002 - R steering wheel button
+// OY: 02FF 0002
 
-short unknown_value2<bgcolor=cRed >;
-// PF: 0002
-// OY: 0002
+//byte filler_6;
 
-short unknown_value3<bgcolor=cDkRed >;
-// PF: 0012
-// OY: 0000
+//byte unknown_button_data_3[4] <bgcolor=cRed >; 
+// this is Steering-wheel R-button related!
+// PF: 0003 0002
+// OZ: 0002 - R steering wheel button
+// OY: 02FF 0002
 
-long unknown_value4<bgcolor=cRed >;//zeroes
-// PF: 0042
-// OY: 0000
+
+//byte filler_7[3];
+
 
 
 byte user_interface_specifics_button_[4]<bgcolor=cYellow >;
@@ -473,6 +488,24 @@ ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 // 00 05 03 01 00 02
 // result: after selecting comfort profile, the FPA screen dissappears.
 // OY: 0003 0502 0001 F1F1 0000 0000
+//
+//- all 0: No profile selectable
+//- All 1: nothing seems to change?
+//- all 2: After comfort, the menu will disappear
+//- All 3: After comfort, the menu will disappear
+//- All 4: After normal, the menu will disappear
+//- All 5: After normal, the menu will disappear
+//- All 8: After sport, the menu will disappear 
+
+//This follows the same logic as this bitfield:
+//8765 4321
+//IREO SNC?
+//2 = comfort
+//4 = normal
+//8 = sport
+//10 = offroad
+
+
 
 
 ubyte unknown_value6_1 <bgcolor=cDkRed >; 
@@ -659,23 +692,6 @@ local int j = 0;
 local int profile_number = 0;
 local int setting_number = 0;
 local string settingText;
-printTitle("Profile buttons");
-
-Printf (" The following buttons are configured, displayed in this exact order:\n\n");
-while(i<9)
-    {
-  
-    if (button[i].order != 00){
-        { if (button[i].order < 100) {
-        Printf ("[ %s ]", getFPAName(FPA_profile[button[i].order-1]));
-             }
-        }
-    }
-    i = i+1;
-}
-
-Printf (" \n");
-Printf (" \n");
 
 while( profile_number < 12 )
 
@@ -768,26 +784,64 @@ Printf(" No groups configured at 0xA09 range.\n");
 
 
 //----
-printTitle("Allowed to make changes and remember after reset");
+printTitle("Allowed to make changes to a specific mode for a specific setting (0x296)");
+Printf("                                            \tComfort────────────────────┐\n") ;
+Printf("                                            \tNormal────────────────────┐│\n") ;
+Printf("                                            \tSport────────────────────┐││\n") ;
+Printf("                                            \tOffroad─────────────────┐│││\n") ;
+Printf("                                            \tRace───────────────────┐││││\n") ;
+Printf("                                            \tEco───────────────────┐│││││\n") ;
+Printf("                                            \tIndividual───────────┐││││││\n") ;
+Printf("                                            \tRange───────────────┐│││││││\n") ;
+Printf("                                            \tLift──────────────┐ ││││││││\n") ;
+Printf("                                            \tOffroad Snow─────┐│ ││││││││\n") ;
+Printf("                                            \tOffroad Indiv.──┐││ ││││││││\n") ;
+Printf("                                            \tOffrd/HHold────┐│││ ││││││││\n") ;
+Printf("                                            \tOffrd/HCharge─┐││││ ││││││││\n") ;
+Printf("                                            \tOffrd/HArea──┐│││││ ││││││││\n") ;
+Printf("                                            \tEV OFF──────┐││││││ ││││││││\n") ;
+Printf("                                            \t?????──────┐│││││││ ││││││││\n") ;
 
-Printf("                                      \t           \t Change allowed \t After ignition\n");
-
-Printf(" Position Control                        \t ConfByte\t ???????? ?IREOSNC   ???????? IREOSNC?\n");
 for( i = 0; i < 30; i++)
 {
 
     if (list_of_controls[i] > 0){
-        Printf ("  %i: \t%-30s \t %02x \t %s   %s\n", i, getControlName(list_of_controls[i]), list_of_controls[i], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[i],2,true), IntToBinaryStr(function_bytes_settings[i],2,true));
+        Printf ("  %i: \t%-30s \t %02x \t %s \t %02x\n", i, getControlName(list_of_controls[i]), list_of_controls[i], IntToBinaryStr(function_bytes_settings_shifted_by_1_bit[i],2,true),function_bytes_settings_shifted_by_1_bit[i]);
    }
 }
 
-printTitle("Request values");
+printTitle("Remember setting in specific mode after restart of the car: (0x2D2) ");
+Printf("\t\t\t\t\t?????──────────────────────┐\n") ;
+Printf("\t\t\t\t\tComfort───────────────────┐│\n") ;
+Printf("\t\t\t\t\tNormal───────────────────┐││\n") ;
+Printf("\t\t\t\t\tSport───────────────────┐│││\n") ;
+Printf("\t\t\t\t\tOffroad────────────────┐││││\n") ;
+Printf("\t\t\t\t\tRace──────────────────┐│││││\n") ;
+Printf("\t\t\t\t\tEco──────────────────┐││││││\n") ;
+Printf("\t\t\t\t\tIndividual──────────┐│││││││\n") ;
+Printf("\t\t\t\t\tRange─────────────┐ ││││││││\n") ;
+Printf("\t\t\t\t\tLift─────────────┐│ ││││││││\n") ;
+Printf("\t\t\t\t\tOffroad Snow────┐││ ││││││││\n") ;
+Printf("\t\t\t\t\tOffroad Indiv.─┐│││ ││││││││\n") ;
+Printf("\t\t\t\t\tOffrd/HHold───┐││││ ││││││││\n") ;
+Printf("\t\t\t\t\tOffrd/HCharge┐│││││ ││││││││\n") ;
+Printf("\t\t\t\t\tOffrd/HArea─┐││││││ ││││││││\n") ;
+Printf("\t\t\t\t\tEV OFF─────┐│││││││ ││││││││\n") ;
+for( i = 0; i < 30; i++)
+{
+
+    if (list_of_controls[i] > 0){
+        Printf ("  %i: \t%-30s \t %02x \t %s \t %02x\n", i, getControlName(list_of_controls[i]), list_of_controls[i], IntToBinaryStr(function_bytes_settings[i],2,true), function_bytes_settings[i]);
+   }
+}
+
+printTitle("Request values (0x8FB)");
 
 // Prints a table of all requests values that are sent to control modules.
 Printf(" \n");
 Printf(" Control-module request values (8FB range)\n");
 Printf ("\t\t\t\t\trequest_values_0\t|request_values_1\t|request_values_2\t|request_values_3\t|request_values_4\t|request_values_5\t|request_values_6\t|request_values_7\n");
-Printf(" Position\tControl\t\t\t\t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\t11\t12\tsand(13)\t14\t15\n");
+Printf(" Position\tControl\t\t\t\t00\tcmft(1)\tnrml(2)\tsprt(3)\tofrd(4)\teco(5)\trace(6)\teco+(7)\ton(8)\toff(9)\tsnow(10)\tpure(11)\t12\tsand(13)\t14\t15\n");
 for( i = 0; i < 30; i++)
 {
     if (list_of_grouped_controls[i] > 0){
@@ -889,9 +943,24 @@ for (i=0;i<6;i++){
     Printf("%02x ", unknown_bytes_button_specifics[i]);
     }
 
+Printf("\n button_data_2 (0x7D6):\t");
+for (i=0;i<32;i++){
+    Printf("%02x ", unknown_button_data_2[i]);
+    }
+
 Printf("\n profiles_related (0x80A):\t");
 for (i=0;i<12;i++){
     Printf("%02x ", unknown_profiles_related[i]);
+    }
+
+Printf("\n Settingbytes_again (0xA67):\t");
+for (i=0;i<30;i++){
+    Printf("%02x ", SettingBytes_again[i]);
+    }
+
+Printf("\n Settingbytes_more (0xA85):\t");
+for (i=0;i<30;i++){
+    Printf("%02x ", SettingBytes_more[i]);
     }
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
@@ -935,6 +1004,9 @@ string getSettingName(int settingNumber) {
         case 0xB: return "Config 11";
         case 0xC: return "Config 12";
         case 0xD: return "Sand";
+        case 0xE: return "Config 14";
+        case 0xF: return "Config 15";
+
         default:  return "Unknown";
     }
 }
@@ -1141,9 +1213,9 @@ string getFPAName(int settingNumber) {
         case 0x05: return "Eco/Economy";
         case 0x06: return "Race";
         case 0x07: return "Individual";
-        case 0x08: return "Range/PHEV 1/Clubsport";
+        case 0x08: return "Range/PHEV 1/Clubsport/Snow";
         case 0x09: return "Lift/PHEV 2";
-        case 0x0A: return "Offroad Snow/PHEV 3/EV On";
+        case 0x0A: return "Snow";
         case 0x0B: return "Offroad Individual/PHEV 4/Hybrid Auto";
         case 0x0C: return "Offroad 4/Hybrid Hold";
         case 0x0D: return "Offroad 5/Hybrid Charge";

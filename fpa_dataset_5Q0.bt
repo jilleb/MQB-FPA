@@ -9,15 +9,16 @@
 //  Comments: red = unknown, yellow = possible, green = sure
 //   
 //------------------------------------------------
+BigEndian();
 char dataset_version[4]       <bgcolor=cGreen,name="Version">; // something like J1 00
 byte unknown_0A <bgcolor=cDkYellow, format=hex>; // seems to be 0A always?  0A is also present in the header of 3Q0 FPA datasets, probably determines the type of dataset.
 short unknown_1 <bgcolor=cDkRed, format=hex>;
 byte unknown_FF00 <bgcolor=cDkYellow, format=hex>; // seems to be the same FF000A01F40001
 
-FSeek(56);
+FSeek(55);
 struct
     {
-    short data[32] <bgcolor=cDkRed, format=hex>;
+    ushort data[32] <bgcolor=cDkRed, format=hex>;
     } unknown_table [4];
 // no idea what this is. 
 // but row 1 and 3 are totally in relation to each other.
