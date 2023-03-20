@@ -481,7 +481,7 @@ byte user_interface_specifics_button_[4]<bgcolor=cYellow >;
 // 07: No HMI screen, only FPA icon
 // FA: -
 
-ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
+ubyte unknown_profiles_related[16]<bgcolor=cLtRed >;
 // todo: test this some more
 // tested the following:
 // 00 03 05 02 00 01 changed to
@@ -508,10 +508,10 @@ ubyte unknown_profiles_related[12]<bgcolor=cLtRed >;
 
 
 
-ubyte unknown_value6_1 <bgcolor=cDkRed >; 
-ubyte unknown_value6_2 <bgcolor=cLtRed >; // relevant for R button on steering wheel
-ubyte unknown_value6_3 <bgcolor=cDkRed >;
-ubyte unknown_value6_4 <bgcolor=cDkRed >;
+//ubyte unknown_value6_1 <bgcolor=cDkRed >; 
+//ubyte unknown_value6_2 <bgcolor=cLtRed >; // relevant for R button on steering wheel
+//ubyte unknown_value6_3 <bgcolor=cDkRed >;
+//ubyte unknown_value6_4 <bgcolor=cDkRed >;
 // todo: test this
 // PF: 0270 7100
 // OY: 0100 0000
@@ -523,20 +523,22 @@ ubyte unknown_2107[10]<bgcolor=cRed >;
 
 
 FSeek(2240);
-ubyte unknown_2240<bgcolor=cDkRed >;
+byte unknown_2240[2]<bgcolor=cDkRed >;
 // Known values:
 // 00
-// 2E (0010 1110)
-
-ubyte unknown_2241<bgcolor=cDkRed >;
+// 2E (0010 1110) on all datasets with FPA
+// 26 (0010 0110) on KV00
+// could be some kind of feature flag, where bits set various features?
+// todo: test with this, there might be something cool inside like test mode that enables all profiles ;-)
 
 
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
 byte reserved[12]<bgcolor=cGray>;
 byte unknown_setting[9]<bgcolor=cRed>;
 // after setting to 123456789, the default settings on individual profile were reset.
-// OY: 0001 0200 0000 0000 00
-
+// Of this list of 9 bytes, only the 2nd and 3rd byte have data
+// is filled with  0, 1, 2, 5 or 6.
+// Possibly some kind of long press default value?
 
 
 
@@ -962,6 +964,23 @@ Printf("\n Settingbytes_more (0xA85):\t");
 for (i=0;i<30;i++){
     Printf("%02x ", SettingBytes_more[i]);
     }
+
+
+
+Printf("\n unknown (0x2240):\t\t");
+for (i=0;i<2;i++){
+    Printf("%02x ", unknown_2240[i]);
+    }
+
+
+
+Printf("\n unknown_setting (0x2266):\t");
+for (i=0;i<9;i++){
+    Printf("%02x ", unknown_setting[i]);
+    }
+
+
+
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf("\n\n Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
