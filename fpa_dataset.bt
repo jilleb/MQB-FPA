@@ -16,8 +16,33 @@ BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 // Anything older than version IA seems to be a different format.
 
-ubyte header1[10] <bgcolor=cRed>;
-ubyte header2[10] <bgcolor=cRed>;
+//ubyte header1[10] <bgcolor=cRed>;
+struct{
+    byte header_04; // always 64
+    byte year <read=Str("%lg", this+2010), bgcolor=cGreen>;
+    byte header_06 <bgcolor=cDkGray>; // always 00
+    byte header_07; // always 0a
+    byte header_08; // 00 or 1e. Always 00, except with LA, LE, LG, LI, LK, LO
+    byte header_09; // 1, 0 or ff. FF is used on Audi Datasets. 0 is used on the datasets that are marked "with eco button".
+    byte header_0A; // 0, 1 or 6. 6 is used on the datasets that are marked "with eco button".
+    byte header_0B; // 0, 3, 14, 32 or 0A . No idea what this is. 3 is used on the datasets that are marked "with eco button".
+    byte header_0C; // 0A or 0F. 0A only seems to be used with Tiguan datasets?
+    byte header_0D; // always 01
+} header1;
+
+
+struct{
+    byte header_0E; //always F4
+    byte header_0F; // 0, 2 or 6. 2 only used in NOFPA_DS JC00. 0 is used in the datasets that are marked by 1e in byte 8 of header1
+    byte header_10 <bgcolor=cDkGray>; // always 00
+    byte header_11 <bgcolor=cDkGray>; // always 00
+    byte header_12; // 4 or 7. 4 is used in LA, LE, LG, LI, LK, LO, TA, TB, TC, TK.
+    byte header_13; // 0, 2 or 4. Audi datasets use 0 or 4. 2 is used by all others.
+    byte header_14; // 0, 1 or 2. 1 is used on the datasets that are marked "with eco button".
+    byte header_15; // 0, 1 or 2
+    byte header_16; // 0, 14 or 1e. Audi datasets use 0 or 1e.
+    byte header_17 <bgcolor=cDkGray>; // always 0
+} header2;
 
 
 // From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
@@ -815,17 +840,6 @@ for (i=0;i<2;i++){
 Printf("\n unknown_setting (0x2266):\t");
 for (i=0;i<9;i++){
     Printf("%02x ", unknown_setting[i]);
-    }
-
-
-Printf("\n header_1(0x04):\t\t");
-for (i=0;i<10;i++){
-    Printf("%02x ", header1[i]);
-    }
-
-Printf("\n header_2(0x0E):\t\t");
-for (i=0;i<10;i++){
-    Printf("%02x ", header2[i]);
     }
 
 Printf("\n unknown_2107:\t\t");
