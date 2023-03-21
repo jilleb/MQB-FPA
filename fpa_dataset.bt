@@ -16,142 +16,9 @@ BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
 // Anything older than version IA seems to be a different format.
 
-struct{
-    byte unknown_04<format=hex,bgcolor=cDkGray,comment="sub-version?">; 
-    // Seems to be 64 in all datasets
-    byte unknown_05<format=hex,bgcolor=cDkGray>;
-    // Something like manufacturing year? (range: 7 to 12..  add 2010 to this to get MY?) 
-    //IB:   07
-    //J4:   08
-    //J6:   08
-    //J7:   08
-    //JA:   08
-    //JC:   08
-    //JD:   08
-    //KN:   08
-    //LA:   07
-    //LG:   07
-    //LI:   0B
-    //LK:   08
-    //LO:   0B
-    //M9:   09
-    //MJ:   0A
-    //N1:   08
-    //N8:   0B
-    //O2:   09
-    //03:   09
-    //O4:   09
-    //05:   09
-    //OC:   09
-    //OJ:   0A
-    //ON:   09
-    //OO:   09
-    //OS:   OB
-    //OY:   OB
-    //OZ:   0B
-    //P4:   OB
-    //PF:   0B
-    //TA:   0C
-    
-    
-    byte unknown_06<format=hex,bgcolor=cDkGray>; 
-    // Always 00
-    byte unknown_07<format=hex,bgcolor=cDkGray>; 
-    // Always OA
-    byte unknown_08<format=hex,bgcolor=cDkGray>; 
-    // Almost always 00, except for:
-    //LA:   1E
-    //LG:   1E
-    //LI:   1E
-    //LK:   1E
-    //LO:   1E
-    //Seems to be a Seat-thing?
-    
-    
-    byte unknown_09<format=hex,bgcolor=cDkGray>; 
-    // Almost always 01 except for:
-    // KN: FF
-    // N1: FF
-    // N8: FF
-    // FF Seems to be an Audi thing?
-    // J7: 00
-    
-    byte unknown_0A <bgcolor=cDkGray>;
-    // Known values are either 01 or 00
-    //IB:   01   
-    //J4:   01   
-    //J6:   00
-    //J7:   06
-    //JA:   01 
-    //JC:   01
-    //JD:   01
-    //KN:   00
-    //LA:   01
-    //LG:   01
-    //LI:   01
-    //LK:   01
-    //LO:   01
-    //M9:   01
-    //MJ:   01
-    //N1:   00
-    //N8:   00
-    //O2:   01
-    //O3:   01
-    //O4:   01
-    //05:   00
-    //OC:   01
-    //OJ:   01
-    //ON:   01
-    //OO:   01
-    //OS:   01
-    //OY:   01
-    //OZ:   00   
-    //P4:   01
-    //PF:   00
-    //TA:   01    
+ubyte header1[10] <bgcolor=cRed>;
+ubyte header2[10] <bgcolor=cRed>;
 
-    byte unknown_0B <format=decimal,bgcolor=cDkGray>;
-    // Known values are in the range of dec 10 to 50, but there's no clear pattern yet.
-    //IB:   32      
-    //J4:   32 
-    //J6:   0A
-    //J7:   03
-    //JA:   32    
-    //JC:   32
-    //JD:   32
-    //KN:   00
-    //LA:   32
-    //LG:   32
-    //LI:   32
-    //LK:   32
-    //LO:   32
-    //M9:   32
-    //MJ:   32
-    //N1:   14
-    //N8:   14
-    //O2:   0A
-    //O3:   0A
-    //O4:   0A
-    //05:   0A
-    //OC:   32
-    //OJ:   32
-    //ON:   32
-    //OO:   32
-    //OS:   14
-    //OY:   14
-    //OZ:   14   
-    //P4:   14
-    //PF:   14
-    //TA:   0A    
-    
-    byte unknown_0C<bgcolor=cDkGray>;
-    // Almost always 0F except for Tiguan datasets (J6, OZ, PF), where it's 0A
-    // Could this influence button behavior, because Tiguan has a knob instead of a mode button?\
-
-    byte unknown_0D<bgcolor=cDkGray>;
-
-
-    }   header;
 
 // From here it appears to be some kind of table, 32 rows, 15 colums, or something like that.
 // it appears to override the request values before they are sent to a control module
@@ -575,10 +442,6 @@ struct{
 // measurements values, driving profile selection, requested value.
 // If a Requested Value leads to a change in Actual Value, it means the module accepts this value.
 
-FSeek(2063);
-byte unknown_01<bgcolor=cRed>; // unknown_what this does, testing between 00 and 01 didn't show any visible changes.
-// OY: 01
-
 
 FSeek(2539);
 byte list_of_controls[30]<bgcolor=cGreen, comment=getControlName >;
@@ -647,29 +510,6 @@ ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 // FR 2020:       LI00
 // Tiguan R 2021: PF00
 // Passat 2021:   0Y00
-
-
-FSeek(14);
-long unknown_14 <bgcolor=cRed>;
-// Known values:
-// Octavia: F406
-// Magotan: F406
-// Passat:  F406
-// Leon:    F400
-// PF00:    F406
-// OY:      F406
-
-
-FSeek(18);
-long unknown_18 <bgcolor=cRed>;
-// Known values:
-// Octavia: F406
-// Magotan: F406
-// Passat:  F406
-// Leon:    F400
-// FR 2020: 0402 0000
-// PF:      0702 0001
-// OY:      0702 0000
 
 
 FSeek(3800);
@@ -972,12 +812,28 @@ for (i=0;i<2;i++){
     Printf("%02x ", unknown_2240[i]);
     }
 
-
-
 Printf("\n unknown_setting (0x2266):\t");
 for (i=0;i<9;i++){
     Printf("%02x ", unknown_setting[i]);
     }
+
+
+Printf("\n header_1(0x04):\t\t");
+for (i=0;i<10;i++){
+    Printf("%02x ", header1[i]);
+    }
+
+Printf("\n header_2(0x0E):\t\t");
+for (i=0;i<10;i++){
+    Printf("%02x ", header2[i]);
+    }
+
+Printf("\n unknown_2107:\t\t");
+for (i=0;i<10;i++){
+    Printf("%02x ", unknown_2107[i]);
+    }
+
+
 
 
 
