@@ -271,57 +271,49 @@ struct{
 byte filler <bgcolor=cYellow>; 
 // appears to be just zeroes, at all time
 
-byte button_filler_1;
 // no idea why they have all these zeroes.. maybe there is space for 5 buttons?
 
-ubyte button_type[4] <bgcolor=cYellow>;
+ubyte button_type[5] <bgcolor=cDkGreen>;
 // 1 = push button
 // 0 = disabled
+// 4 = ?
 // 5 = knob
+// 6 = ?
+// 254 = steering wheel long push   11111110
+// 253 = steering normal push       11111101
 // FD  on Tiguan R (has enabled steering wheel FPA buttons)
 // FE  on Tiguan R (has enabled steering wheel FPA buttons)
 // there are 4 bytes, because there's room for 4 buttons. Maybe even 5 (there's room for it, with the "filler" byte.
 
-byte button_filler_2;
-ubyte button_behavior[4] <bgcolor=cYellow>;
-// 1 = enabled
+ubyte button_behavior[5] <bgcolor=cYellow>;
 // 0 = disabled
+// 1 = enabled
 // 4 = can rotate in 2 directions?
 // 0401 0100 on Tiguan R (has enabled steering wheel FPA buttons) (dataset version PF)
 // there are 4 bytes, because there's room for 4 buttons. Maybe even 5, not sure yet.
 
 
  
-byte button_filler_3;
-byte button_action[4] <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+byte button_action[5] <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
 // 01 = button press cycles through the modes
 // 03 = only open FPA dialog, no selection by button
+// 05 = occurs on MZ00
 // TODO: test other values like 2, 4, 5, 6.
 // 0101 0100 on Tiguan R (dataset version PF)
 // again, for each of the 4 buttons.
 
 
-byte button_filler_4;
-byte cycling_through_modes[4] <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
+byte cycling_through_modes[5] <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
 // 01 = there's no loop
 // 03 = loop through all the modes over and over again
 // 0303 0300 on Tiguan R (dataset version PF)
 // again, for each of the 4 buttons.
 
 
-ubyte unknown_bytes_button_specifics[6]<bgcolor=cRed >;
-// analysis of 63 datasets shows:
-// byte 1: always 0
-// byte 2: always 0, except for version KN00, which is Audi
-// byte 3: 0, 1 or ff. 
-//          0 on N1, N8, PD, PH, PO, TC and TK. These are all  R, Cupra or S/RS cars. 0 = steering wheel button?
-//          1 on PF, KV, MX, MZ, NB, NC, ND. These probably all have a knob instead of button, from the looks of it.
-//          ff on the rest.
-// byte 4: 0, 1, 2 or ff.
-//         0 on N1 and N8, both Audi that have 0 from byte 3 as well.
-//         1 on PD, PH, PO, TC and TK. All others from the byte 3 that have 0. So these bytes have some kind of link.
-//         2 on PF.
-// byte 5 and 6: all ff
+ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
+// the number determines the list of profiles to cycle through
+
+byte filler;
 
 struct{
     ubyte button_1<bgcolor=cGreen,comment=getFPAName>; 
@@ -361,7 +353,7 @@ ubyte unknown_button_data_2[32] <bgcolor=cRed >;
 
 
 
-byte user_interface_specifics_button_[4]<bgcolor=cYellow >;
+ubyte user_interface_specifics_button[4]<bgcolor=cYellow >;
 // todo:improve this. This determines the behavior of the FPA screen depending on the button you press.
 // first position = mode button, second = knob, third = steeringwheel button
 // 01: Title = "<brand> drive profile with DCC"
@@ -542,6 +534,8 @@ byte unkonwn_3800<bgcolor=cDkRed>;
 byte unkonwn_3801<bgcolor=cRed>;
 
 
+FSeek(2006);
+ubyte button_for_test[32];
 
 
 // Don't mess with anything below here, unless you know what you're doing.
@@ -805,14 +799,10 @@ for (i=0;i<8;i++){
         Printf("%02x ", group_member_request_values_controls[i]);
     }
 
-Printf("\n button_specifics (0x7D0):\t");
-for (i=0;i<6;i++){
-    Printf("%02x ", unknown_bytes_button_specifics[i]);
-    }
 
 Printf("\n button_data_2 (0x7D6):\t");
 for (i=0;i<32;i++){
-    Printf("%02x ", unknown_button_data_2[i]);
+    Printf("%i ", unknown_button_data_2[i]);
     }
 
 Printf("\n profiles_related (0x80A):\t");
@@ -846,6 +836,35 @@ Printf("\n unknown_2107:\t\t");
 for (i=0;i<10;i++){
     Printf("%02x ", unknown_2107[i]);
     }
+
+
+Printf("\n cycling_through_modes :\t\t");
+for (i=0;i<5;i++){
+    Printf("%i ", cycling_through_modes[i]);
+    }
+
+
+Printf("\n button_behavior :\t\t");
+for (i=0;i<5;i++){
+    Printf("%i ", button_behavior[i]);
+    }
+
+
+Printf("\n user_interface_specifics_button :\t\t");
+for (i=0;i<4;i++){
+    Printf("%i ", user_interface_specifics_button[i]);
+    }
+
+
+
+Printf("\n AID_profile_banner :\t\t");
+for (i=0;i<12;i++){
+    Printf("%i ", AID_profile_banner[i]);
+    }
+
+
+
+
 
 
 
@@ -973,6 +992,7 @@ string getControlName(int controlNumber) {
         case 0x37: return "Nothing displays";
         case 0x41: return "Engine";
         case 0x46: return "Range calculation";  //doesn't seem to display on screen
+        case 0x49: return "Hill Hold Assist";   //seen in L900
         case 0x4B: return "Engine";             //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
         case 0xFF: return "-";
