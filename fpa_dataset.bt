@@ -209,13 +209,13 @@ byte unknown_value_0 <bgcolor=cYellow>;
 
 
 // enabled profiles start here
-byte FPA_profile[12] <format=hex,bgcolor=cGreen,name=getFPAName>;
+ubyte FPA_profile[12] <format=hex,bgcolor=cGreen,name=getFPAName>;
 // changing this will changes what button is shown in the FPA selection screen.
 // these bytes determine what profile button is used in what position
 // for instance:
 // Put "04" into profile_1, and it will display as Offroad.
 
-byte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen, name=getFPAName>;
+ubyte profile_returns_after_restart[12] <format=hex,bgcolor=cGreen, name=getFPAName>;
 // This determines what profile position it returns to after restarting the car.
 
 struct{
@@ -316,15 +316,13 @@ ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 byte filler;
 
 struct{
-    ubyte button_1<bgcolor=cGreen,comment=getFPAName>; 
-    ubyte button_2<bgcolor=cDkGreen ,comment=getFPAName>;      
-    ubyte button_3<bgcolor=cGreen ,comment=getFPAName>;      
-    ubyte button_4<bgcolor=cDkGreen ,comment=getFPAName>;
+    ubyte list_0<bgcolor=cGreen,comment=getFPAName>; 
+    ubyte list_1<bgcolor=cDkGreen ,comment=getFPAName>;      
+    ubyte list_2<bgcolor=cGreen ,comment=getFPAName>;      
+    ubyte list_3<bgcolor=cDkGreen ,comment=getFPAName>;
     } button[8] <optimize=true> ;
-// these is room for 4 (maybe even 5?) buttons/knobs. 
-// these 8 sets of 4 hold the 8 profiles you can choose from using each of the 4 buttons.
-// it appears that the last one in the list is activated by long press on the mode button, 
-// but this appears to be gateway version specific.
+// these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
+
 
 // the following need more research.
 ubyte unknown_button_data_2[32] <bgcolor=cRed >;
@@ -356,14 +354,17 @@ ubyte unknown_button_data_2[32] <bgcolor=cRed >;
 ubyte user_interface_specifics_button[4]<bgcolor=cYellow >;
 // todo:improve this. This determines the behavior of the FPA screen depending on the button you press.
 // first position = mode button, second = knob, third = steeringwheel button
-// 01: Title = "<brand> drive profile with DCC"
-// 02: Title = "<brand> drive profile"
-// 03: Profiles are no longer matching, and a different animation
-// 04: No HMI screen, only FPA icon
-// 05: Nothing on HMI screen, FPA only visible on virtual cockpit.
-// 06: Title = profile name
-// 07: No HMI screen, only FPA icon
-// FA: -
+// 0x01: Title = "<brand> drive profile with DCC"
+// 0x02: Title = "<brand> drive profile"
+// 0x03: Profiles are no longer matching, and a different animation
+// 0x04: No HMI screen, only FPA icon
+// 0x05: Nothing on HMI screen, FPA only visible on virtual cockpit.
+// 0x06: Title = profile name
+// 0x07: No HMI screen, only FPA icon
+// 0x70: ?? (Seen on N1, N8, PD, PF, PH, PO, TC, TK)
+// 0x71: ?? (Seen on KV, PD, PF, PH, PO, TC, TK )
+// 0xFA: -
+// 0xFF:
 
 ubyte unknown_profiles_related[16]<bgcolor=cLtRed >;
 // todo: test this some more
@@ -438,6 +439,7 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>;
 // 01 = on
 // 02 = blink 
 // 03 = ?
+// 05 = ?
 
 // the following 8 groups of data map perfectly to the controls.
 // it is the value range that is used when communicating to the control module.
@@ -862,11 +864,31 @@ for (i=0;i<12;i++){
     Printf("%i ", AID_profile_banner[i]);
     }
 
+Printf("\n FPA_profile :\t\t");
+for (i=0;i<12;i++){
+    Printf("%i ", FPA_profile[i]);
+    }
 
 
+Printf("\n profile_returns_after_restart :\t\t");
+for (i=0;i<12;i++){
+    Printf("%i ", profile_returns_after_restart[i]);
+    }
 
+Printf("\n list_of_grouped_controls :\t\t");
+for (i=0;i<30;i++){
+    Printf("%i ", list_of_grouped_controls[i]);
+    }
 
+Printf("\n list_of_controls :\t\t");
+for (i=0;i<30;i++){
+    Printf("%i ", list_of_controls[i]);
+    }
 
+Printf("\n mode_light_on :\t\t");
+for (i=0;i<12;i++){
+    Printf("%i ", mode_light_on[i]);
+    }
 
 
 
