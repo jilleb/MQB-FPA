@@ -268,7 +268,7 @@ struct{
 } available_choices_at_individual_profile[12];
 
 // button section starts here
-byte filler <bgcolor=cYellow>; 
+byte filler[2] <bgcolor=cYellow>; 
 // appears to be just zeroes, at all time
 
 // no idea why they have all these zeroes.. maybe there is space for 5 buttons?
@@ -313,41 +313,21 @@ byte cycling_through_modes[5] <bgcolor=cGreen,comment="01 = there's no loop 03 =
 ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 // the number determines the list of profiles to cycle through
 
-byte filler;
 
 struct{
     ubyte list_0<bgcolor=cGreen,comment=getFPAName>; 
     ubyte list_1<bgcolor=cDkGreen ,comment=getFPAName>;      
     ubyte list_2<bgcolor=cGreen ,comment=getFPAName>;      
     ubyte list_3<bgcolor=cDkGreen ,comment=getFPAName>;
-    } button[8] <optimize=true> ;
+    } button_profile_lists[8] <optimize=true> ;
 // these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
 
 
 // the following need more research.
-ubyte unknown_button_data_2[32] <bgcolor=cRed >;
-//byte unknown_button_data_1[4] <bgcolor=cRed >; 
-// this is Steering-wheel R-button related!
-// PF: 0003
-// OZ: 0002 - R steering wheel button
-// OY: 02FF
+struct {
+    ubyte data[4] <bgcolor=cRed >;
+} unknown_button_data[8];
 
-//byte unknown_button_data_2[4] <bgcolor=cRed >; 
-// this is Steering-wheel R-button related!
-// PF: 0003 0002
-// OZ: 0002 - R steering wheel button
-// OY: 02FF 0002
-
-//byte filler_6;
-
-//byte unknown_button_data_3[4] <bgcolor=cRed >; 
-// this is Steering-wheel R-button related!
-// PF: 0003 0002
-// OZ: 0002 - R steering wheel button
-// OY: 02FF 0002
-
-
-//byte filler_7[3];
 
 
 
@@ -719,6 +699,7 @@ for( i = 0; i < 30; i++)
 }
 printTitle("Research stuff");
 
+/*
 //--- research stuff, what looks like a table from position 38:
 Printf("\n Unknown 38x research\n");
 i = 0;
@@ -792,105 +773,16 @@ for (i=0;i<4;i++){
         }
     }
 
+*/
 
-
-Printf("\n Unknown values:");
-
-Printf(" 0x38_controls    (0x206):\t");
+Printf("\nunknown_button_data:\n");
 for (i=0;i<8;i++){
-        Printf("%02x ", group_member_request_values_controls[i]);
-    }
-
-
-Printf("\n button_data_2 (0x7D6):\t");
-for (i=0;i<32;i++){
-    Printf("%i ", unknown_button_data_2[i]);
-    }
-
-Printf("\n profiles_related (0x80A):\t");
-for (i=0;i<12;i++){
-    Printf("%02x ", unknown_profiles_related[i]);
-    }
-
-Printf("\n Settingbytes_again (0xA67):\t");
-for (i=0;i<30;i++){
-    Printf("%02x ", SettingBytes_again[i]);
-    }
-
-Printf("\n Settingbytes_more (0xA85):\t");
-for (i=0;i<30;i++){
-    Printf("%02x ", SettingBytes_more[i]);
-    }
-
-
-
-Printf("\n unknown (0x2240):\t\t");
-for (i=0;i<2;i++){
-    Printf("%02x ", unknown_2240[i]);
-    }
-
-Printf("\n unknown_setting (0x2266):\t");
-for (i=0;i<9;i++){
-    Printf("%02x ", unknown_setting[i]);
-    }
-
-Printf("\n unknown_2107:\t\t");
-for (i=0;i<10;i++){
-    Printf("%02x ", unknown_2107[i]);
-    }
-
-
-Printf("\n cycling_through_modes :\t\t");
-for (i=0;i<5;i++){
-    Printf("%i ", cycling_through_modes[i]);
-    }
-
-
-Printf("\n button_behavior :\t\t");
-for (i=0;i<5;i++){
-    Printf("%i ", button_behavior[i]);
-    }
-
-
-Printf("\n user_interface_specifics_button :\t\t");
-for (i=0;i<4;i++){
-    Printf("%i ", user_interface_specifics_button[i]);
-    }
-
-
-
-Printf("\n AID_profile_banner :\t\t");
-for (i=0;i<12;i++){
-    Printf("%i ", AID_profile_banner[i]);
-    }
-
-Printf("\n FPA_profile :\t\t");
-for (i=0;i<12;i++){
-    Printf("%i ", FPA_profile[i]);
-    }
-
-
-Printf("\n profile_returns_after_restart :\t\t");
-for (i=0;i<12;i++){
-    Printf("%i ", profile_returns_after_restart[i]);
-    }
-
-Printf("\n list_of_grouped_controls :\t\t");
-for (i=0;i<30;i++){
-    Printf("%i ", list_of_grouped_controls[i]);
-    }
-
-Printf("\n list_of_controls :\t\t");
-for (i=0;i<30;i++){
-    Printf("%i ", list_of_controls[i]);
-    }
-
-Printf("\n mode_light_on :\t\t");
-for (i=0;i<12;i++){
-    Printf("%i ", mode_light_on[i]);
-    }
-
-
+    Printf("unknown_button_data_%i:\t\t", i);
+    for (j=0;j<4;j++){
+        Printf("%i\t", unknown_button_data[i].data[j]);
+        }
+    Printf("\n");
+}
 
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
