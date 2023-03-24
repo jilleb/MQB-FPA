@@ -294,7 +294,7 @@ ubyte button_behavior[5] <bgcolor=cYellow>;
 
 
  
-byte button_action[5] <bgcolor=cYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+byte button_action[5] <bgcolor=cDkYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
 // 01 = button press cycles through the modes
 // 03 = only open FPA dialog, no selection by button
 // 05 = occurs on MZ00
@@ -315,8 +315,8 @@ ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 
 
 struct{
-    ubyte list_0<bgcolor=cGreen,comment=getFPAName>; 
-    ubyte list_1<bgcolor=cDkGreen ,comment=getFPAName>;      
+    ubyte list_0<bgcolor=cLtGreen,comment=getFPAName>; 
+    ubyte list_1<bgcolor=cGreen ,comment=getFPAName>;      
     ubyte list_2<bgcolor=cGreen ,comment=getFPAName>;      
     ubyte list_3<bgcolor=cDkGreen ,comment=getFPAName>;
     } button_profile_lists[8] <optimize=true> ;
@@ -324,9 +324,16 @@ struct{
 
 
 // the following need more research.
-struct {
-    ubyte data[4] <bgcolor=cRed >;
-} unknown_button_data[8];
+ubyte unknown_button_data_possible_list_extension_1[4] <bgcolor=cYellow>;
+ubyte unknown_button_data_possible_list_extension_2[4]<bgcolor=cDkYellow>;
+ubyte unknown_button_3[4]<bgcolor=cRed>;
+ubyte unknown_button_4[4]<bgcolor=cLtRed>;
+ubyte unknown_button_5[5]<bgcolor=cRed>;
+ubyte unknown_button_6[5]<bgcolor=cDkRed>;
+ubyte unknown_button_7[5]<bgcolor=cRed>;
+ubyte unknown_button_8[1]<bgcolor=cLtRed>;
+
+
 
 
 
@@ -773,7 +780,7 @@ for (i=0;i<4;i++){
         }
     }
 
-*/
+
 
 Printf("\nunknown_button_data:\n");
 for (i=0;i<8;i++){
@@ -783,7 +790,7 @@ for (i=0;i<8;i++){
         }
     Printf("\n");
 }
-
+*/
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf("\n\n Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
