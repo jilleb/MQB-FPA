@@ -325,68 +325,126 @@ struct{
 
 // the following need more research.
 ubyte unknown_button_data_possible_list_extension_1[4] <bgcolor=cYellow>;
+// known (dec) values:
+// 0
+// 1
+// 2
+// 5
+// 3rd and 4th are always 00
+
 ubyte unknown_button_data_possible_list_extension_2[4]<bgcolor=cDkYellow>;
+// known (dec) values:
+// 0
+// 2
+// 3
+// 6
+// 9
+// 12
+
+
+
+
+
+
 ubyte unknown_button_3[4]<bgcolor=cRed>;
+// 0x7FE:
+// 1st and 3rd byte always 0. Are these SHORT values instead of bytes?
+// known (dec) values for 2nd byte:
+// 2    most datasets, on the 2nd byte
+// 4    on J7 and OT, which both have an eco button
+// 16   on KN
+// 18   on MZ
+// 26   on J4
+// 34   on KV
+// 
+// known (dec) values for 4th byte:
+// 2
+// 6
+// 18   on PF
+// 22
+// 23
+// 66
+
+
+
 ubyte unknown_button_4[4]<bgcolor=cLtRed>;
-ubyte unknown_button_5[5]<bgcolor=cRed>;
-ubyte unknown_button_6[5]<bgcolor=cDkRed>;
-ubyte unknown_button_7[5]<bgcolor=cRed>;
-ubyte unknown_button_8[1]<bgcolor=cLtRed>;
+// 0x802:
+// 1st, 3rd and 4th byte always 0. Are these SHORT values instead of bytes?
+// 2nd byte:
+// 18   MZ
+// 66   PF
 
 
+ubyte unknown_button_5[4]<bgcolor=cRed>;    
+// known (dec) values:
+// 0
+// 1
+// 2
+// 06 = screen doesn't scroll to show all profiles
+// 250 (FA) 
+// FF = no screen visible
+// FE = no screen visible
+// F0 = no screen visible
+// 0A = no screen visible
 
 
-
-
-ubyte user_interface_specifics_button[4]<bgcolor=cYellow >;
-// todo:improve this. This determines the behavior of the FPA screen depending on the button you press.
-// first position = mode button, second = knob, third = steeringwheel button
-// 0x01: Title = "<brand> drive profile with DCC"
-// 0x02: Title = "<brand> drive profile"
-// 0x03: Profiles are no longer matching, and a different animation
-// 0x04: No HMI screen, only FPA icon
-// 0x05: Nothing on HMI screen, FPA only visible on virtual cockpit.
-// 0x06: Title = profile name
-// 0x07: No HMI screen, only FPA icon
-// 0x70: ?? (Seen on N1, N8, PD, PF, PH, PO, TC, TK)
-// 0x71: ?? (Seen on KV, PD, PF, PH, PO, TC, TK )
-// 0xFA: -
-// 0xFF:
-
-ubyte unknown_profiles_related[16]<bgcolor=cLtRed >;
-// todo: test this some more
-// tested the following:
-// 00 03 05 02 00 01 changed to
-// 00 05 03 01 00 02
-// result: after selecting comfort profile, the FPA screen dissappears.
-// OY: 0003 0502 0001 F1F1 0000 0000
+ubyte unknown_button_6[4]<bgcolor=cDkRed>;
+// 1st byte always 0
+// known (dec) values:
+// 2nd byte:
+// 0
+// 3
+// 11
 //
-//- all 0: No profile selectable
-//- All 1: nothing seems to change?
-//- all 2: After comfort, the menu will disappear
-//- All 3: After comfort, the menu will disappear
-//- All 4: After normal, the menu will disappear
-//- All 5: After normal, the menu will disappear
-//- All 8: After sport, the menu will disappear 
-
-//This follows the same logic as this bitfield:
-//8765 4321
-//IREO SNC?
-//2 = comfort
-//4 = normal
-//8 = sport
-//10 = offroad
+// 3rd byte:
+// 1
+// 5
+// 6
+// 12
+//
+// 4th byte:
+// 1
+// 2
+// 3
+// 9
 
 
+ubyte unknown_button_7[4]<bgcolor=cRed>;
+// 1st byte:
+// 0
+// 1
+//
+// 2nd byte:
+// 0
+// 1 (only 1 if 1st byte = 0)
+//
+// 3rd byte:
+// 2
+// 241
+//
+// 4th byte:
+// 2
+// 241
 
 
-//ubyte unknown_value6_1 <bgcolor=cDkRed >; 
-//ubyte unknown_value6_2 <bgcolor=cLtRed >; // relevant for R button on steering wheel
-//ubyte unknown_value6_3 <bgcolor=cDkRed >;
-//ubyte unknown_value6_4 <bgcolor=cDkRed >;
-// todo: test this
-// PF: 0270 7100
-// OY: 0100 0000
+ubyte unknown_button_8[4]<bgcolor=cLtRed>;
+// 0
+// 1
+// 2
+// 10
+
+
+ubyte unknown_button_9[4]<bgcolor=cYellow >;
+// 0
+// 1
+// 2
+// 33
+// 112
+// 113
+// 255
+
+
+
 
 FSeek(2107);
 ubyte unknown_2107[10]<bgcolor=cRed >;
@@ -782,15 +840,27 @@ for (i=0;i<4;i++){
 
 
 
-Printf("\nunknown_button_data:\n");
-for (i=0;i<8;i++){
-    Printf("unknown_button_data_%i:\t\t", i);
-    for (j=0;j<4;j++){
-        Printf("%i\t", unknown_button_data[i].data[j]);
-        }
-    Printf("\n");
-}
 */
+
+FSeek(2046);
+ubyte unknown_button_data[32];
+
+Printf("\nubyte unknown_button_data_possible_list_extension_1[4]:\t");
+for (i=0;i<4;i++){
+        Printf("%i\t", unknown_button_data_possible_list_extension_1[i]);
+        };
+
+Printf("\nubyte unknown_button_data_possible_list_extension_2[4]:\t");
+for (i=0;i<4;i++){
+        Printf("%i\t", unknown_button_data_possible_list_extension_2[i]);
+        };
+
+Printf("\nubyte unknown_button_data[32]:\t");
+for (i=0;i<32;i++){
+        Printf("%i\t", unknown_button_data[i]);
+        };
+
+
 
 // Showing how the byte_active bytes are set for each control. Currently, the meaning of these values is unknown.
 Printf("\n\n Position Control                        \t 0xA67 \t 0xA85 \t Meaning\n");
