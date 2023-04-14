@@ -50,8 +50,8 @@ struct{
 FSeek(38);
 struct{
     struct{
-        ubyte value_B:4<bgcolor=cDkYellow>;
-        ubyte value_A:4<bgcolor=cYellow>;
+        ubyte value_B:4<bgcolor=cDkGreen>;
+        ubyte value_A:4<bgcolor=cGreen>;
         }group_children_request_values_x [15]<optimize=true>;
 }group_children_request_values[32]<optimize=true>;
 
@@ -82,7 +82,7 @@ struct{
 
 
 FSeek(518);
-ubyte group_member_request_values_controls[8] <bgcolor=cDkYellow,name=getControlName>;
+ubyte group_member_request_values_controls[8] <bgcolor=cDkGreen,name=getControlName>;
 ubyte amount_of_members_per_group[8] <bgcolor=cGreen>;
 
 // these are the names of the groups.
@@ -240,9 +240,8 @@ struct{
 } allow_return_to_profile <optimize=false, bgcolor=cGreen>;
 // this determines whether or not it's allowed to return to a given profile upon reset.
 
-byte profile_0_nodata[30] <bgcolor=cBlack>;
+byte profile_0_nodata[30] <bgcolor=cBlack, hidden=true>;
 // tested with different values here, doesn't seem to do anything
-
 
 
 struct{
@@ -268,10 +267,8 @@ struct{
 } available_choices_at_individual_profile[12];
 
 // button section starts here
-byte filler[2] <bgcolor=cYellow>; 
-// appears to be just zeroes, at all time
-
-// no idea why they have all these zeroes.. maybe there is space for 5 buttons?
+byte unknown_7BB[2] <bgcolor=cYellow>; 
+// almost always 0, except on KV, N1, N8: Audi firmwares.
 
 ubyte button_type[5] <bgcolor=cDkGreen>;
 // 1 = push button
@@ -283,30 +280,29 @@ ubyte button_type[5] <bgcolor=cDkGreen>;
 // 253 = steering normal push       11111101
 // FD  on Tiguan R (has enabled steering wheel FPA buttons)
 // FE  on Tiguan R (has enabled steering wheel FPA buttons)
-// there are 4 bytes, because there's room for 4 buttons. Maybe even 5 (there's room for it, with the "filler" byte.
+// TODO: test 5th byte if it is doing anything or if it's ignored and is just a filler byte
 
 ubyte button_behavior[5] <bgcolor=cYellow>;
 // 0 = disabled
 // 1 = enabled
 // 4 = can rotate in 2 directions?
-// 0401 0100 on Tiguan R (has enabled steering wheel FPA buttons) (dataset version PF)
 // there are 4 bytes, because there's room for 4 buttons. Maybe even 5, not sure yet.
-
+// TODO: test 5th byte if it is doing anything or if it's ignored and is just a filler byte
+// TODO: test other values
 
  
-byte button_action[5] <bgcolor=cDkYellow, comment="01 = button press cycles through the modes, 03 = only open FPA dialog, no selection by button">;
+byte button_action[5] <bgcolor=cDkYellow>;
 // 01 = button press cycles through the modes
 // 03 = only open FPA dialog, no selection by button
 // 05 = occurs on MZ00
 // TODO: test other values like 2, 4, 5, 6.
-// 0101 0100 on Tiguan R (dataset version PF)
 // again, for each of the 4 buttons.
 
 
-byte cycling_through_modes[5] <bgcolor=cGreen,comment="01 = there's no loop 03 = loop through all the modes over and over again">;
+byte cycling_through_modes[5] <bgcolor=cGreen>;
+// 00 = nothing
 // 01 = there's no loop
 // 03 = loop through all the modes over and over again
-// 0303 0300 on Tiguan R (dataset version PF)
 // again, for each of the 4 buttons.
 
 
@@ -315,12 +311,21 @@ ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 
 
 struct{
-    ubyte list_0<bgcolor=cLtGreen,comment=getFPAName>; 
-    ubyte list_1<bgcolor=cGreen ,comment=getFPAName>;      
-    ubyte list_2<bgcolor=cGreen ,comment=getFPAName>;      
-    ubyte list_3<bgcolor=cDkGreen ,comment=getFPAName>;
+    ubyte list_0<bgcolor=cLtGreen>; 
+    ubyte list_1<bgcolor=cGreen>;      
+    ubyte list_2<bgcolor=cGreen>;      
+    ubyte list_3<bgcolor=cDkGreen>;
     } button_profile_lists[8] <optimize=true> ;
 // these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
+// the numbers in this list refer to the entry in FPA_profile[12], so the possible (decimal) values are as follows:
+// 0 = disabled
+// 1 to 12 = reference to the profile in FPA_profile
+// 221: ?
+// 232: ?
+// 241: seen on steering wheel button setups
+// The logic for these higher numbers isn't clear yet.
+// Todo: find out that's the logic behind this.
+// It's not half bytes (like bit 0-3 for profiles bit 4-7 for something else), because then the values exceed the 0-12 range.
 
 
 // the following need more research.
@@ -360,7 +365,7 @@ ubyte unknown_button_3[4]<bgcolor=cRed>;
 // known (dec) values for 4th byte:
 // 2
 // 6
-// 18   on PF
+// 18
 // 22
 // 23
 // 66
@@ -380,12 +385,13 @@ ubyte unknown_button_5[4]<bgcolor=cRed>;
 // 0
 // 1
 // 2
-// 06 = screen doesn't scroll to show all profiles
+// 06 = screen doesn't scroll to show all profiles, only the ones that are in the profile selection list.
 // 250 (FA) 
 // FF = no screen visible
 // FE = no screen visible
 // F0 = no screen visible
 // 0A = no screen visible
+
 
 
 ubyte unknown_button_6[4]<bgcolor=cDkRed>;
@@ -463,7 +469,13 @@ byte unknown_2240[2]<bgcolor=cDkRed >;
 
 
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
-byte reserved[12]<bgcolor=cGray>;
+
+byte unknown_rare_setting[12]<bgcolor=cGray>;
+// Only J4 has data here:
+// 22
+// 23
+
+
 byte unknown_setting[9]<bgcolor=cRed>;
 // after setting to 123456789, the default settings on individual profile were reset.
 // Of this list of 9 bytes, only the 2nd and 3rd byte have data
@@ -845,19 +857,51 @@ for (i=0;i<4;i++){
 FSeek(2046);
 ubyte unknown_button_data[32];
 
-Printf("\nubyte unknown_button_data_possible_list_extension_1[4]:\t");
+Printf("\n unknown_button_data_possible_list_extension_1[4]:\t");
 for (i=0;i<4;i++){
         Printf("%i\t", unknown_button_data_possible_list_extension_1[i]);
         };
 
-Printf("\nubyte unknown_button_data_possible_list_extension_2[4]:\t");
+Printf("\n unknown_button_data_possible_list_extension_2[4]:\t");
 for (i=0;i<4;i++){
         Printf("%i\t", unknown_button_data_possible_list_extension_2[i]);
         };
 
-Printf("\nubyte unknown_button_data[32]:\t");
+Printf("\n unknown_button_data[32]:\t");
 for (i=0;i<32;i++){
         Printf("%i\t", unknown_button_data[i]);
+        };
+
+Printf("\n unknown_setting[9]:\t");
+for (i=0;i<9;i++){
+        Printf("%i\t", unknown_setting[i]);
+        };
+
+
+
+
+Printf("\n mode_light_on[12]:\t");
+for (i=0;i<12;i++){
+        Printf("%i\t", mode_light_on[i]);
+        };
+
+
+// check if all filler is actually 0
+Printf("\n filler[2]:\t");
+for (i=0;i<2;i++){
+        Printf("%i\t", filler[i]);
+        };
+
+// check if all filler is actually 0
+Printf("\n unknown_value_0:\t");
+for (i=0;i<1;i++){
+        Printf("%i\t", unknown_value_0[i]);
+        };
+
+// check if all filler is actually 0
+Printf("\n profile_0_nodata:\t");
+for (i=0;i<30;i++){
+        Printf("%i\t", profile_0_nodata[i]);
         };
 
 
