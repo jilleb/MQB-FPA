@@ -86,6 +86,7 @@ FSeek(518);
 ubyte group_member_request_values_controls[8] <bgcolor=cDkGreen,name=getControlName>;
 ubyte amount_of_members_per_group[8] <bgcolor=cGreen>;
 
+
 // these are the names of the groups.
 // examples:
 
@@ -105,14 +106,9 @@ ubyte amount_of_members_per_group[8] <bgcolor=cGreen>;
 // PF   21 24 07 FF FF FF FF FF 03 02 02    - 3 groups, 3+2+2 controls
 // Having 3+2+2 in dataset PF rules out that this is anything other than group size.
 
-
-FSeek(566);
+ubyte reserved_for_future_use[32] <bgcolor=cDkGray, hidden=true>; // always zeroes
 // these determine specifically which controls are set in the group member matrix.
 long members_in_group_[4]<read=getGroupMemberLongCodingByteName, bgcolor=cGreen>;
-
-      
-
-
 // Known values:
 
 // sets with 1 group
@@ -143,16 +139,13 @@ long members_in_group_[4]<read=getGroupMemberLongCodingByteName, bgcolor=cGreen>
 // Audi, so different logic:
 // N1:      0010 0080 2001 0000
 
+ubyte reserved_for_future_use_2[80] <bgcolor=cDkGray, hidden=true>; // always zeroes
 
 
+
+
+ushort function_bytes_settings_shifted_by_1_bit[30] <hidden=true>; // name isn't accurate, but this value is only used for print
 FSeek(662);
-ushort function_bytes_settings_shifted_by_1_bit[30] <hidden=true>;
-
-
-FSeek(662);
-
-
-
 struct {
     ubyte allowed_to_change_in_evoff: 1             <read = getYesNo>;
     ubyte allowed_to_change_in_hybridarea: 1        <read = getYesNo>;
@@ -172,8 +165,7 @@ struct {
     ubyte allowed_to_change_in_normal: 1            <read = getYesNo>;
     ubyte allowed_to_change_in_comfort: 1           <read = getYesNo>;
     } control_is_allowed_to_change[30]               <bgcolor=cGreen,optimize=true>; 
-FSeek(722);
-ushort function_bytes_settings[30] <comment=getFunctionByteSettingName,hidden=true>;
+ushort function_bytes_settings[30] <comment=getFunctionByteSettingName,hidden=true>;// name isn't accurate, but this value is only used for print
 
 FSeek(722);
 struct {
@@ -197,16 +189,12 @@ struct {
 
     }control_is_reset[30]               <bgcolor=cDkGreen,optimize=true>; 
 
-
-FSeek(782);
 byte restart_value[30] <format=hex, bgcolor=cGreen, name=getSettingName>;
 // this is the default value after restart  
 
-
-byte unknown_value_0 <bgcolor=cYellow>;
+byte unknown_value_32C <bgcolor=cDkGray,hidden=true>;
 // tested different values, doesn't seem to do anything
-// PF: 0000
-// OY: 0000
+// seems to be 0 always
 
 
 // enabled profiles start here
@@ -241,7 +229,7 @@ struct{
 } allow_return_to_profile <optimize=false, bgcolor=cGreen>;
 // this determines whether or not it's allowed to return to a given profile upon reset.
 
-byte profile_0_nodata[30] <bgcolor=cBlack, hidden=true>;
+byte profile_0_nodata[30] <bgcolor=cDkGray, hidden=true>;
 // tested with different values here, doesn't seem to do anything
 
 
@@ -318,6 +306,8 @@ struct{
     ubyte list_2<bgcolor=cGreen>;      
     ubyte list_3<bgcolor=cDkGreen>;
     } button_profile_lists[8] <optimize=true> ;
+
+struct {
 // these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
 // the numbers in this list refer to the entry in FPA_profile[12], so the possible (decimal) values are as follows:
 // 0 = disabled
@@ -329,136 +319,145 @@ struct{
 // Todo: find out that's the logic behind this.
 // It's not half bytes (like bit 0-3 for profiles bit 4-7 for something else), because then the values exceed the 0-12 range.
 
+    
+    // the following need more research.
+    ubyte unknown_button_data_7F6[4] <bgcolor=cYellow>;
+    // known (dec) values:
+    // 0
+    // 1
+    // 2
+    // 5
+    // 3rd and 4th are always 00
+    
+    ubyte unknown_button_data_7FA[4]<bgcolor=cDkYellow>;
+    // known (dec) values:
+    // 0
+    // 2
+    // 3
+    // 6
+    // 9
+    // 12
+    
+    
+    
+    
+    
+    
+    ubyte unknown_button_data_7FE[4]<bgcolor=cRed>;
+    // 0x7FE:
+    // 1st and 3rd byte always 0. Are these SHORT values instead of bytes?
+    // known (dec) values for 2nd byte:
+    // 2    most datasets, on the 2nd byte
+    // 4    on J7 and OT, which both have an eco button
+    // 16   on KN
+    // 18   on MZ
+    // 26   on J4
+    // 34   on KV
+    // 
+    // known (dec) values for 4th byte:
+    // 2
+    // 6
+    // 18
+    // 22
+    // 23
+    // 66
+    
+    
+    
+    ubyte unknown_button_data_802[4]<bgcolor=cLtRed>;
+    // 0x802:
+    // 1st, 3rd and 4th byte always 0. Are these SHORT values instead of bytes?
+    // 2nd byte:
+    // 18   MZ
+    // 66   PF
+    
+    
+    ubyte unknown_button_data_806[4]<bgcolor=cRed>;    
+    // known (dec) values:
+    // 0
+    // 1
+    // 2
+    // 06 = screen doesn't scroll to show all profiles, only the ones that are in the profile selection list.
+    // 250 (FA) 
+    // FF = no screen visible
+    // FE = no screen visible
+    // F0 = no screen visible
+    // 0A = no screen visible
+    
+    
+    
+    ubyte unknown_button_data_80A[4]<bgcolor=cDkRed>;
+    // 1st byte always 0
+    // known (dec) values:
+    // 2nd byte:
+    // 0
+    // 3
+    // 11
+    //
+    // 3rd byte:
+    // 1
+    // 5
+    // 6
+    // 12
+    //
+    // 4th byte:
+    // 1
+    // 2
+    // 3
+    // 9
+    
+    
+    ubyte unknown_button_data_80E[4]<bgcolor=cRed>;
+    // 1st byte:
+    // 0
+    // 1
+    //
+    // 2nd byte:
+    // 0
+    // 1 (only 1 if 1st byte = 0)
+    //
+    // 3rd byte:
+    // 2
+    // 241
+    //
+    // 4th byte:
+    // 2
+    // 241
+    
+    
+    ubyte unknown_button_data_812[4]<bgcolor=cLtRed>;
+    // 0
+    // 1
+    // 2
+    // 10
+    
+    
+    ubyte unknown_button_data_816[4]<bgcolor=cRed >;
+    // 0
+    // 1
+    // 2
+    // 33
+    // 112
+    // 113
+    // 255
+    
+} unknown_button_data;
 
-// the following need more research.
-ubyte unknown_button_data_7F6[4] <bgcolor=cYellow>;
-// known (dec) values:
-// 0
-// 1
-// 2
-// 5
-// 3rd and 4th are always 00
-
-ubyte unknown_button_data_7FA[4]<bgcolor=cDkYellow>;
-// known (dec) values:
-// 0
-// 2
-// 3
-// 6
-// 9
-// 12
-
-
-
-
-
-
-ubyte unknown_button_data_7FE[4]<bgcolor=cRed>;
-// 0x7FE:
-// 1st and 3rd byte always 0. Are these SHORT values instead of bytes?
-// known (dec) values for 2nd byte:
-// 2    most datasets, on the 2nd byte
-// 4    on J7 and OT, which both have an eco button
-// 16   on KN
-// 18   on MZ
-// 26   on J4
-// 34   on KV
-// 
-// known (dec) values for 4th byte:
-// 2
-// 6
-// 18
-// 22
-// 23
-// 66
-
-
-
-ubyte unknown_button_data_802[4]<bgcolor=cLtRed>;
-// 0x802:
-// 1st, 3rd and 4th byte always 0. Are these SHORT values instead of bytes?
-// 2nd byte:
-// 18   MZ
-// 66   PF
-
-
-ubyte unknown_button_data_806[4]<bgcolor=cRed>;    
-// known (dec) values:
-// 0
-// 1
-// 2
-// 06 = screen doesn't scroll to show all profiles, only the ones that are in the profile selection list.
-// 250 (FA) 
-// FF = no screen visible
-// FE = no screen visible
-// F0 = no screen visible
-// 0A = no screen visible
-
-
-
-ubyte unknown_button_data_80A[4]<bgcolor=cDkRed>;
-// 1st byte always 0
-// known (dec) values:
-// 2nd byte:
-// 0
-// 3
-// 11
-//
-// 3rd byte:
-// 1
-// 5
-// 6
-// 12
-//
-// 4th byte:
-// 1
-// 2
-// 3
-// 9
-
-
-ubyte unknown_button_data_80E[4]<bgcolor=cRed>;
-// 1st byte:
-// 0
-// 1
-//
-// 2nd byte:
-// 0
-// 1 (only 1 if 1st byte = 0)
-//
-// 3rd byte:
-// 2
-// 241
-//
-// 4th byte:
-// 2
-// 241
-
-
-ubyte unknown_button_data_812[4]<bgcolor=cLtRed>;
-// 0
-// 1
-// 2
-// 10
-
-
-ubyte unknown_button_data_816[4]<bgcolor=cRed >;
-// 0
-// 1
-// 2
-// 33
-// 112
-// 113
-// 255
-
-
-
-
-FSeek(2107);
+FSeek(2105);
+ubyte unknown_839[2]<bgcolor=cDkRed >;
+// Known dec values:
+// 0 0   almost all datasets
+// 8 0   MZ
 ubyte unknown_83B[10]<bgcolor=cRed >;
 // known values:
 // all datasets: FF FF FF FF FF FF FF FF FF FF (reserved for future use?)
+// J4 has:       05 05 04 FF FF FF FF FF FF FF
+// MZ has:       FF FF FF FF FF FF FF FF FF F1
 
+struct {
+        ubyte unknown_845_data[15];
+        } unknown_845_table[8]<bgcolor=cDkRed >;
+// some kind of table, 8 by 15. Only J4 and MZ seem to have it. Some old gateway leftover?
 
 FSeek(2240);
 byte unknown_8C0[2]<bgcolor=cDkRed >;
@@ -471,11 +470,13 @@ byte unknown_8C0[2]<bgcolor=cDkRed >;
 
 
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
+// todo: test the following decimal values:
+// 32
+// 
 
-byte unknown_setting_8CE[12]<bgcolor=cGray>;
+byte unknown_setting_8CE[12]<bgcolor=cLtRed>;
 // Only J4 has data here:
-// 22
-// 23
+// 00 00 17 00 00 16 00 00 00 00 00 00
 
 
 byte unknown_setting_8DA[9]<bgcolor=cRed>;
@@ -557,79 +558,127 @@ byte SettingBytes_more[30] <bgcolor=cDkRed>; // rhymes with earlier setting byte
 
 
 struct{
-// the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
-ubyte PHEV_unknown_AA3[8] <bgcolor=cLtRed>;
-// KV, N1, N8:      00 01 02 03 04 00 00 01
-// others:          00 32 33 34 00 00 00 01
+    // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
+    ubyte PHEV_unknown_AA3[8] <bgcolor=cLtRed>;
+    // KV, N1, N8:      00 01 02 03 04 00 00 01
+    // others:          00 32 33 34 00 00 00 01
+    
+    ubyte PHEV_unknown_AA9[4] <bgcolor=cRed>;
+    // known decimal values:
+    // 255, 255, 255, 255 on most datasets
+    // 255, 6    255, 255 on PD, PF, PH and PO 
+    // 255, 8    241, 241 on O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, TE
+    
+    ubyte PHEV_unknown_AAF[4] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0xFF
+    
+    ubyte PHEV_unknown_AB3[4] <bgcolor=cDkRed>;
+    // known decimal values:
+    // 5	241	1	255
+    // 5	241	241	255
+    // 255	255	4	241
+    // 255	255	255	255
+    
+    ubyte PHEV_unknown_AB7[5] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0xFF
+    ubyte PHEV_unknown_ABC <bgcolor=cDkRed>; // always 0xFF, except on MZ: 5
+    ubyte PHEV_unknown_ABD[9] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0xFF
+    ubyte PHEV_unknown_AC6[26] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0x00
+    ubyte PHEV_unknown_AE0[14] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0xFF
+    ubyte PHEV_unknown_AEE[14] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always: 00 FF 00 00 FF FF FF FF FF FF FF 00 00 00
+    
+    // note: there are quite a few 14-sized shapes in this area...
+    
+    ushort PHEV_unknown_AFC <bgcolor=cDkRed>;   // always 0 0, except on MZ: 8 0
+    ushort PHEV_unknown_AFE <bgcolor=cRed>;     // always 0 0, except on MZ: 8 0
+    ushort PHEV_unknown_B00 <bgcolor=cDkRed>;   // always 0 0, except on MZ: 8 0
+    ubyte PHEV_unknown_B02[5] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_B08[4] <bgcolor=cDkRed>; // always 255 255, 255, 255, except on MZ: 255, 12, 12, 12
+    ubyte PHEV_unknown_B0C[4] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0xFF
+    ubyte PHEV_unknown_B0F[77] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // 77 bytes of FF's and 00's. What's the relevance? No idea!
+    
+    ushort PHEV_unknown_B5C[20] <bgcolor=cDkRed>;    // see excelsheet
+    ubyte PHEV_unknown_B83[44] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0x00
+    ubyte PHEV_unknown_BB0[10] <bgcolor=cDkRed>;     // see excelsheet
+    ushort PHEV_unknown_BBA[10] <bgcolor=cLtRed>;    // see excelsheet
+    ubyte PHEV_unknown_BCE[10] <bgcolor=cDkRed>;     // see excelsheet
 
-ubyte PHEV_unknown_AA9[4] <bgcolor=cRed>;
-// known decimal values:
-// 255, 255, 255, 255 on most datasets
-// 255, 6    255, 255 on PD, PF, PH and PO 
-// 255, 8    241, 241 on O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, TE
+    struct {
+        ubyte PHEV_unknown_BD8_table_1[32] <bgcolor=cRed>;     // see excelsheet, could be like a controls list?
+        ubyte PHEV_unknown_BD8_table_2[32] <bgcolor=cDkRed>;   // see excelsheet, could be hybrid mode 1?
+        ubyte PHEV_unknown_BD8_table_3[32] <bgcolor=cRed>;     // see excelsheet, could be hybrid mode 2?
+        ubyte PHEV_unknown_BD8_table_4[32] <bgcolor=cDkRed>;   // see excelsheet, could be hybrid mode 3?
+    } PHEV_unknown_BD8_table;
+    
+    ubyte PHEV_unknown_C85[22] <bgcolor=cLtRed>;     // see excelsheet
+    
+    ubyte PHEV_unknown_C6E[107] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>;     // see excelsheet
+    ubyte PHEV_unknown_CD9[1] <bgcolor=cRed>;
+    // known decimal values:
+    // 0 : almost always
+    // 80: N1, N8, KV (Audi datasets)
+    // 42: O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, TE
+    ubyte PHEV_unknown_CDA[3] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_CDD[4] <bgcolor=cRed>;
+    // known decimal values:
+    // 0    0 0   0   : almost always
+    // 134  0 12  0   : KV, N1, N8 (Audi datasets)
+    // 34   0 28  0   : MZ
+    // 34   0 28  27  : O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, TE   
 
-ubyte PHEV_unknown_AAF[4] <bgcolor=cDkGray, fgcolor=cGray>; // always 0xFF
+    ubyte PHEV_unknown_CE1[11] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_CEC[1] <bgcolor=cRed>;
+    // known decimal values:
+    // 0    
+    // 1:   O4, O5, P2
+    // 5:   O2, O3, ON, OO, OV, P3, P4, PG, PJ, PK, PL, TE
 
-ubyte PHEV_unknown_AB3[4] <bgcolor=cDkRed>;
-// known decimal values:
-// 5	241	1	255
-// 5	241	241	255
-// 255	255	4	241
-// 255	255	255	255
+    ubyte PHEV_unknown_CED[9] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_CF6[1] <bgcolor=cRed>;
+    // known decimal values:
+    // 0    
+    // 1: O2, O3, O4, O5, ON, OO, P2, P3, P4, PG, PJ, PK, PL, TE
 
-ubyte PHEV_unknown_AB7[5] <bgcolor=cDkGray, fgcolor=cGray>; // always 0xFF
-ubyte PHEV_unknown_ABC <bgcolor=cDkRed>; // always 0xFF, except on MZ: 5
-ubyte PHEV_unknown_ABD[9] <bgcolor=cDkGray, fgcolor=cGray>; // always 0xFF
-ubyte PHEV_unknown_AC6[26] <bgcolor=cDkGray, fgcolor=cGray>; // always 0x00
-ubyte PHEV_unknown_AE0[14] <bgcolor=cDkGray, fgcolor=cGray>; // always 0xFF
-ubyte PHEV_unknown_AEE[14] <bgcolor=cDkGray, fgcolor=cGray>; // always: 00 FF 00 00 FF FF FF FF FF FF FF 00 00 00
-// note: there are quite a few 14-sized shapes in this area...
-ushort PHEV_unknown_AFC <bgcolor=cDkRed>; // always 0 0, except on MZ: 8 0
-ushort PHEV_unknown_AFE <bgcolor=cRed>; // always 0 0, except on MZ: 8 0
-ushort PHEV_unknown_B00 <bgcolor=cDkRed>; // always 0 0, except on MZ: 8 0
-ubyte PHEV_unknown_B02[5] <bgcolor=cDkGray, fgcolor=cGray>; // always 0
-ubyte PHEV_unknown_B08[4] <bgcolor=cDkRed>; // always 255 255, 255, 255, except on MZ: 255, 12, 12, 12
-ubyte PHEV_unknown_B0C[4] <bgcolor=cDkGray, fgcolor=cGray>; // always 0xFF
-ubyte PHEV_unknown_B0F[77] <bgcolor=cDkGray, fgcolor=cGray>; // 77 bytes of FF's and 00's. What's the relevance? No idea!
+    ubyte PHEV_unknown_CF7[11] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_D02[10] <bgcolor=cRed>;
+    // known decimal values:
+    // 15	0	0	0	30	0	0	1	0	0   KV, N1, N8 (Audi datasets)
+    // 31	0	0	0	62	0	0	1	0	0   MZ, O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, TE
 
-ushort PHEV_unknown_B5C[20] <bgcolor=cDkRed>;    // see excelsheet
-ubyte PHEV_unknown_B83[44] <bgcolor=cDkGray, fgcolor=cGray>; // always 0x00
-ubyte PHEV_unknown_BB0[10] <bgcolor=cDkRed>;     // see excelsheet
-ushort PHEV_unknown_BBA[10] <bgcolor=cLtRed>;     // see excelsheet
-ubyte PHEV_unknown_BCE[10] <bgcolor=cDkRed>;     // see excelsheet
-struct {
-    ubyte PHEV_unknown_BD8_table_1[32] <bgcolor=cRed>;     // see excelsheet, could be like a controls list?
-    ubyte PHEV_unknown_BD8_table_2[32] <bgcolor=cDkRed>;   // see excelsheet, could be hybrid mode 1?
-    ubyte PHEV_unknown_BD8_table_3[32] <bgcolor=cRed>;     // see excelsheet, could be hybrid mode 2?
-    ubyte PHEV_unknown_BD8_table_4[32] <bgcolor=cDkRed>;   // see excelsheet, could be hybrid mode 3?
-} PHEV_unknown_BD8_table;
-
-ubyte PHEV_unknown_C85[22] <bgcolor=cLtRed>;     // see excelsheet
-
-ubyte PHEV_unknown_C6E[107] <bgcolor=cDkGray, fgcolor=cGray>;     // see excelsheet
-
-
+    ubyte hybrid_modes[12]<format=decimal,bgcolor=cYellow>; //not sure, needs testing
+    ubyte hybrid_modes_active[12]<bgcolor=cRed >; //not sure, needs testing
+    
+    struct{
+           byte hybrid_mode_setting[16];
+    }
+    hybrid_mode_settings[12];
+    
+    FSeek(3741);
+    ubyte AID_mode_banner[12]<bgcolor=cGreen, comment=getAIDBanner>;
+    
+    
+    
+    FSeek(3833);
+    ubyte PHEV_unknown_EF9[7] <bgcolor=cDkGray, fgcolor=cGray, hidden=true>; // always 0
+    ubyte PHEV_unknown_F00[1] <bgcolor=cRed >;
+    // 0 : almost always
+    // KV: 8
+    
+    ubyte PHEV_unknown_F01[24] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_F19[2] <bgcolor=cRed >;
+    // 0 0: almost always
+    // KV: 127 255
+    
+    FSeek(3867);
+    ubyte PHEV_unknown_F1B[15] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_F1D[2] <bgcolor=cRed >;
+    // 0 0: almost always
+    // 6 0: on PD, PH, PO
+    // 0 6: on PF
 } PHEV_unknown_data;
 
 
 
-
-
-
-FSeek(3340);
-byte hybrid_modes[12]<format=decimal,bgcolor=cYellow>; //not sure, needs testing
-byte hybrid_modes_active[12]<bgcolor=cRed >; //not sure, needs testing
-
-struct{
-       byte hybrid_mode_setting[16];
-}
-hybrid_mode_settings[12];
-
-FSeek(3741);
-byte AID_mode_banner[12]<bgcolor=cGreen, comment=getAIDBanner>;
-
 FSeek(0xf2c);
-byte PHEV_zeroes[464]<bgcolor=cDkGray, fgcolor=cGray>;   // all zeroes on all datasets I've seen
+ubyte PHEV_zeroes[464]<bgcolor=cDkGray, fgcolor=cGray , hidden=true>;   // all zeroes on all datasets I've seen
 
 
 FSeek(4348);
@@ -906,21 +955,12 @@ for( i = 0; i < 32; i++)
            }
             line_number++;
 }
-
-Printf("\n Group members as defined in matrix:\n");
-for (i=0;i<4;i++){
-        if (members_in_group_[i] != 0){
-        Printf("  Group %i: %s \n", i+1, getGroupMemberLongCodingByteName(members_in_group_[i]));
-        }
-    }
-
-
-
 */
 
-FSeek(2046);
-ubyte unknown_button_data[32];
-
+Printf("\n unknown_setting_8DA:\t");
+for (i=0;i<9;i++){
+        Printf("%i \t", unknown_setting_8DA[i] );
+        }
 
 
 
@@ -1231,6 +1271,7 @@ string getAIDBanner(int settingNumber) {
         case 0x1A: return "Mode Battery Charge not available";
         case 0x1B: return "GTE Off";
         case 0x1C: return "GTE Logo";
+        case 0x20: return "?";
         default:   return "Unknown";
     }
 }
