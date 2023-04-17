@@ -443,7 +443,12 @@ struct {
     
 } unknown_button_data;
 
-FSeek(2105);
+ubyte unknown_button_data_81A[3]<bgcolor=cDkRed >;
+ubyte unknown_button_data_81D[10]<bgcolor=cRed >;
+ubyte unknown_button_data_827[18]<bgcolor=cLtRed >; 
+// this needs more research.
+
+
 ubyte unknown_839[2]<bgcolor=cDkRed >;
 // Known dec values:
 // 0 0   almost all datasets
