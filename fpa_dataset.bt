@@ -253,7 +253,7 @@ struct{
     // so there will be data for profile 1, 2, 3, but the 4th set of data here will be filled with zeroes when it's not used.
     // the 6th profile is used as "individual", so it has additional settings.
     ushort individual_setting_byte[30] <comment=getIndividualSettingName,open=true, bgcolor=cDkGreen> ;
-} available_choices_at_individual_profile[12];
+} settings_shown_in_HMI[12];
 
 // button section starts here
 byte unknown_7BB[2] <bgcolor=cRed>; 
@@ -265,7 +265,7 @@ ubyte button_type[5] <bgcolor=cDkGreen>;
 // 0 = disabled
 // 4 = ?
 // 5 = knob
-// 6 = ?
+// 6 = ? O(occurs on MZ)
 // 254 = steering wheel long push   11111110
 // 253 = steering normal push       11111101
 // FD  on Tiguan R (has enabled steering wheel FPA buttons)
@@ -284,13 +284,13 @@ ubyte button_behavior[5] <bgcolor=cYellow>;
 byte button_action[5] <bgcolor=cDkYellow>;
 // 01 = button press cycles through the modes
 // 03 = only open FPA dialog, no selection by button
-// 05 = occurs on MZ00
+// 05 = ? (occurs on MZ00)
 // TODO: test other values like 2, 4, 5, 6.
 // again, for each of the 4 buttons.
 
 
 byte cycling_through_modes[5] <bgcolor=cGreen>;
-// 00 = nothing
+// 00 = nothing 
 // 01 = there's no loop
 // 03 = loop through all the modes over and over again
 // again, for each of the 4 buttons.
@@ -301,10 +301,10 @@ ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 
 
 struct{
-    ubyte list_0<bgcolor=cLtGreen>; 
-    ubyte list_1<bgcolor=cGreen>;      
-    ubyte list_2<bgcolor=cGreen>;      
-    ubyte list_3<bgcolor=cDkGreen>;
+    ubyte list_0<bgcolor=cLtGreen, name=getFPAName(FPA_profile[this])>; 
+    ubyte list_1<bgcolor=cGreen, name=getFPAName(FPA_profile[this])>;      
+    ubyte list_2<bgcolor=cGreen, name=getFPAName(FPA_profile[this])>;      
+    ubyte list_3<bgcolor=cDkGreen, name=getFPAName(FPA_profile[this])>;
     } button_profile_lists[8] <optimize=true> ;
 
 struct {
@@ -444,27 +444,37 @@ struct {
 } unknown_button_data;
 
 ubyte unknown_button_data_81A[3]<bgcolor=cDkRed >;
+// 0 0 0 on most datasets
+// 1 0 0 on N1 and N8
+
 ubyte unknown_button_data_81D[10]<bgcolor=cRed >;
+// 0 0 0 0 0 0 0 0 0 0 on most datasets
+// 0 0 0 0 0 0 0 0 0 1 on MZ
+
 ubyte unknown_button_data_827[18]<bgcolor=cLtRed >; 
 // this needs more research.
-
+// 00 02 00 02 00 12 00 00 00 00 00 00 00 00 00 00 00 00 on J4 
+// 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 on all other datasets
 
 ubyte unknown_839[2]<bgcolor=cDkRed >;
 // Known dec values:
 // 0 0   almost all datasets
 // 8 0   MZ
+
 ubyte unknown_83B[10]<bgcolor=cRed >;
 // known values:
 // all datasets: FF FF FF FF FF FF FF FF FF FF (reserved for future use?)
 // J4 has:       05 05 04 FF FF FF FF FF FF FF
 // MZ has:       FF FF FF FF FF FF FF FF FF F1
 
+
 struct {
         ubyte unknown_845_data[15];
         } unknown_845_table[8]<bgcolor=cDkRed >;
 // some kind of table, 8 by 15. Only J4 and MZ seem to have it. Some old gateway leftover?
 
-FSeek(2240);
+ubyte unknown_88D[3] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0x00;
+
 byte unknown_8C0[2]<bgcolor=cDkRed >;
 // Known values:
 // 00
@@ -477,7 +487,6 @@ byte unknown_8C0[2]<bgcolor=cDkRed >;
 byte AID_profile_banner[12]<bgcolor=cGreen, comment=getAIDBanner>; //Determines what banner is shown on the AID when selecting the profile
 // todo: test the following decimal values:
 // 32
-// 
 
 byte unknown_setting_8CE[12]<bgcolor=cLtRed>;
 // Only J4 has data here:
@@ -489,15 +498,12 @@ byte unknown_setting_8DA[9]<bgcolor=cRed>;
 // Of this list of 9 bytes, only the 2nd and 3rd byte have data
 // is filled with  0, 1, 2, 5 or 6.
 // Possibly some kind of long press default value?
-
-
-
-string divideBy16(int value) {
-     string s;
-     value = value/16;
-     SPrintf( s, "%d", (int)value );
-     return s;
-}
+// todo: test changing the values:
+// 0
+// 1
+// 2
+// 5
+// 6
 
 short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>; 
 // 00 = off
@@ -526,11 +532,9 @@ struct{
 // measurements values, driving profile selection, requested value.
 // If a Requested Value leads to a change in Actual Value, it means the module accepts this value.
 
-
-FSeek(2539);
 byte list_of_controls[30]<bgcolor=cGreen, comment=getControlName >;
-// This determines what FPA-control is controled by the bytes at "available_choices_at_individual_profile"
-// usage: set each byte to whatever FPA-control you would like to be handles by the "available_choices_at_individual_profile". This should be in line with FPA_controls
+// This determines what FPA-control is controled by the bytes at "settings_shown_in_HMI"
+// usage: set each byte to whatever FPA-control you would like to be handles by the "settings_shown_in_HMI". This should be in line with FPA_controls
 // NEVER PUT FF HERE
 
 byte grouped_controls[30] <bgcolor=cDkGreen>;
@@ -551,7 +555,6 @@ byte gw_longcoding_controls_with_links[30]<bgcolor=cGreen, name=getLongCodingByt
 // Byte 9, Bit 1 = 0x1A = HHC
 // see getLongCodingByteName
 
-
 byte gw_longcoding_controls_without_links[30]<bgcolor=cDkGreen, name=getLongCodingByteName>;
 // Same list as previous one, but can be used to link one control to another.  Is used with Sailing and 4x4 features.
 
@@ -560,8 +563,7 @@ byte SettingBytes_again[30] <bgcolor=cRed>; // rhymes with earlier setting bytes
 byte SettingBytes_more[30] <bgcolor=cDkRed>; // rhymes with earlier setting bytes?
 // known values: 0 and 8. Changes didn't seem to touch the 0x38 table logic
 
-
-
+// the following data all seems to be related to PHEV.
 struct{
     // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
     ubyte PHEV_unknown_AA3[8] <bgcolor=cLtRed>;
@@ -613,7 +615,8 @@ struct{
         ubyte PHEV_unknown_BD8_table_4[32] <bgcolor=cDkRed>;   // see excelsheet, could be hybrid mode 3?
     } PHEV_unknown_BD8_table;
     
-    ubyte PHEV_unknown_C85[22] <bgcolor=cLtRed>;     // see excelsheet
+    ubyte PHEV_unknown_C58[22] <bgcolor=cLtRed>;     // see excelsheet
+    
     
     ubyte PHEV_unknown_C6E[107] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>;     // see excelsheet
     ubyte PHEV_unknown_CD9[1] <bgcolor=cRed>;
@@ -651,17 +654,48 @@ struct{
     ubyte hybrid_modes[12]<format=decimal,bgcolor=cYellow>; //not sure, needs testing
     ubyte hybrid_modes_active[12]<bgcolor=cRed >; //not sure, needs testing
     
+    ubyte PHEV_unknown_D24[192] <bgcolor=cDkRed >;
+
+    ubyte PHEV_unknown_DE4[12] <bgcolor=cLtRed>;
+    // on cars with a hybrid profile, this is always:
+    // 6 5 1 4 1 3 2 1 1 14 13 1
+    // otherwise it's zeroes.   
+
+    ubyte PHEV_unknown_DF0[6] <bgcolor=cRed>;
+    // zeroes, but on MZ it's 0 0 3 0 0 0 
+
+    ubyte PHEV_unknown_DF6[28] <bgcolor=cDkRed>;
+
+    ubyte PHEV_unknown_E12[4] <bgcolor=cRed>;
+    // zeroes, but on MZ it's 3 0 0 0 
+
+    ubyte PHEV_unknown_E16[14] <bgcolor=cLtRed>;
+
+    ubyte PHEV_unknown_E24[8] <bgcolor=cRed>;
+
     struct{
-           byte hybrid_mode_setting[16];
-    }
-    hybrid_mode_settings[12];
-    
-    FSeek(3741);
+        ubyte PHEV_unknown_E2C_data[6];
+    }   PHEV_unknown_E2C[5] <bgcolor=cDkRed>;
+
+
+    ubyte PHEV_unknown_E4A[4] <bgcolor=cRed>;
+    ubyte PHEV_unknown_E4F[8] <bgcolor=cLtRed>; // 2 0 0 0 0 0 0 0  on MZ, 0 on all others
+    ubyte PHEV_unknown_E56[64] <bgcolor=cRed>; // looks to be 8x8 bytes or so
+    ubyte PHEV_unknown_E96[7] <bgcolor=cDkRed>; // on Hybrid cars: 138 37 1 34 0 174 0 
     ubyte AID_mode_banner[12]<bgcolor=cGreen, comment=getAIDBanner>;
-    
-    
-    
-    FSeek(3833);
+    ubyte PHEV_unknown_EA9[20] <bgcolor=cDkRed>; // on Hybrid cars: 138 37 1 34 0 174 0 
+    ubyte PHEV_unknown_E4D[4] <bgcolor=cRed>;
+    ubyte PHEV_unknown_EC1[10] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ushort PHEV_unknown_ECB[4] <bgcolor=cRed>;
+    ubyte PHEV_unknown_ED3[4] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_ED7[4] <bgcolor=cDkRed>;
+    // especially the 4th byte has a lot of variation and is set on most datasets
+    // very interesting what this could be!
+    ubyte PHEV_unknown_EDB[24] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_EF3[1] <bgcolor=cRed>;
+    // always 0, except on O2, O3, O4, O5, ON, OO, OV, P2, P3, P4, PG, PJ, PK, PL, PM, TE. There it's 21
+    ubyte PHEV_unknown_EF4[4] <bgcolor=cDkGray, fgcolor=cGray , hidden=true>; // always 0
+    ubyte PHEV_unknown_EF8[1] <bgcolor=cRed>; // 1 on KV, otherwise 0
     ubyte PHEV_unknown_EF9[7] <bgcolor=cDkGray, fgcolor=cGray, hidden=true>; // always 0
     ubyte PHEV_unknown_F00[1] <bgcolor=cRed >;
     // 0 : almost always
@@ -678,7 +712,7 @@ struct{
     // 0 0: almost always
     // 6 0: on PD, PH, PO
     // 0 6: on PF
-} PHEV_unknown_data;
+} PHEV_unknown_data <fgcolor=cLtBlue>;
 
 
 
@@ -694,25 +728,14 @@ calculated_checksum = Checksum(CHECKSUM_CRC32, 0,4348);
 ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 
 
-// the following bytes are not known yet, but are different between datasets.
 
-// versions:
-// Octavia:
-// Magotan:
-// Passat:
-// Leon:
-// FR 2020:       LI00
-// Tiguan R 2021: PF00
-// Passat 2021:   0Y00
-
-
-FSeek(3800);
-byte unkonwn_3800<bgcolor=cDkRed>;
-byte unkonwn_3801<bgcolor=cRed>;
 
 
 FSeek(2006);
 ubyte button_for_test[32];
+
+
+
 
 
 // Don't mess with anything below here, unless you know what you're doing.
@@ -767,7 +790,7 @@ while( indiv_profile_number < 12 )
               for( indiv_setting_number = 0; indiv_setting_number < 30; indiv_setting_number++)
             {
                 if (list_of_grouped_controls[indiv_setting_number] > 0){
-                    Printf ("  %i \t %-30s: %s(%04x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(available_choices_at_individual_profile[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
+                    Printf ("  %i \t %-30s: %s(%04x) \n", indiv_setting_number, getControlName( list_of_grouped_controls[indiv_setting_number]),getIndividualSettingName(settings_shown_in_HMI[indiv_profile_number].individual_setting_byte[indiv_setting_number]),(settings_shown_in_HMI[indiv_profile_number].individual_setting_byte[indiv_setting_number]));
                }
             }
     }
@@ -1089,11 +1112,16 @@ string getControlName(int controlNumber) {
         case 0x35: return "Nothing displays, just Engine";
         case 0x36: return "ESC System";
         case 0x37: return "Nothing displays";
+        case 0x3A: return "Unknown";
         case 0x41: return "Engine";
         case 0x46: return "Range calculation";  //doesn't seem to display on screen
+        case 0x48: return "Unknown";
         case 0x49: return "Hill Hold Assist";   //seen in L900
+        case 0x4A: return "Unknown";
         case 0x4B: return "Engine";             //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
+        case 0x50: return "Unknown";
+
         case 0xFF: return "-";
         default:   return "Unknown";
     }
