@@ -11,6 +11,8 @@
 OutputPaneClear();
 local int groupsMatrixControlsArray[64];
 
+local int mk7 = (FileSize() == 0x1100 ? 1 : 0);
+
 BitfieldDisablePadding();
 BigEndian();
 char dataset_version[4]       <format=hex,bgcolor=cGreen,comment="Version">; // something like J1 00
@@ -337,9 +339,6 @@ struct {
     // 6
     // 9
     // 12
-    
-    
-    
     
     
     
@@ -715,20 +714,16 @@ struct{
 } PHEV_unknown_data <fgcolor=cLtBlue>;
 
 
-
-FSeek(0xf2c);
-ubyte PHEV_zeroes[464]<bgcolor=cDkGray, fgcolor=cGray , hidden=true>;   // all zeroes on all datasets I've seen
-
-
-FSeek(4348);
-LittleEndian(); // go to littleendian mode because of checksum format
-
-local int calculated_checksum;
-calculated_checksum = Checksum(CHECKSUM_CRC32, 0,4348);
-ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
-
-
-
+if (mk7) {
+    FSeek(0xf2c);
+    ubyte PHEV_zeroes[464]<bgcolor=cDkGray, fgcolor=cGray , hidden=true>;   // all zeroes on all datasets I've seen
+}       
+    FSeek(FileSize()-4);
+    LittleEndian(); // go to littleendian mode because of checksum format
+    
+    local int calculated_checksum;
+    calculated_checksum = Checksum(CHECKSUM_CRC32, 0,FileSize()-4);
+    ulong dataset_checksum       <format=hex,bgcolor=cGreen,comment="CRC32">;
 
 
 FSeek(2006);
