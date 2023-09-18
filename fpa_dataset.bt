@@ -302,12 +302,19 @@ ubyte button_profile_list_number[5]<bgcolor=cDkGreen >;
 // the number determines the list of profiles to cycle through
 
 
-struct{
-    ubyte list_0<bgcolor=cLtGreen, name=getFPAName(FPA_profile[this])>; 
-    ubyte list_1<bgcolor=cGreen, name=getFPAName(FPA_profile[this])>;      
-    ubyte list_2<bgcolor=cGreen, name=getFPAName(FPA_profile[this])>;      
-    ubyte list_3<bgcolor=cDkGreen, name=getFPAName(FPA_profile[this])>;
-    } button_profile_lists[8] <optimize=true> ;
+struct {
+    ubyte list_0_unknown_property: 4;
+    ubyte list_0:4 <bgcolor=cLtGreen, name=(this == 0 ? "None" : getFPAName(FPA_profile[this-1]))>;
+    
+    ubyte list_1_unknown_property: 4;
+    ubyte list_1:4 <bgcolor=cGreen, name=(this == 0 ? "None" : getFPAName(FPA_profile[this-1]))>;
+    
+    ubyte list_2_unknown_property: 4;
+    ubyte list_2:4 <bgcolor=cGreen, name=(this == 0 ? "None" : getFPAName(FPA_profile[this-1]))>;
+    
+    ubyte list_3_unknown_property: 4;
+    ubyte list_3:4 <bgcolor=cDkGreen, name=(this == 0 ? "None" : getFPAName(FPA_profile[this-1]))>;
+} button_profile_lists[8] <optimize=true>;
 
 struct {
 // these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
@@ -440,7 +447,7 @@ struct {
     // 113
     // 255
     
-} unknown_button_data;
+} profile_selection_list;
 
 ubyte unknown_button_data_81A[3]<bgcolor=cDkRed >;
 // 0 0 0 on most datasets
@@ -1115,7 +1122,10 @@ string getControlName(int controlNumber) {
         case 0x4A: return "Unknown";
         case 0x4B: return "Engine";             //seen on TCR
         case 0x4C: return "Freilauf_DefaultON";
-        case 0x50: return "Unknown";
+        case 0x4D: return "mFDR/freewheeling?";
+        case 0x4E: return "Electric Brake Power Amplifier?";      
+        case 0x50: return "All wheel drive?";
+        case 0x51: return "Range calulation?";
 
         case 0xFF: return "-";
         default:   return "Unknown";
