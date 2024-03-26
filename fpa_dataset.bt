@@ -263,8 +263,8 @@ byte unknown_7BB[2] <bgcolor=cRed>;
 // there it's 00 FF
 
 ubyte button_type[5] <bgcolor=cDkGreen>;
-// 1 = push button
 // 0 = disabled
+// 1 = push button
 // 4 = ?
 // 5 = knob
 // 6 = ? O(occurs on MZ)
@@ -325,8 +325,8 @@ struct {
 // 232: ?
 // 241: seen on steering wheel button setups
 // The logic for these higher numbers isn't clear yet.
+// These values are highly probable to be split bytes.
 // Todo: find out that's the logic behind this.
-// It's not half bytes (like bit 0-3 for profiles bit 4-7 for something else), because then the values exceed the 0-12 range.
 
     
     // the following need more research.
@@ -378,7 +378,7 @@ struct {
     // 66   PF
     
     
-    ubyte unknown_button_data_806[4]<bgcolor=cRed>;    
+    ubyte unknown_button_data_806_screen_behavior[4]<bgcolor=cRed>;    
     // known (dec) values:
     // 0
     // 1
@@ -389,6 +389,15 @@ struct {
     // FE = no screen visible
     // F0 = no screen visible
     // 0A = no screen visible
+    //      0: "Not set"
+    //      1: "Title: <brand> drive profile with DCC"
+    //      2: "Title: <brand> drive profile"
+    //      3: "Profiles are no longer matching, and a different animation" - Never seen in factory datasets.
+    //      4: "No HMI screen, only FPA icon"                               - Never seen in factory datasets.
+    //      5: "Nothing on HMI screen, FPA only visible on virtual cockpit" - Never seen in factory datasets.
+    //      6: "Title = profile name. Screen only shows the profiles that are in the list",
+    //      7: "No HMI screen, only FPA icon"                               - Never seen in factory datasets.
+    //      250: "Unknown"
     
     
     
@@ -447,7 +456,7 @@ struct {
     // 113
     // 255
     
-} profile_selection_list;
+} unknown_button_data;
 
 ubyte unknown_button_data_81A[3]<bgcolor=cDkRed >;
 // 0 0 0 on most datasets
@@ -517,6 +526,7 @@ short mode_light_on[12]<bgcolor=cGreen, name=getModeButtonLightState>;
 // 02 = blink 
 // 03 = ?
 // 05 = ?
+// 06 = Tiguan knob lit.
 
 // the following 8 groups of data map perfectly to the controls.
 // it is the value range that is used when communicating to the control module.

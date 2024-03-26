@@ -73,16 +73,9 @@ byte set_of_controls_2[32] <bgcolor=cYellow,name=getControlName, format=hex>;
 // The set of controls seems to be plausible
 ubyte unknown_1;
 ubyte FPA_profile[12] <format=hex,bgcolor=cGreen,name=getFPAName>;
+ulong unknown_2;
+byte set_of_controls_3[32] <bgcolor=cYellow,name=getControlName, format=hex>;
 
-
-struct{
-    byte unknown_set_y_[8] <bgcolor=cDkYellow, format=hex>;
-    } unknown_set_y[18];
-
-FSeek(2065);
-struct{
-    byte unknown_profile_1[8] <bgcolor=cYellow, format=hex>;
-    }unknown_profile_struct[18];
 
 
 FSeek(2873);
