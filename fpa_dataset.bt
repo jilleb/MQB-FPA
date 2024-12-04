@@ -272,14 +272,12 @@ ubyte button_type[5] <bgcolor=cDkGreen>;
 // 253 = steering normal push       11111101
 // FD  on Tiguan R (has enabled steering wheel FPA buttons)
 // FE  on Tiguan R (has enabled steering wheel FPA buttons)
-// TODO: test 5th byte if it is doing anything or if it's ignored and is just a filler byte
 
 ubyte button_behavior[5] <bgcolor=cYellow>;
 // 0 = disabled
 // 1 = enabled
 // 4 = can rotate in 2 directions?
-// there are 4 bytes, because there's room for 4 buttons. Maybe even 5, not sure yet.
-// TODO: test 5th byte if it is doing anything or if it's ignored and is just a filler byte
+// there are 5 bytes, because there's room for 5 buttons.
 // TODO: test other values
 
  
@@ -288,7 +286,7 @@ byte button_action[5] <bgcolor=cDkYellow>;
 // 03 = only open FPA dialog, no selection by button
 // 05 = ? (occurs on MZ00)
 // TODO: test other values like 2, 4, 5, 6.
-// again, for each of the 4 buttons.
+
 
 
 byte cycling_through_modes[5] <bgcolor=cGreen>;
@@ -316,7 +314,7 @@ struct {
     ubyte list_3:4 <bgcolor=cDkGreen, name=(this == 0 ? "None" : getFPAName(FPA_profile[this-1]))>;
 } button_profile_lists[8] <optimize=true>;
 
-struct {
+
 // these 8 sets of 4 hold the 8 profiles you can choose from, depending on what list is selected by button_profile_list_number
 // the numbers in this list refer to the entry in FPA_profile[12], so the possible (decimal) values are as follows:
 // 0 = disabled
@@ -328,7 +326,7 @@ struct {
 // These values are highly probable to be split bytes.
 // Todo: find out that's the logic behind this.
 
-    
+    struct {
     // the following need more research.
     ubyte unknown_button_data_7F6[4] <bgcolor=cYellow>;
     // known (dec) values:
@@ -1066,80 +1064,77 @@ string getModeButtonLightState(int lightMode) {
 }
 
 // helper function to get the control name.
-string getControlName(int controlNumber) {
-    switch (controlNumber) {
-        case 0x00: return "not set";
-        case 0x01: return "Engine";
-        case 0x02: return "Start/Stop System";
-        case 0x03: return "Gearbox";
-        case 0x04: return "Rear Differential Lock";
-        case 0x05: return "Steering";
-        case 0x06: return "Progressive Steering";
-        case 0x07: return "DCC";
-        case 0x08: return "HVAC (Air Conditioning)";
-        case 0x0A: return "Interior Engine Sound";
-        case 0x09: return "ACC";
-        case 0x0B: return "Motorway Light";
-        case 0x0C: return "Background Lighting";
-        case 0x0D: return "Air Suspension";
-        case 0x0E: return "Automatic Belt Pre-Tensioning";
-        case 0x0F: return "Seat Bolster Setting";
-        case 0x10: return "Route Option";
-        case 0x11: return "Navigation";
-        case 0x12: return "DSG Coasting";
-        case 0x13: return "Eco Tips";
-        case 0x14: return "Exterior Engine Sound";
-        case 0x15: return "Front Differential Lock";
-        case 0x16: return "Center Differential Lock";
-        case 0x17: return "Four-Wheel Drive (AWD)";
-        case 0x18: return "Electronic Torque Vectoring (Audi-Text)";
-        case 0x19: return "Anti-Slip regulation";
-        case 0x1A: return "Headlight Control";
-        case 0x1B: return "Rear spoiler";
-        case 0x1C: return "ESC System"; //this one has the ability to change the start/stop behavior.
-        case 0x1D: return "Rear Axle Steering";
-        case 0x1E: return "Adaptive Body Roll Compensation";
-        case 0x1F: return "Road Recognitiion";
-        case 0x20: return "Hybrid Drive";
-        case 0x21: return "Drive";
-        case 0x22: return "Chassis";
-        case 0x23: return "Exhaust Valves";
-        case 0x24: return "Engine Sound";
-        case 0x25: return "Passenger Compartment";
-        case 0x26: return "Driver's Seat";
-        case 0x27: return "Tyre Pressure Monitoring System (TPMS)";
-        case 0x28: return "Lane Assist";
-        case 0x29: return "Aggregatelagerung (Audi-Text)";
-        case 0x2A: return "Magnetic Ride (Audi-Text)";
-        case 0x2B: return "Sport Select Chassis";
-        case 0x2C: return "Hill Descent Assist";
-        case 0x2D: return "Hill Hold Assist";
-        case 0x2E: return "Parking Assist";
-        case 0x2F: return "Instrument Cluster";
-        case 0x30: return "Infotainment System";
-        case 0x31: return "Eco Driving Tips";
-        case 0x32: return "Speed Adjustment";
-        case 0x33: return "Electronic Engine Sound";
-        case 0x34: return "Nothing displays, just Engine";
-        case 0x35: return "Nothing displays, just Engine";
-        case 0x36: return "ESC System";
-        case 0x37: return "Nothing displays";
-        case 0x3A: return "Unknown";
-        case 0x41: return "Engine";
-        case 0x46: return "Range calculation";  //doesn't seem to display on screen
-        case 0x48: return "Unknown";
-        case 0x49: return "Hill Hold Assist";   //seen in L900
-        case 0x4A: return "Unknown";
-        case 0x4B: return "Engine";             //seen on TCR
-        case 0x4C: return "Freilauf_DefaultON";
-        case 0x4D: return "mFDR/freewheeling?";
-        case 0x4E: return "Electric Brake Power Amplifier?";      
-        case 0x50: return "All wheel drive?";
-        case 0x51: return "Range calulation?";
-
-        case 0xFF: return "-";
-        default:   return "Unknown";
+string getControlName(int i) {
+        // theory: the first 3 bits are used for something else.. not sure what.
+    //local int mask = 0x1F;         // mask = 00011111 (keeps lower 5 bits)
+    //i = i & mask;   // Perform bitwise AND to zero out the top 3 bits
+    local string j, k;
+    switch (i) {
+        case 0:  j = "None"; break;                    // not set
+        case 1:  j = "Enginepower"; break;             // Engine
+        case 2:  j = "Start/Stop"; break;
+        case 3:  j = "Gearbox"; break;
+        case 4:  j = "Rear differential"; break;    // Rear Differential Lock
+        case 5:  j = "Steering assist"; break;
+        case 6:  j = "Superpositionsteering"; break;   // Progressive Steering
+        case 7:  j = "Damper"; break;                  // DCC
+        case 8:  j = "Climatecontrol"; break;          // HVAC (Air Conditioning)
+        case 9:  j = "Adaptivecruisecontrol"; break;   // ACC
+        case 10: j = "Soundactuator"; break;           // Interior Engine Sound
+        case 11: j = "Steerablebeam"; break;           // Motorway Light
+        case 12: j = "Interiorlight"; break;           // Background Lighting
+        case 13: j = "Airsuspension"; break;           // Air Suspension
+        case 14: j = "Pretensioner"; break;            // Automatic Belt Pre-Tensioning
+        case 15: j = "Seat bolster"; break; // Seat Bolster Setting
+        case 16: j = "Navigation1"; break;             // Route Option
+        case 17: j = "Navigation2"; break;             // Navigation
+        case 18: j = "Freerolling"; break;             // DSG Coasting
+        case 19: j = "Ecolivetips"; break;             // Eco Tips
+        case 20: j = "Active exhaust"; break; // Exterior Engine Sound
+        case 21: j = "Frontaxledifferential"; break;   // Front Differential Lock
+        case 22: j = "Centredifferential"; break;      // Center Differential Lock
+        case 23: j = "Centreandrearaxlediff"; break; // Four-Wheel Drive (AWD)
+        case 24: j = "Electrictorquevectoring"; break; // Electronic Torque Vectoring (Audi-Text)
+        case 25: j = "Antislipcontrol"; break;         // Anti-Slip regulation
+        case 26: j = "Matrixbeam"; break;              // Headlight Control
+        case 27: j = "Rearspoiler"; break;             // Rear spoiler
+        case 28: j = "Brakecontrolsystem"; break;      // ESC System (also changes Start/Stop behavior)
+        case 29: j = "Rearaxlesteeringsystem"; break;  // Rear Axle Steering
+        case 30: j = "Activeantirollbar"; break;       // Adaptive Body Roll Compensation
+        case 31: j = "Curveassist"; break;             // Road Recognition
+        case 32: j = "Hybridcomponents"; break;        // Hybrid Drive
+        case 33: j = "Drivetrain"; break;              // Drive
+        case 34: j = "Chassis"; break;                 // Chassis
+        case 35: j = "Exhaustflap"; break;             // Exhaust Valves
+        case 36: j = "Soundcomponents"; break;         // Engine Sound
+        case 37: j = "Passengercabin"; break;          // Passenger Compartment
+        case 38: j = "Driveseat"; break;               // Driver's Seat
+        case 39: j = "Tirepressuremonitoring"; break;  // Tyre Pressure Monitoring System (TPMS)
+        case 40: j = "Laneassist"; break;              // Lane Assist
+        case 41: j = "Dynenginemount"; break;          // Aggregatelagerung (Audi-Text)
+        case 42: j = "Magneticride"; break;            // Magnetic Ride (Audi-Text)
+        case 43: j = "Switchabledamper"; break;        // Sport Select Chassis
+        case 44: j = "Hillstepdownassist"; break;      // Hill Descent Assist
+        case 45: j = "Driverassist_1"; break;          // Hill Hold Assist
+        case 46: j = "Driverassist_2"; break;          // Range calculation
+        case 47: j = "Displaysetup_1"; break;          // Unknown
+        case 48: j = "Displaysetup_2"; break;          // Unknown
+        case 49: j = "Energodisplaysetup"; break;      // 
+        case 50: j = "Energo_ACC"; break;              // Unknown
+        case 51: j = "Esound"; break;                  // Esound, used on electric vehicles
+        case 52: j = "Eabc"; break;                    // electromechanical Active Body Control
+        case 53: j = "Drivemode"; break;               // Could be the electronic drive modes as seen on GTE
+        case 54: j = "Ebkv"; break;                    // Electric Brake Power Amplifier?
+        case 55: j = "Drivemode2"; break;              // 
+        case 56: j = "Drivemode3"; break;              // 
+        case 57: j = "Double clutch"; break;           //
+        case 0xFF: j = "--"; break;                    // CharismaListFunctions.NONE
+        
+        default:   j = "-- Unknown"; break;
     }
+    
+    SPrintf(k, "%s [%02x]", j, i);  // Format the string and store in k
+    return k;  // Return k, the formatted string
 }
 
 // helper function to get the control name.
@@ -1175,7 +1170,7 @@ string getLongCodingByteName(int controlNumber) {
         case 0x1B: return "Byte 09, bit 2 - PDC (Park Distance Control)";
         case 0x1C: return "Byte 09, bit 3 - FMA (Freewheeling, engine off)";
         case 0x1D: return "Byte 09, bit 4 - Freewheeling, Default ON";
-        case 0x1E: return "Byte 09, bit 5 - mFDR (??)";
+        case 0x1E: return "Byte 09, bit 5 - Modular driving dynamics controller";
         case 0x1F: return "Byte 09, bit 6 - SchaltDR (Operating Mode Selection?)";
         case 0x20: return "Byte 09, bit 7 - Stages DCC (??)";
         default:   return "Unknown";
