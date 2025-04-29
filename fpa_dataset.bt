@@ -1159,7 +1159,7 @@ string getLongCodingByteName(int controlNumber) {
         case 0x0E: return "Byte 11, bit 5 - SAK (Interior Sound Control)";
         case 0x0F: return "Byte 11, bit 6 - MO_StSt (Start/Stop System)";
         case 0x10: return "Byte 11, bit 7 - AMB (Ambient Lights)";
-        case 0x11: return "Byte 10, bit 0 - IVB (??)";
+        case 0x11: return "Byte 10, bit 0 - IVB (Multikontursitz)";
         case 0x12: return "Byte 10, bit 1 - KL (Climate control)";
         case 0x13: return "Byte 10, bit 2 - HSP (Rear Spoiler)";
         case 0x14: return "Byte 10, bit 3 - AV (Area View??)";
@@ -1202,7 +1202,7 @@ string getGroupMemberLongCodingByteName(int value) {
     if (value & (1 << 13))  { controlName += "SAK (Interior Sound Control), ";}
     if (value & (1 << 14))  { controlName += "MO_StSt (Start/Stop System), ";}
     if (value & (1 << 15))  { controlName += "AMB (Ambient Lights), ";}
-    if (value & (1 << 16))  { controlName += "IVB (??), ";}
+    if (value & (1 << 16))  { controlName += "IVB (Multikontursitz), ";}
     if (value & (1 << 17))  { controlName += "KL (Climate control), ";}
     if (value & (1 << 18))  { controlName += "HSP (Rear Spoiler), ";}
     if (value & (1 << 19))  { controlName += "AV (Area View??), ";}
@@ -1215,7 +1215,7 @@ string getGroupMemberLongCodingByteName(int value) {
     if (value & (1 << 26))  { controlName += "PDC (Park Distance Control), ";}
     if (value & (1 << 27))  { controlName += "FMA (Freewheeling, engine off), ";}
     if (value & (1 << 28))  { controlName += "Freewheeling, Default ON, ";}
-    if (value & (1 << 29))  { controlName += "mFDR (??), ";}
+    if (value & (1 << 29))  { controlName += "mFDR (Modular driving dynamics controller), ";}
     if (value & (1 << 30))  { controlName += "SchaltDR (Operating Mode Selection?), ";}
     if (value & (1 << 31))  { controlName += "Stages DCC (??), ";}
     return controlName;
