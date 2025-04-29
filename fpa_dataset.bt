@@ -856,22 +856,23 @@ Printf(" No groups configured at 0xA09 range.\n");
 
 //----
 printTitle("Allowed to make changes to a specific mode for a specific setting (0x296)");
-Printf("                                            \tComfort────────────────────┐\n") ;
-Printf("                                            \tNormal────────────────────┐│\n") ;
-Printf("                                            \tSport────────────────────┐││\n") ;
-Printf("                                            \tOffroad─────────────────┐│││\n") ;
-Printf("                                            \tRace───────────────────┐││││\n") ;
-Printf("                                            \tEco───────────────────┐│││││\n") ;
-Printf("                                            \tIndividual───────────┐││││││\n") ;
-Printf("                                            \tRange───────────────┐│││││││\n") ;
-Printf("                                            \tLift──────────────┐ ││││││││\n") ;
-Printf("                                            \tOffroad Snow─────┐│ ││││││││\n") ;
-Printf("                                            \tOffroad Indiv.──┐││ ││││││││\n") ;
-Printf("                                            \tOffrd/HHold────┐│││ ││││││││\n") ;
-Printf("                                            \tOffrd/HCharge─┐││││ ││││││││\n") ;
-Printf("                                            \tOffrd/HArea──┐│││││ ││││││││\n") ;
-Printf("                                            \tEV OFF──────┐││││││ ││││││││\n") ;
-Printf("                                            \t?????──────┐│││││││ ││││││││\n") ;
+Printf("\t\t\t\t Comfort────────────────────┐\n") ;
+Printf("\t\t\t\t Normal────────────────────┐│\n") ;
+Printf("\t\t\t\t Sport────────────────────┐││\n") ;
+Printf("\t\t\t\t Offroad─────────────────┐│││\n") ;
+Printf("\t\t\t\t Eco────────────────────┐││││\n") ;
+Printf("\t\t\t\t Race──────────────────┐│││││\n") ;
+Printf("\t\t\t\t Individual───────────┐││││││\n") ;
+Printf("\t\t\t\t Range───────────────┐│││││││\n") ;
+Printf("\t\t\t\t                     ││││││││\n") ;
+Printf("\t\t\t\t Lift──────────────┐ ││││││││\n") ;
+Printf("\t\t\t\t Offroad Snow─────┐│ ││││││││\n") ;
+Printf("\t\t\t\t Offroad Indiv.──┐││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HHold────┐│││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HCharge─┐││││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HArea──┐│││││ ││││││││\n") ;
+Printf("\t\t\t\t EV OFF──────┐││││││ ││││││││\n") ;
+Printf("\t\t\t\t ?????──────┐│││││││ ││││││││\n") ;
 
 for( i = 0; i < 30; i++)
 {
@@ -882,22 +883,23 @@ for( i = 0; i < 30; i++)
 }
 
 printTitle("Remember setting in specific mode after restart of the car: (0x2D2) ");
-Printf("\t\t\t\t\t?????──────────────────────┐\n") ;
-Printf("\t\t\t\t\tComfort───────────────────┐│\n") ;
-Printf("\t\t\t\t\tNormal───────────────────┐││\n") ;
-Printf("\t\t\t\t\tSport───────────────────┐│││\n") ;
-Printf("\t\t\t\t\tOffroad────────────────┐││││\n") ;
-Printf("\t\t\t\t\tRace──────────────────┐│││││\n") ;
-Printf("\t\t\t\t\tEco──────────────────┐││││││\n") ;
-Printf("\t\t\t\t\tIndividual──────────┐│││││││\n") ;
-Printf("\t\t\t\t\tRange─────────────┐ ││││││││\n") ;
-Printf("\t\t\t\t\tLift─────────────┐│ ││││││││\n") ;
-Printf("\t\t\t\t\tOffroad Snow────┐││ ││││││││\n") ;
-Printf("\t\t\t\t\tOffroad Indiv.─┐│││ ││││││││\n") ;
-Printf("\t\t\t\t\tOffrd/HHold───┐││││ ││││││││\n") ;
-Printf("\t\t\t\t\tOffrd/HCharge┐│││││ ││││││││\n") ;
-Printf("\t\t\t\t\tOffrd/HArea─┐││││││ ││││││││\n") ;
-Printf("\t\t\t\t\tEV OFF─────┐│││││││ ││││││││\n") ;
+Printf("\t\t\t\t ?????──────────────────────┐\n") ;
+Printf("\t\t\t\t Comfort───────────────────┐│\n") ;
+Printf("\t\t\t\t Normal───────────────────┐││\n") ;
+Printf("\t\t\t\t Sport───────────────────┐│││\n") ;
+Printf("\t\t\t\t Offroad────────────────┐││││\n") ;
+Printf("\t\t\t\t Eco───────────────────┐│││││\n") ;
+Printf("\t\t\t\t Race─────────────────┐││││││\n") ;
+Printf("\t\t\t\t Individual──────────┐│││││││\n") ;
+Printf("\t\t\t\t                     ││││││││\n") ;
+Printf("\t\t\t\t Range─────────────┐ ││││││││\n") ;
+Printf("\t\t\t\t Lift─────────────┐│ ││││││││\n") ;
+Printf("\t\t\t\t Offroad Snow────┐││ ││││││││\n") ;
+Printf("\t\t\t\t Offroad Indiv.─┐│││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HHold───┐││││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HCharge┐│││││ ││││││││\n") ;
+Printf("\t\t\t\t Offrd/HArea─┐││││││ ││││││││\n") ;
+Printf("\t\t\t\t EV OFF─────┐│││││││ ││││││││\n") ;
 for( i = 0; i < 30; i++)
 {
 
