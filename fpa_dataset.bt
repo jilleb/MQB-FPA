@@ -565,7 +565,21 @@ byte unk_A67[30] <bgcolor=cYellow>;
 // unk_A85[30] @ 0xA85 — companion to unk_A67. Encodes the secondary tier flag (paired above).
 byte unk_A85[30] <bgcolor=cDkYellow>;
 
-// the following data all seems to be related to PHEV.
+// ================== 0xAA3 ATTRIBUTE GRID ==================
+// NOT PHEV-SPECIFIC. PD00/PF00/PH00/PO00 (non-PHEV) populate it.
+struct{
+    ubyte lead <bgcolor=cBlack, fgcolor=cDkGray>;
+    ubyte function_id[6] <bgcolor=cYellow, format=decimal>;
+    ubyte list_end <bgcolor=cBlack, fgcolor=cDkGray>;
+    ubyte row_lead <bgcolor=cBlack, fgcolor=cDkGray>;
+    struct {
+        ubyte value[6] <bgcolor=cLtRed, format=decimal>;
+        ubyte gap <bgcolor=cBlack, fgcolor=cDkGray>;
+    } row[3] <optimize=false>;
+    ubyte tail[5] <bgcolor=cBlack, fgcolor=cDkGray>;
+} attr_grid_AA3;
+
+// PHEV-specific fields (mk7 only).
 struct{
     // the following data appears to be related to Hybrid only, as it's almost completely empty on non-hybrid/PHEV datasets.
     // VERIFIED (64 mk7 files, 5 distinct rows):
@@ -1160,7 +1174,7 @@ printTitle("Request values + sub-control overrides (0x8FB + 0x26)");
 Printf("\n");
 Printf(" Mode-id reference:  0=NotSet 1=Comfort 2=Normal 3=Sport 4=Offroad 5=Eco\n");
 Printf("                     6=Race 7=Eco+/Individual 8=On 9=Off 10=Snow\n");
-Printf("                     11=? 12=? 13=Sand 14=? 15=?\n");
+Printf("                     11/12/13=vehicle-specific  0,14,15=reserved\n");
 Printf(" Sub-control rows are indented and prefixed with `>`. Their column-0 is\n");
 Printf(" left blank because the 0x26 override block has no value for mode 0.\n");
 Printf("\n");
@@ -1421,7 +1435,19 @@ Printf(" #################################################\n");
 // helper function to get the setting name.
 string getSettingName(int settingNumber) {
     switch (settingNumber) {
-        case 0x0: return "not set";
+        // Values 0-10 confirmed verbatim by ASL.Car.FPA.GetFunctionList_Value
+        // (car/fpa/ASLDatapoolEnumDebug.dbg, H42.325.89 SEAT build). That table
+        // marks value 0 and values 11-16 as "reserved" - not standardised across
+        // brands. SEAT's own const table names 11=SAND 12=TRACTION 13=PURE while
+        // SEAT's label array leaves 11 blank and shows "Pure" at 12, so the two
+        // SEAT sources disagree; 11-13 stay unnamed here.
+        // Empirical: across the 99 example datasets (0xFFFE marker rows excluded)
+        // value/bit 0 never occurs, 11/12/13 do, 14/15 never do.
+        // The old "Sand" at 0xD was unsourced and is contradicted by the SEAT
+        // const table (SAND = 11) - dropped.
+        // Runtime-only aliases 17 ("offroad used as On") and 18 ("normal used as
+        // Off") exist in firmware but cannot occur on disk: this field is a nibble.
+        case 0x0: return "reserved (never observed)";
         case 0x1: return "Comfort";
         case 0x2: return "Normal";
         case 0x3: return "Sport";
@@ -1432,11 +1458,11 @@ string getSettingName(int settingNumber) {
         case 0x8: return "On";
         case 0x9: return "Off";
         case 0xA: return "Snow";
-        case 0xB: return "Config 11";
-        case 0xC: return "Config 12";
-        case 0xD: return "Sand";
-        case 0xE: return "Config 14";
-        case 0xF: return "Config 15";
+        case 0xB: return "vehicle-specific 11";   // SEAT const: SAND
+        case 0xC: return "vehicle-specific 12";   // SEAT const: TRACTION
+        case 0xD: return "vehicle-specific 13";   // SEAT const: PURE
+        case 0xE: return "reserved (never observed)";
+        case 0xF: return "reserved (never observed)";
 
         default:  return "Unknown";
     }
@@ -1504,8 +1530,8 @@ string getControlName(int i) {
         case 13: j = "Airsuspension"; break;           // Air Suspension
         case 14: j = "Pretensioner"; break;            // Automatic Belt Pre-Tensioning
         case 15: j = "Seat bolster"; break; // Seat Bolster Setting
-        case 16: j = "Navigation1"; break;             // Route Option
-        case 17: j = "Navigation2"; break;             // Navigation
+        case 16: j = "Navigation1"; break;             // SEAT HMI label: "Type of route"
+        case 17: j = "Navigation2"; break;             // SEAT HMI label: "Navigation"
         case 18: j = "Freerolling"; break;             // DSG Coasting
         case 19: j = "Ecolivetips"; break;             // Eco Tips
         case 20: j = "Active exhaust"; break; // Exterior Engine Sound
@@ -1533,8 +1559,8 @@ string getControlName(int i) {
         case 42: j = "MagneticRide"; break;           // Magnetic Ride (Audi-Text)
         case 43: j = "SwitchableDamper"; break;       // Sport Select Chassis
         case 44: j = "HillDescentControl"; break; // Hill Descent Assist
-        case 45: j = "DriverAssist1"; break;         // Hill Hold Assist
-        case 46: j = "DriverAssist2"; break;         // Range calculation
+        case 45: j = "DriverAssist1"; break;         // SEAT HMI label: "Hill start assistant"
+        case 46: j = "DriverAssist2"; break;         // SEAT HMI label: "PDC"
         case 47: j = "DisplaySetup1"; break;         // Unknown
         case 48: j = "DisplaySetup2"; break;         // Unknown
         case 49: j = "EnergyDrivingTips"; break;     // Eco tips / driving-style advice
@@ -1686,7 +1712,8 @@ string getIndividualSettingName(int settingNumber) {
     }
 
     local string settingName = "";
-    if (settingNumber & (1 << 0))  { settingName += "Unknown 1 "; }
+    // bit N == setup value N; sourcing as in getSettingName() above.
+    if (settingNumber & (1 << 0))  { settingName += "reserved(0) "; }
     if (settingNumber & (1 << 1))  { settingName += "Comfort "; }
     if (settingNumber & (1 << 2))  { settingName += "Normal "; }
     if (settingNumber & (1 << 3))  { settingName += "Sport "; }
@@ -1697,11 +1724,11 @@ string getIndividualSettingName(int settingNumber) {
     if (settingNumber & (1 << 8))  { settingName += "On "; }
     if (settingNumber & (1 << 9))  { settingName += "Off "; }
     if (settingNumber & (1 << 10)) { settingName += "Snow "; }
-    if (settingNumber & (1 << 11)) { settingName += "Unknown 2"; }
-    if (settingNumber & (1 << 12)) { settingName += "Unknown 3"; }
-    if (settingNumber & (1 << 13)) { settingName += "Sand "; }
-    if (settingNumber & (1 << 14)) { settingName += "Unknown 4 "; }
-    if (settingNumber & (1 << 15)) { settingName += "Unknown 5 "; }
+    if (settingNumber & (1 << 11)) { settingName += "vehicle-specific 11 "; }  // SEAT const: SAND
+    if (settingNumber & (1 << 12)) { settingName += "vehicle-specific 12 "; }  // SEAT const: TRACTION
+    if (settingNumber & (1 << 13)) { settingName += "vehicle-specific 13 "; }  // SEAT const: PURE (was "Sand")
+    if (settingNumber & (1 << 14)) { settingName += "reserved(14) "; }
+    if (settingNumber & (1 << 15)) { settingName += "reserved(15) "; }
 
     return settingName;
 }
